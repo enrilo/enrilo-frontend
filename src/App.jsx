@@ -42,7 +42,7 @@ import AddNewConsultancy from "./pages/AddNewConsultancy.jsx";
 import Header from "./pages/components/Header.jsx";
 import Footer from "./pages/components/Footer.jsx";
 import Sidebar from "./pages/components/Sidebar.jsx";
-import MasterAdminLogin from "./pages/MasterAdminLogin.jsx";
+import SuperAdminLogin from "./pages/SuperAdminLogin.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import AllConsultanciesPage from "./pages/AllConsultanciesPage.jsx";
@@ -67,11 +67,13 @@ function AppContent() {
         {!shouldHideHeader && <Header />}
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/master-admin-login" element={<MasterAdminLogin />} />
+            <Route path="/super-admin-login" element={<SuperAdminLogin />} />
             <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
             <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
+            </Route>
           </Routes>
         <Footer />
       </div>
