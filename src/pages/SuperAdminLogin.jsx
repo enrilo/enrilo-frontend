@@ -1,13 +1,13 @@
 import React from "react";
 import { TextField } from "@mui/material";
 
-export default function LoginPage() {
+export default function SuperAdminLogin() {
   return (
     <main className="flex flex-1 justify-center items-center bg-gray-50 p-6">
       <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
         {/* Title */}
         <h1 className="text-gray-900 font-semibold text-2xl sm:text-3xl text-center mb-6">
-          Login
+          Super Admin Login
         </h1>
 
         {/* Form */}
@@ -17,10 +17,7 @@ export default function LoginPage() {
 
           {/* Submit Button */}
           <div className="mt-6 flex justify-center">
-            <button
-              type="submit"
-              className="w-full sm:w-auto bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition"
-            >
+            <button type="submit" className="w-full sm:w-auto bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition">
               Login
             </button>
           </div>
