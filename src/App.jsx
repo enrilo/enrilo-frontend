@@ -53,11 +53,11 @@ function AppContent() {
   const location = useLocation();
 
   // Routes where the sidebar should be hidden
-  const hideSidebarRoutes = ["/login", "/master-admin-login", "/"];
+  const hideSidebarRoutes = ["/login", "/super-admin-login", "/"];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
 
   // Routes where the header should be hidden
-  const hideHeaderRoutes = ["/login", "/master-admin-login"];
+  const hideHeaderRoutes = ["/login", "/super-admin-login"];
   const shouldHideHeader = hideHeaderRoutes.includes(location.pathname);
 
   return (
@@ -69,11 +69,11 @@ function AppContent() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/super-admin-login" element={<SuperAdminLogin />} />
-            <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
             <Route path="/" element={<Home />} />
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
+              <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
             </Route>
           </Routes>
         <Footer />
