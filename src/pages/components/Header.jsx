@@ -6,6 +6,8 @@ export default function Header() {
   // Dynamic title map
   const titleMap = {
     "/": "Home Page",
+    "/login": "Login",
+    "/master-admin-login": "Login",
     "/dashboard": "Dashboard",
     "/add-new-consultancy": "Add New Consultancy",
     "/all-consultancies": "All Consultancies",
