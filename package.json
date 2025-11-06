@@ -1,5 +1,5 @@
 {
-  "name": "student_consultancy_management_system",
+  "name": "enrilo",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -29,7 +29,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0",
-    "react-router-dom": "^7.9.1",
+    "react-router-dom": "^7.9.5",
     "redux-persist": "^6.0.0",
     "url": "^0.11.4"
   },
