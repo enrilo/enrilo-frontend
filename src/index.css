@@ -8,8 +8,13 @@ body {
   @apply bg-[#F8FAFC] text-gray-900 font-sans;
 }
 
-
-
+/* In your CSS file or <style> */
+.autoscroll-container {
+  scrollbar-width: none !important; /* Firefox */
+}
+.autoscroll-container::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Edge */
+}
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
