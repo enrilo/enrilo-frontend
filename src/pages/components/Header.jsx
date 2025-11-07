@@ -12,7 +12,7 @@ export default function Header() {
     "/add-new-consultancy": "Add New Consultancy",
     "/all-consultancies": "All Consultancies",
     "/consultancy/payments": "All Payment Details",
-    "/superadmin/add": "Add Super Admin",
+    "/add-new-superadmin": "Add Super Admin",
     "/superadmin/all": "All Super Admin",
     "/masteradmin/add": "Add Master Admin",
     "/masteradmin/all": "All Master Admin",

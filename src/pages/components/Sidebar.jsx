@@ -27,7 +27,7 @@ export default function Sidebar() {
       name: "Super Admin Details",
       icon: <Users size={18} />,
       subMenu: [
-        { name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/superadmin/add" },
+        { name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/add-new-superadmin" },
         { name: "All Super Admin", icon: <Users size={18} />, path: "/superadmin/all" },
       ],
     },
