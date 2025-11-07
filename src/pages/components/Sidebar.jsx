@@ -75,7 +75,7 @@ export default function Sidebar() {
         alert("You have been logged out successfully.");
         navigate('/'); // ✅ redirect to home
       } else {
-        alert("Logout failed. Try again.");
+        alert("Logout failed. Try Again.");
       }
     } catch (err) {
       console.error("Logout error:", err);
@@ -84,8 +84,7 @@ export default function Sidebar() {
   };
 
   const MenuLink = ({ icon, name, path, isActive, onClick }) => (
-    <button onClick={onClick}
-      className={`flex items-center w-full p-2 rounded-md transition-all duration-200 text-left ${
+    <button onClick={onClick} className={`flex items-center w-full p-2 rounded-md transition-all duration-200 text-left ${
         isActive ? "bg-[#475569] text-yellow-300 font-semibold" : "hover:bg-[#334155]"
       }`} title={!isOpen ? name : ""}>
       <span className="flex justify-center w-6">{icon}</span>
@@ -118,7 +117,7 @@ export default function Sidebar() {
                 <li key={idx} className="relative group">
                   {hasSubMenu ? (
                     <>
-                      <button onClick={() => toggleSubMenu(item.name)} className={`flex items-center justify-between w-full p-2 rounded-md transition-all duration-300 ${
+                      <button onClick={() => toggleSubMenu(item.name)} className={`flex items-center justify-between w-full p-2 rounded-md transition-all duration-300 cursor-pointer ${
                           isMenuActive ? "bg-[#475569] text-yellow-300 font-semibold" : "hover:bg-[#334155]"
                         }`}>
                         <div className="flex items-center space-x-3">
@@ -163,9 +162,9 @@ export default function Sidebar() {
             {bottomMenu.map((item, idx) => (
               <li key={idx}>
                 {item.action === "logout" ? (
-                  <MenuLink icon={item.icon} name={item.name} onClick={() => setShowLogoutConfirm(true)} />
+                  <MenuLink icon={item.icon} name={item.name} onClick={() => setShowLogoutConfirm(true)} className="cursor-pointer" />
                 ) : (
-                  <Link to={item.path} className="flex items-center p-2 rounded-md hover:bg-[#334155]">
+                  <Link to={item.path} className="flex items-center p-2 rounded-md cursor-pointer hover:bg-[#334155]">
                     <span className="flex justify-center w-6">{item.icon}</span>
                     {isOpen && <span className="ml-3 text-sm">{item.name}</span>}
                   </Link>
@@ -196,10 +195,10 @@ export default function Sidebar() {
             <h3 className="text-lg font-semibold mb-3">Confirm Logout</h3>
             <p className="mb-5">Are you sure you want to log out?</p>
             <div className="flex justify-center gap-4">
-              <button onClick={() => { setShowLogoutConfirm(false); handleLogout(); }} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+              <button onClick={() => { setShowLogoutConfirm(false); handleLogout(); }} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition cursor-pointer">
                 Yes, Logout
               </button>
-              <button onClick={() => setShowLogoutConfirm(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition" >
+              <button onClick={() => setShowLogoutConfirm(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition cursor-pointer">
                 Cancel
               </button>
             </div>

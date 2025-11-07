@@ -122,13 +122,13 @@ export default function AllConsultanciesPage() {
                     </td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center">
                       <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
-                        <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                        <button className="bg-slate-500 hover:bg-slate-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                           View
                         </button>
-                        <button className="bg-slate-800 hover:bg-slate-900 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                        <button className="bg-slate-800 hover:bg-slate-900 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                           Edit
                         </button>
-                        <button className="bg-red-600 hover:bg-red-700 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                        <button className="bg-red-600 hover:bg-red-700 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                           Delete
                         </button>
                       </div>

@@ -62,7 +62,7 @@ export default function SuperAdminLogin() {
 
           {/* Show Password Checkbox */}
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="showPassword" checked={showPassword} onChange={() => setShowPassword(!showPassword)} />
+            <input type="checkbox" id="showPassword" checked={showPassword} onChange={() => setShowPassword(!showPassword)} className="cursor-pointer" />
 
             <label htmlFor="showPassword" className="text-gray-700">
               Show Password
@@ -71,7 +71,7 @@ export default function SuperAdminLogin() {
 
           {/* Submit Button */}
           <div className="mt-6 flex justify-center">
-            <button type="submit" className="w-full sm:w-auto bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition">
+            <button type="submit" className="w-full cursor-pointer sm:w-auto bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition">
               Login
             </button>
           </div>
