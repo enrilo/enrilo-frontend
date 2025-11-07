@@ -57,6 +57,7 @@ import { countryCodes } from './components/CountryCodeList';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link, useNavigate} from 'react-router-dom';
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { selectStyles, asteriskColorStyle, slotPropsStyle } from './styles/selectStyles';
 
 export default function AddNewSuperAdmin() {
     const { loading, error } = useSelector((state) => state.user);
@@ -174,11 +175,11 @@ export default function AddNewSuperAdmin() {
 
                     {/* Form */}
                     <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
-                        <TextField id="full_name" value={formData.full_name} onChange={handleChange} label="Admin Full Name" variant="outlined" fullWidth />
+                        <TextField id="full_name" value={formData.full_name} onChange={handleChange} label="Admin Full Name" variant="outlined" fullWidth required sx={asteriskColorStyle} />
 
                         <div className="w-full flex flex-row gap-3">
                             <div className="min-w-[140px]">
-                                <Select id="country_code" options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} 
+                                <Select id="country_code" options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body}  styles={selectStyles} required sx={asteriskColorStyle}
                                     onChange={(selected) => {
                                         setSelectedCode(selected);
                                         setFormData((prev) => ({
@@ -186,27 +187,15 @@ export default function AddNewSuperAdmin() {
                                             country_code: selected?.value || "",
                                         }));
                                     }}
-                                    styles={{
-                                        control: (base, state) => ({
-                                            ...base,
-                                            minHeight: "56px",
-                                            height: "56px",
-                                            borderRadius: "4px",
-                                            borderColor: state.isFocused ? "#2563EB" : "#E0E0E0",
-                                            boxShadow: "none",
-                                            "&:hover": { borderColor: "#2563EB" },
-                                        }),
-                                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                                    }}
                                 />
                             </div>
 
-                            <TextField id="phone" type='number' value={formData.phone} onChange={handleChange} label="Phone Number" variant="outlined" fullWidth slotProps={{ input: { style: { height: "56px" } } }} />
+                            <TextField id="phone" type='number' value={formData.phone} onChange={handleChange} label="Phone Number" variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
                         </div>
 
-                        <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email ID"  variant="outlined" fullWidth />
+                        <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email ID"  variant="outlined" fullWidth required sx={asteriskColorStyle} />
                         <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email ID" variant="outlined" fullWidth />
-                        <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" fullWidth />
+                        <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" fullWidth required sx={asteriskColorStyle} />
                         <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
                         <TextField id="street_2" value={formData.street_2} onChange={handleChange} label="Street 2" variant="outlined" fullWidth />
                         <TextField id="city" value={formData.city} onChange={handleChange} label="City" variant="outlined" fullWidth />
@@ -215,18 +204,17 @@ export default function AddNewSuperAdmin() {
                         <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
 
                         {/* Emergency Contact */}
-                        <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} />
+                        <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} required sx={asteriskColorStyle} />
                         <div className="w-full flex flex-row gap-3">
                             <div className="min-w-[140px]">
-                                <Select id="emergency_country_code" options={emergencyCountryCodeOptions} value={selectedEmergencyCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body}
+                                <Select id="emergency_country_code" options={emergencyCountryCodeOptions} value={selectedEmergencyCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} styles={selectStyles} required sx={asteriskColorStyle}
                                     onChange={(selected) => { setSelectedEmergencyCode(selected); setFormData((prev) => ({ ...prev, emergency_contact: { ...prev.emergency_contact, country_code: selected?.value || "", }, })); }}
-                                    styles={{ control: (base, state) => ({ ...base, minHeight: "56px", height: "56px", borderRadius: "4px", borderColor: state.isFocused ? "#2563EB" : "#E0E0E0", boxShadow: "none", "&:hover": { borderColor: "#2563EB" }, }), menuPortal: (base) => ({ ...base, zIndex: 9999 }), }}
                                 />
                             </div>
 
-                            <TextField id="emergency_phone" type='number' label="Emergency Contact Phone" variant="outlined" fullWidth value={formData.emergency_contact.phone} onChange={handleChange} slotProps={{ input: { style: { height: "56px" } } }} />
+                            <TextField id="emergency_phone" type='number' label="Emergency Contact Phone" variant="outlined" fullWidth value={formData.emergency_contact.phone} onChange={handleChange} required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
                         </div>
-                        <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} />
+                        <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
 
                         {/* Documents Section */}
                         {formData.documents.map((doc, index) => (
