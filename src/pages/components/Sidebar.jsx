@@ -195,10 +195,10 @@ export default function Sidebar() {
             <h3 className="text-lg font-semibold mb-3">Confirm Logout</h3>
             <p className="mb-5">Are you sure you want to log out?</p>
             <div className="flex justify-center gap-4">
-              <button onClick={() => { setShowLogoutConfirm(false); handleLogout(); }} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition cursor-pointer">
+              <button onClick={() => { setShowLogoutConfirm(false); handleLogout(); }} className="bg-red-600 text-white border-2 px-4 py-2 rounded-md hover:bg-red-700 transition cursor-pointer">
                 Yes, Logout
               </button>
-              <button onClick={() => setShowLogoutConfirm(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition cursor-pointer">
+              <button onClick={() => setShowLogoutConfirm(false)} className="bg-gray-300 border-2 px-4 py-2 rounded-md hover:bg-gray-400 transition cursor-pointer">
                 Cancel
               </button>
             </div>
