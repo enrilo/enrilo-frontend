@@ -253,7 +253,13 @@ export default function AddNewSuperAdmin() {
     dispatch(signInFailure(""));
     try {
       dispatch(signInStart());
-      const token = localStorage.getItem("accessToken");
+      const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+      // Parse the nested user slice
+      const userState = JSON.parse(persistedRoot.user);
+      // Extract token
+      const token = userState.currentUser?.data?.accessToken;
+      console.log("Token from localStorage:", token);
+
       const res = await fetch("http://localhost:3000/api/super-admins/", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -261,7 +267,7 @@ export default function AddNewSuperAdmin() {
         credentials: "include",
       });
       const data = await res.json();
-      console.log(`${JSON.stringify(data)}}`);
+      // console.log(`${JSON.stringify(data)}}`);
       if (data.success == false) {
         setFailedToSaveMsgOpen(true);
         setFailedToSaveMessage(`Failed to add super admin because ${data.message.toLowerCase()}`);
