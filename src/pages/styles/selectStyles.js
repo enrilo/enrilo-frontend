@@ -24,3 +24,10 @@ export const slotPropsStyle = {
         } 
     } 
 };
+
+export const selectAndPreviewDocStyle = {
+    textTransform: "none",
+    borderColor: "#2563EB",
+    color: "#2563EB",
+    "&:hover": { borderColor: "#1D4ED8", background: "#EFF6FF" },
+}
