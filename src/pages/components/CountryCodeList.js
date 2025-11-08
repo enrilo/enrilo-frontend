@@ -1,5 +1,3 @@
-// src/data/countryCodes.js
-
 export const countryCodes = [
   { name: "Afghanistan", code: "+93" },
   { name: "Aland Islands", code: "+358" },
