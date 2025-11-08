@@ -29,6 +29,11 @@ export default function AddNewSuperAdmin() {
   const [confirmAction, setConfirmAction] = useState(null);
   const [modalMessage, setModalMessage] = useState("");
   const [messageOpen, setMessageOpen] = useState(false);
+  const [failedToSaveMessage, setFailedToSaveMessage] = useState("");
+  const [failedToSaveMsgOpen, setFailedToSaveMsgOpen] = useState(false);
+
+  const [saveSuccessfulMessage, setSaveSuccessfulMessage] = useState("");
+  const [saveSuccessfulMsgOpen, setSaveSuccessfulMsgOpen] = useState(false);
 
   const emergencyCountryCodeOptions = countryCodes.map((country) => ({
     value: country.code,
@@ -86,7 +91,7 @@ export default function AddNewSuperAdmin() {
     });
   };
 
-  // --- PROFILE UPLOAD ---
+  // --- PROFILE PIC UPLOAD ---
   const handleProfileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -219,9 +224,9 @@ export default function AddNewSuperAdmin() {
       ...p,
       documents: [
         ...p.documents,
-        { name: "", url: "", number: "", firebasePath: "", uploaded_at: Date.now() },
+        { name: "", url: "", number: "", uploaded_at: Date.now() },
       ],
-    }));
+  }));
 
   const removeDocument = async (index) => {
     const filePath = formData.documents[index]?.firebasePath;
@@ -256,18 +261,22 @@ export default function AddNewSuperAdmin() {
         credentials: "include",
       });
       const data = await res.json();
-      if (data.success === false) {
+      console.log(`${JSON.stringify(data)}}`);
+      if (data.success == false) {
+        setFailedToSaveMsgOpen(true);
+        setFailedToSaveMessage(`Failed to add super admin because ${data.message.toLowerCase()}`);
         dispatch(signInFailure(data.message));
-        return;
-      }
+        // return;
+      } 
       dispatch(signInSuccess(data));
-      setModalMessage("Super admin added successfully!");
-      setMessageOpen(true);
-      navigate("/dashboard");
+      setSaveSuccessfulMessage("Super admin added successfully! You will now be redirected to All Super Admin Page.");
+      setSaveSuccessfulMsgOpen(true);
     } catch (err) {
       dispatch(signInFailure(err.message));
       console.error(err);
-      setModalMessage("Failed to add super admin.");
+      console.log(`err.message: ${err.message}`);
+      setFailedToSaveMsgOpen(true);
+      setFailedToSaveMessage(`Failed to add super admin because ${data.message.toLowerCase()}`);
       setMessageOpen(true);
     }
   };
@@ -439,6 +448,29 @@ export default function AddNewSuperAdmin() {
               <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                 <p className="mb-4">{modalMessage}</p>
                 <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setMessageOpen(false)} >
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
+
+          {failedToSaveMsgOpen && (
+            <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                <p className="mb-4">{failedToSaveMessage}</p>
+                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
+
+          
+          {saveSuccessfulMsgOpen && (
+            <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                <p className="mb-4">{saveSuccessfulMessage}</p>
+                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/dashboard");}} >
                   OK
                 </button>
               </div>

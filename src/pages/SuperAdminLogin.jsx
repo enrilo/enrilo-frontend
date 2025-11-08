@@ -36,7 +36,6 @@ export default function SuperAdminLogin() {
       });
 
       const data = await res.json();
-
       if (data.success === false) {
         dispatch(signInFailure(data.message));
         setModalMessage(data.message);
@@ -50,7 +49,6 @@ export default function SuperAdminLogin() {
 
     } catch (error) {
       dispatch(signInFailure(error.message));
-      console.log(`error.message: ${error.message}`);
       setModalMessage(error.message);
       setMessageOpen(true); // Show error modal
     }
