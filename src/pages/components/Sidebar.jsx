@@ -15,6 +15,13 @@ export default function Sidebar() {
   const menuItems = [
     { name: "Dashboard", icon: <LayoutDashboard size={18} />, path: "/dashboard" },
     {
+      name: "Super Admin Details",
+      icon: <Users size={18} />,
+      subMenu: [
+        { name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/add-new-superadmin" },
+        { name: "All Super Admin", icon: <Users size={18} />, path: "/all-superadmin" },
+      ],
+    }, {
       name: "Consultancy Details",
       icon: <User size={18} />,
       subMenu: [
@@ -22,24 +29,14 @@ export default function Sidebar() {
         { name: "All Consultancies", icon: <Users size={18} />, path: "/all-consultancies" },
         { name: "All Payment Details", icon: <IndianRupeeIcon size={18} />, path: "/consultancy/payments" },
       ],
-    },
-    {
-      name: "Super Admin Details",
-      icon: <Users size={18} />,
-      subMenu: [
-        { name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/add-new-superadmin" },
-        { name: "All Super Admin", icon: <Users size={18} />, path: "/superadmin/all" },
-      ],
-    },
-    {
+    }, {
       name: "Master Admin Details",
       icon: <BriefcaseBusiness size={18} />,
       subMenu: [
         { name: "Add Master Admin", icon: <UserPlus size={18} />, path: "/masteradmin/add" },
         { name: "All Master Admin", icon: <Users size={18} />, path: "/masteradmin/all" },
       ],
-    },
-    {
+    }, {
       name: "Company Details",
       icon: <IdCard size={18} />,
       subMenu: [

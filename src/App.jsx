@@ -49,6 +49,7 @@ import AllConsultanciesPage from "./pages/AllConsultanciesPage.jsx";
 import PrivateRoute from "./pages/components/PrivateRoute.jsx";
 import "./App.css";
 import AddNewSuperAdmin from "./pages/AddNewSuperAdmin.jsx";
+import AllSuperAdminPage from "./pages/AllSuperAdminPage.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -76,6 +77,7 @@ function AppContent() {
               <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
               <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
               <Route path="/add-new-superadmin" element={<AddNewSuperAdmin />} />
+              <Route path="/all-superadmin" element={<AllSuperAdminPage />} />
             </Route>
           </Routes>
         <Footer />
