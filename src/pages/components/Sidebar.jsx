@@ -19,7 +19,7 @@ export default function Sidebar() {
       icon: <Users size={18} />,
       subMenu: [
         { name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/add-new-superadmin" },
-        { name: "All Super Admin", icon: <Users size={18} />, path: "/all-superadmin" },
+        { name: "All Super Admin", icon: <Users size={18} />, path: "/all-super-admin" },
       ],
     }, {
       name: "Consultancy Details",
