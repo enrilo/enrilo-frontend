@@ -6,7 +6,6 @@ import heic2any from "heic2any";
 import { countryCodes } from "./components/CountryCodeList";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
 import { selectStyles, asteriskColorStyle, slotPropsStyle, selectAndPreviewDocStyle } from "./styles/selectStyles";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { storage } from "../firebase.js";
@@ -250,9 +249,7 @@ export default function AddNewSuperAdmin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signInFailure(""));
     try {
-      dispatch(signInStart());
       const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
       // Parse the nested user slice
       const userState = JSON.parse(persistedRoot.user);
@@ -271,14 +268,11 @@ export default function AddNewSuperAdmin() {
       if (data.success == false) {
         setFailedToSaveMsgOpen(true);
         setFailedToSaveMessage(`Failed to add super admin because ${data.message.toLowerCase()}`);
-        dispatch(signInFailure(data.message));
         // return;
       } 
-      dispatch(signInSuccess(data));
       setSaveSuccessfulMessage("Super admin added successfully! You will now be redirected to All Super Admin Page.");
       setSaveSuccessfulMsgOpen(true);
     } catch (err) {
-      dispatch(signInFailure(err.message));
       console.error(err);
       console.log(`err.message: ${err.message}`);
       setFailedToSaveMsgOpen(true);
@@ -337,7 +331,7 @@ export default function AddNewSuperAdmin() {
             {/* Rest of the fields */}
             <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" },}}/>
             <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
-            <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" fullWidth />
+            <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth />
 
             {/* Address */}
             <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
