@@ -5,8 +5,8 @@ import FirstPageRoundedIcon from "@mui/icons-material/FirstPageRounded";
 import LastPageRoundedIcon from "@mui/icons-material/LastPageRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import { Link, useNavigate } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
+import { getStorage, ref, deleteObject} from 'firebase/storage';
 
 export default function AllSuperAdminPage() {
   const [page, setPage] = useState(0);
@@ -22,32 +22,74 @@ export default function AllSuperAdminPage() {
       setShowConfirmDelete(true);
   };
 
-  const handleDeleteConfirmed = async () => {
+ const handleDeleteConfirmed = async () => {
+    // setLoading(true);
     const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
     // Parse the nested user slice
     const userState = JSON.parse(persistedRoot.user);
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
-    try {
-      const res = await fetch(`http://localhost:3000/api/super-admins/${deleteId}`, {
-        method: "DELETE",
+
+    const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+        method: "GET",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         credentials: "include",
+    });
+    const data = await res.json();
+    // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
+    
+    if(data.success === false){
+        // setLoading(false);
+        console.log("data.success === false");
+        return;
+    }
+
+    if(data.data.superAdmin.photo_url.includes('firebase')) {
+    const storage = getStorage();
+    const desertRef = ref(storage, data.data.superAdmin.photo_url);
+    deleteObject(desertRef).then(() => {
+        console.log("Profile Pic Removed Successfully")
+    }).catch((error) => {
+    console.log("Failed To Remove Image");
+        console.log(error)
+    });
+    }
+    for(var i=0; i < data.data.superAdmin.documents.length;i++) {
+    const storage = getStorage();
+    if(data.data.superAdmin.documents[i].url.includes('firebase')){
+      var docURL = data.data.superAdmin.documents[i].url;
+      const desertRef = ref(storage, docURL);
+      deleteObject(desertRef).then(() => {
+          console.log(`Document with URL ${docURL} Removed Successfully`)
+      }).catch((error) => {
+      console.log("Failed To Remove Image");
+          console.log(error)
       });
-      const data = await res.json();
-      if (data.success === false) {
-          console.log(data.message);
-          return;
-      }
-      setShowConfirmDelete(false);
-      setShowSuccess(true);
-      setTimeout(() => {
-          window.location.reload(true);
-          // navigate("/all-todos");
-      }, 1500);
+    }
+    }
+    try {
+    const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+    });
+    const data = await res.json();
+    if (data.success === false) {
+        console.log(data.message);
+        return;
+    }
+    setShowConfirmDelete(false);
+    setShowSuccess(true);
+    setTimeout(() => {
+        window.location.reload(true);
+        // navigate("/all-todos");
+    }, 1500);
     } catch (error) {
         console.log(error.message);
     }
@@ -155,7 +197,7 @@ export default function AllSuperAdminPage() {
                           </button>
                         </Link>
                         {c.company_email !== currentUserEmail && (
-                          <button onClick={() => confirmDelete(c._id)} className="bg-red-600 hover:bg-red-700 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                          <button onClick={() => confirmDelete(c._id)} className="bg-red-700 hover:bg-red-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                             Delete
                           </button>
                         )}
