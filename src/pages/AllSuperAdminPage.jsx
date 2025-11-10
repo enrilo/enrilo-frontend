@@ -5,10 +5,11 @@ import FirstPageRoundedIcon from "@mui/icons-material/FirstPageRounded";
 import LastPageRoundedIcon from "@mui/icons-material/LastPageRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { getStorage, ref, deleteObject} from 'firebase/storage';
 
 export default function AllSuperAdminPage() {
+  const params = useParams();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [allSuperAdmin, setAllSuperAdmin] = useState([]);
@@ -258,11 +259,9 @@ export default function AllSuperAdminPage() {
             <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center">
                 <div className="flex flex-row bg-[rgb(7,57,106)] text-white p-3 rounded-lg shadow-lg">
                     <p>Super Admin has been deleted!</p>
-                    <button className="ml-2 font-bold hover:cursor-pointer text-white" onClick={() => {
-                        setShowSuccess(false);
-                        window.location.reload(true);
-                        // navigate("/all-todos");
-                    }} >✖</button>
+                    <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setShowSuccess(false); window.location.reload(true); }}>
+                      OK
+                    </button>
                 </div>
             </div>
           )}
