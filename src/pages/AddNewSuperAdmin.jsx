@@ -570,6 +570,7 @@ export default function AddNewSuperAdmin() {
 
   const handleDeleteProfile = () => {
     setLocalProfileFile(null);
+    setProfilePreviewUrl('');
     setFormData((p) => ({
       ...p,
       photo_url:
@@ -652,7 +653,6 @@ export default function AddNewSuperAdmin() {
     });
     setConfirmOpen(true);
   };
-
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -820,7 +820,7 @@ export default function AddNewSuperAdmin() {
 
           {/* PROFILE UPLOAD */}
           <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
-            {(!localProfileFile && formData.photo_url === "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg") ? (
+            {/* {(!localProfileFile && formData.photo_url === "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg") ? (
               <>
                 <div className="text-gray-400 text-3xl mb-2">🖼️</div>
                 <label className="text-blue-600 font-medium cursor-pointer hover:underline">
@@ -842,7 +842,31 @@ export default function AddNewSuperAdmin() {
                   </button>
                 </div>
               </div>
+            )} */}
+
+            {profilePreviewUrl ? (
+              <div className="flex flex-col items-center">
+                <img src={profilePreviewUrl} alt="Profile" className="w-auto h-40 object-cover rounded-lg mb-2" />
+                <div className="flex gap-4">
+                  <label className="text-blue-600 cursor-pointer hover:underline">
+                    Replace
+                    <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} />
+                  </label>
+                  <button type="button" className="text-red-600 cursor-pointer hover:underline" onClick={handleDeleteProfileConfirm}>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="text-gray-400 text-3xl mb-2">🖼️</div>
+                <label className="text-blue-600 font-medium cursor-pointer hover:underline">
+                  Click Here To Add Profile Picture
+                  <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} />
+                </label>
+              </>
             )}
+
           </div>
 
           {/* FORM FIELDS AND DOCUMENTS REMAIN UNCHANGED */}
@@ -853,80 +877,29 @@ export default function AddNewSuperAdmin() {
           <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
 
             {/* Admin Full Name */}
-            <TextField
-              id="full_name"
-              label="Admin Full Name"
-              value={formData.full_name}
-              onChange={handleChange}
-              variant="outlined"
-              fullWidth
-              required
-              sx={asteriskColorStyle}
-            />
+            <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} />
 
             {/* Phone */}
             <div className="w-full flex gap-3">
               <div className="min-w-[140px]">
-                <Select
-                  options={options}
-                  value={selectedCode}
-                  placeholder="Country Code"
-                  isSearchable
-                  menuPortalTarget={document.body}
-                  required
-                  styles={selectStyles}
+                <Select options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
                   onChange={(sel) => {
                     setSelectedCode(sel);
                     setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
                   }}
                 />
               </div>
-              <TextField
-                id="phone"
-                label="Phone"
-                type="number"
-                value={formData.phone}
-                onChange={handleChange}
-                variant="outlined"
-                fullWidth
-                required
-                sx={asteriskColorStyle}
-                slotProps={slotPropsStyle}
-              />
+              <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
             </div>
 
             {/* Company Email */}
-            <TextField
-              id="company_email"
-              value={formData.company_email}
-              onChange={handleChange}
-              label="Company Email"
-              variant="outlined"
-              fullWidth
-              required
-              sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}
-            />
+            <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }} />
 
             {/* Personal Email */}
-            <TextField
-              id="email"
-              value={formData.email}
-              onChange={handleChange}
-              label="Personal Email"
-              variant="outlined"
-              fullWidth
-            />
+            <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
 
             {/* Position */}
-            <TextField
-              id="position"
-              value={formData.position}
-              onChange={handleChange}
-              label="Position"
-              variant="outlined"
-              required
-              fullWidth
-            />
+            <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth />
 
             {/* Address */}
             <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
@@ -982,11 +955,8 @@ export default function AddNewSuperAdmin() {
 
                     {doc.file && (
                       <div className="flex flex-col items-center gap-3">
-                        <TextField
-                          label="Uploaded File URL"
+                        <TextField label="Uploaded File URL" fullWidth slotProps={{ input: { readOnly: true } }}
                           value={doc.url || ""} // will now show local blob URL if file not yet uploaded
-                          fullWidth
-                          slotProps={{ input: { readOnly: true } }}
                         />
                         <div className="flex flex-row justify-between w-full">
                           <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
