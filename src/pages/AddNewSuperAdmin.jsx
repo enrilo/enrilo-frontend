@@ -509,12 +509,14 @@ export default function AddNewSuperAdmin() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState("");
   const [confirmAction, setConfirmAction] = useState(null);
+  const [previewType, setPreviewType] = useState(null);
   const [modalMessage, setModalMessage] = useState("");
   const [messageOpen, setMessageOpen] = useState(false);
   const [failedToSaveMessage, setFailedToSaveMessage] = useState("");
   const [failedToSaveMsgOpen, setFailedToSaveMsgOpen] = useState(false);
   const [saveSuccessfulMessage, setSaveSuccessfulMessage] = useState("");
   const [saveSuccessfulMsgOpen, setSaveSuccessfulMsgOpen] = useState(false);
+  const [documentFile, setDocumentFile] = useState(null);
 
   const emergencyCountryCodeOptions = countryCodes.map((country) => ({
     value: country.code,
@@ -769,17 +771,61 @@ export default function AddNewSuperAdmin() {
   };
 
   // --- DOCUMENT PREVIEW MODAL ---
+  // const handlePreview = async (file) => {
+  //   if (!file) return;
+  //   let previewFile = file;
+  //   if (file.type === "image/heic") {
+  //     const blob = await heic2any({ blob: file, toType: "image/jpeg" });
+  //     previewFile = blob;
+  //   }
+  //   setPreviewUrl(URL.createObjectURL(previewFile));
+  //   setPreviewOpen(true);
+  // };
+
   const handlePreview = async (file) => {
     if (!file) return;
-    let previewFile = file;
-    if (file.type === "image/heic") {
-      const blob = await heic2any({ blob: file, toType: "image/jpeg" });
-      previewFile = blob;
+
+    try {
+      let fileForPreview = file;
+      let mimeType = file.type || "";
+
+      // Convert HEIC to JPEG for preview if needed
+      if (file.type === "image/heic") {
+        const blob = await heic2any({ blob: file, toType: "image/jpeg" });
+        fileForPreview = new File(
+          [blob],
+          file.name.replace(/\.heic$/i, ".jpeg"),
+          { type: "image/jpeg" }
+        );
+        mimeType = "image/jpeg";
+      }
+
+      // create blob URL for preview
+      const url = URL.createObjectURL(fileForPreview);
+
+      // revoke previous previewUrl if any
+      if (previewUrl) {
+        try { URL.revokeObjectURL(previewUrl); } catch (e) { /* ignore */ }
+      }
+
+      setPreviewUrl(url);
+      setPreviewType(mimeType);
+      setPreviewOpen(true);
+    } catch (err) {
+      console.error("Preview generation failed:", err);
+      setModalMessage("Failed to generate preview.");
+      setMessageOpen(true);
     }
-    setPreviewUrl(URL.createObjectURL(previewFile));
-    setPreviewOpen(true);
   };
 
+  const closePreview = () => {
+    if (previewUrl && previewUrl.startsWith("blob:")) {
+      try { URL.revokeObjectURL(previewUrl); } catch (e) { /* ignore */ }
+    }
+    setPreviewUrl("");
+    setPreviewType("");
+    setPreviewOpen(false);
+  };
 
   useEffect(() => {
     const generatePreview = async () => {
@@ -932,7 +978,7 @@ export default function AddNewSuperAdmin() {
                   <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
 
                   <div className="flex flex-col gap-2">
-                    <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={{
+                    {/* <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={{
                           textTransform: "none",
                           borderColor: "#2563EB",
                           color: "#2563EB",
@@ -941,7 +987,21 @@ export default function AddNewSuperAdmin() {
                       }} >
                       {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : "Select Document (image or pdf only)"}
                       <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
+                    </Button> */}
+
+                    <Button variant="outlined" component="label" disabled={uploadingIndex === i}
+                      sx={{
+                        textTransform: "none",
+                        borderColor: "#2563EB",
+                        color: "#2563EB",
+                        height: "56px",
+                        "&:hover": { borderColor: "#1D4ED8", background: "#EFF6FF" },
+                      }} >
+                      {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
+                      
+                      <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
                     </Button>
+
 
                     {/* {doc.file && (
                       <div className="flex flex-col items-center gap-3">
@@ -955,12 +1015,12 @@ export default function AddNewSuperAdmin() {
 
                     {doc.file && (
                       <div className="flex flex-col items-center gap-3">
-                        <TextField label="Uploaded File URL" fullWidth slotProps={{ input: { readOnly: true } }}
+                        {/* <TextField label="Uploaded File URL" fullWidth slotProps={{ input: { readOnly: true } }}
                           value={doc.url || ""} // will now show local blob URL if file not yet uploaded
-                        />
+                        /> */}
                         <div className="flex flex-row justify-between w-full">
-                          <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
                           <Button variant="outlined" onClick={() => handlePreview(doc.file)}>Preview</Button>
+                          <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
                         </div>
                       </div>
                     )}
@@ -981,7 +1041,7 @@ export default function AddNewSuperAdmin() {
           </form>
 
           {/* PREVIEW MODAL */}
-          {previewOpen && (
+          {/* {previewOpen && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"> 
                <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
                  <div className="flex justify-end mb-2"> 
@@ -1007,7 +1067,52 @@ export default function AddNewSuperAdmin() {
             //     <Button onClick={() => setPreviewOpen(false)}>Close</Button>
             //   </div>
             // </div>
+          )} */}
+
+          {/* {previewOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"> 
+              <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
+                <div className="flex justify-end mb-2"> 
+                  <button
+                    className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer"
+                    onClick={() => setPreviewOpen(false)}
+                  > 
+                    Close 
+                  </button>
+                </div> 
+                {previewUrl.includes(".pdf") ? ( 
+                  <iframe src={previewUrl} className="w-full h-[500px] rounded" title="Document Preview"></iframe> 
+                ) : ( 
+                  <img src={previewUrl} alt="Document Preview" className="w-full max-h-[500px] object-contain rounded" /> 
+                )}
+              </div>
+            </div>
+          )} */}
+
+          {/* Document Preview Section */}
+          {previewOpen && previewUrl && (
+            <div className="fixed inset-0 flex items-center justify-center bg-[#334155] bg-opacity-50 z-50">
+              <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
+                <div className="flex justify-end mb-2">
+                  <button className="bg-[#1E293B] text-white px-4 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer" onClick={closePreview} >
+                    Close
+                  </button>
+                </div>
+
+                <div className="w-full">
+                  {previewType === "application/pdf" ? (
+                    // pdf preview
+                    <iframe src={previewUrl} className="w-full h-[70vh] rounded border border-gray-200" title="Document Preview" />
+                  ) : (
+                    // image preview (jpeg/png/heic->jpeg)
+                    <img src={previewUrl} alt="Document Preview" className="w-full max-h-[70vh] object-contain rounded border border-gray-200" />
+                  )}
+                </div>
+              </div>
+            </div>
           )}
+
+
 
           {confirmOpen && (
             <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
@@ -1056,7 +1161,7 @@ export default function AddNewSuperAdmin() {
             <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                 <p className="mb-4">{saveSuccessfulMessage}</p>
-                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/dashboard");}} >
+                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
                   OK
                 </button>
               </div>
