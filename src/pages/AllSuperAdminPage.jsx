@@ -19,6 +19,7 @@ export default function AllSuperAdminPage() {
   const [showSuccess, setShowSuccess] = useState(false);
 
   const confirmDelete = (id) => {
+      console.log(`confirmDelete id:${id}`);
       setDeleteId(id);
       setShowConfirmDelete(true);
   };
@@ -31,7 +32,9 @@ export default function AllSuperAdminPage() {
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
 
-    const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+    console.log(`params.id:${params.id}`);
+    console.log(`deleteId:${deleteId}`);
+    const res = await fetch(`http://localhost:3000/api/super-admins/${deleteId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -59,20 +62,20 @@ export default function AllSuperAdminPage() {
     });
     }
     for(var i=0; i < data.data.superAdmin.documents.length;i++) {
-    const storage = getStorage();
-    if(data.data.superAdmin.documents[i].url.includes('firebase')){
-      var docURL = data.data.superAdmin.documents[i].url;
-      const desertRef = ref(storage, docURL);
-      deleteObject(desertRef).then(() => {
-          console.log(`Document with URL ${docURL} Removed Successfully`)
-      }).catch((error) => {
-      console.log("Failed To Remove Image");
-          console.log(error)
-      });
-    }
+      const storage = getStorage();
+      if(data.data.superAdmin.documents[i].url.includes('firebase')){
+        var docURL = data.data.superAdmin.documents[i].url;
+        const desertRef = ref(storage, docURL);
+        deleteObject(desertRef).then(() => {
+            console.log(`Document with URL ${docURL} Removed Successfully`)
+        }).catch((error) => {
+        console.log("Failed To Remove Image");
+            console.log(error)
+        });
+      }
     }
     try {
-    const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+    const res = await fetch(`http://localhost:3000/api/super-admins/${deleteId}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -87,10 +90,10 @@ export default function AllSuperAdminPage() {
     }
     setShowConfirmDelete(false);
     setShowSuccess(true);
-    setTimeout(() => {
-        window.location.reload(true);
-        // navigate("/all-todos");
-    }, 1500);
+
+    // setTimeout(() => {
+    //     window.location.reload(true);
+    // }, 1500);
     } catch (error) {
         console.log(error.message);
     }
