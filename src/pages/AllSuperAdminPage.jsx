@@ -147,24 +147,31 @@ export default function AllSuperAdminPage() {
     <main className="flex-1 overflow-y-auto p-6">
       <div className="p-4 sm:p-6">
         <div className="bg-white rounded-2xl shadow p-4 sm:p-6 max-w-7xl mx-auto">
-          <div className="overflow-x-auto border border-gray-200 rounded-lg">
-            <table className="min-w-full text-sm md:text-[17px] text-left border-collapse">
-              <thead className="bg-gray-100 text-gray-700 uppercase">
+          <div className="overflow-x-auto rounded-lg">
+            <div className="flex justify-end mb-5">
+              <Link to={`/add-new-superadmin`} className='flex flex-row justify-center'>
+                <button className="bg-slate-800 hover:bg-slate-900 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                  Add New Super Admin
+                </button>
+              </Link>
+            </div>
+            <table className="min-w-full text-sm md:text-[17px] text-left border-collapse rounded-lg">
+              <thead className="bg-gray-100 text-gray-700 uppercase rounded-lg">
                 <tr>
                   <th className="px-3 py-2 md:px-4 md:py-3 text-center w-8 md:w-12">#</th>
                   <th className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">
                     Super Admin Name
                   </th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-60">
+                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-50">
                     Company Email
                   </th>
                   <th className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">
                     Phone Number
                   </th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-60">
+                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">
                     Position
                   </th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-48">
+                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">
                     Actions
                   </th>
                 </tr>
@@ -173,19 +180,19 @@ export default function AllSuperAdminPage() {
               <tbody>
                 {paginatedData.map((c, index) => (
                   <tr key={c._id} className="border-b hover:bg-gray-50 transition text-gray-800">
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center font-medium">
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center font-medium w-8 md:w-12">
                       {page * rowsPerPage + index + 1}
                     </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center">{c.full_name}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center">
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{c.full_name}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-50">
                       {c.company_email}
                     </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center">{c.country_code} {c.phone}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center">
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">{c.country_code} {c.phone}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">
                       {c.position}
                     </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center">
-                      <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">
+                      <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
                         <Link to={`/view-super-admin/${c._id}`} className='flex flex-row justify-center'>
                           <button className="bg-slate-500 hover:bg-slate-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                             View
@@ -208,7 +215,7 @@ export default function AllSuperAdminPage() {
                 ))}
               </tbody>
 
-              <tfoot>
+              <tfoot className="rounded-lg">
                 <tr>
                   <CustomTablePagination rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]} colSpan={7} count={allSuperAdmin.length} rowsPerPage={rowsPerPage} page={page}
                     slotProps={{
