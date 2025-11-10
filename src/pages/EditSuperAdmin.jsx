@@ -603,8 +603,8 @@ import { countryCodes } from "./components/CountryCodeList";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectStyles, asteriskColorStyle, slotPropsStyle, selectAndPreviewDocStyle } from "./styles/selectStyles";
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject, getStorage } from "firebase/storage";
-// import { getStorage, ref, deleteObject} from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { storage } from "../firebase.js";
 
 export default function EditSuperAdmin() {
     const { loading } = useSelector((state) => state.user);
@@ -627,7 +627,6 @@ export default function EditSuperAdmin() {
     const [failedToSaveMsgOpen, setFailedToSaveMsgOpen] = useState(false);
     const [saveSuccessfulMessage, setSaveSuccessfulMessage] = useState("");
     const [saveSuccessfulMsgOpen, setSaveSuccessfulMsgOpen] = useState(false);
-    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
     const [formData, setFormData] = useState({
         photo_url: "",
@@ -669,21 +668,7 @@ export default function EditSuperAdmin() {
             if (data.success === false) return;
 
             const fetchedAdmin = data.data.superAdmin;
-
-            // 🟢 Keep old URLs for deletion tracking
-            const updatedDocs = fetchedAdmin.documents.map((doc) => ({
-                ...doc,
-                oldUrl: doc.url,
-                _markedForDeletion: false,
-            }));
-
-            setFormData(prev => ({
-                ...prev,
-                ...fetchedAdmin,
-                oldPhotoUrl: fetchedAdmin.photo_url, // 🟢 keep original profile URL
-                _photoMarkedForDeletion: false,      // 🟢 track deletion state
-                documents: updatedDocs,
-            }));
+            setFormData(prev => ({ ...prev, ...fetchedAdmin }));
 
             const codeOption = options.find(opt => opt.value === fetchedAdmin.country_code);
             setSelectedCode(codeOption || null);
@@ -696,85 +681,6 @@ export default function EditSuperAdmin() {
 
         fetchSuperAdmin();
     }, []);
-
-    const confirmDeleteSuperAdmin = () => {
-      setShowConfirmDelete(true);
-    };
-
-     const handleDeleteConfirmed = async () => {
-        // setLoading(true);
-        console.log("handleDeleteConfirmed is confirmed");
-        
-        const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-        // Parse the nested user slice
-        const userState = JSON.parse(persistedRoot.user);
-        // Extract token
-        const token = userState.currentUser?.data?.accessToken;
-    
-        const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-        });
-        const data = await res.json();
-        // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
-        
-        if(data.success === false){
-            // setLoading(false);
-            console.log("data.success === false");
-            return;
-        }
-    
-        if(data.data.superAdmin.photo_url.includes('firebase')) {
-        const storage = getStorage();
-        const desertRef = ref(storage, data.data.superAdmin.photo_url);
-        deleteObject(desertRef).then(() => {
-            console.log("Profile Pic Removed Successfully")
-        }).catch((error) => {
-        console.log("Failed To Remove Image");
-            console.log(error)
-        });
-        }
-        for(var i=0; i < data.data.superAdmin.documents.length;i++) {
-        const storage = getStorage();
-        if(data.data.superAdmin.documents[i].url.includes('firebase')){
-            var docURL = data.data.superAdmin.documents[i].url;
-            const desertRef = ref(storage, docURL);
-            deleteObject(desertRef).then(() => {
-                console.log(`Document with URL ${docURL} Removed Successfully`)
-            }).catch((error) => {
-            console.log("Failed To Remove Image");
-                console.log(error)
-            });
-        }
-        }
-        try {
-            const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                credentials: "include",
-            });
-            const data = await res.json();
-            if (data.success === false) {
-                console.log(data.message);
-                return;
-            }
-            setShowConfirmDelete(false);
-            setShowSuccess(true);
-            setTimeout(() => {
-                window.location.reload(true);
-                // navigate("/all-todos");
-            }, 1500);
-        } catch (error) {
-            console.log(error.message);
-        }
-      };
 
     const emergencyCountryCodeOptions = countryCodes.map((country) => ({
         value: country.code,
@@ -812,7 +718,6 @@ export default function EditSuperAdmin() {
         });
     };
 
-    // --- PROFILE PIC UPLOAD ---
     const handleProfileUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -826,13 +731,12 @@ export default function EditSuperAdmin() {
 
         try {
             setUploadingProfile(true);
+            if (formData.photo_firebase_path) {
+                const oldRef = ref(storage, formData.photo_firebase_path);
+                await deleteObject(oldRef).catch(() => {});
+            }
             const { url, filePath } = await uploadFile(file, "profile_pictures");
-            setFormData((p) => ({
-                ...p,
-                photo_url: url,
-                photo_firebase_path: filePath,
-                _photoMarkedForDeletion: false, // 🟢 reset if re-uploaded
-            }));
+            setFormData((p) => ({ ...p, photo_url: url, photo_firebase_path: filePath }));
         } catch (err) {
             console.error(err);
             setModalMessage("Profile upload failed.");
@@ -848,17 +752,18 @@ export default function EditSuperAdmin() {
         setConfirmOpen(true);
     };
 
-    // 🟢 Defer profile deletion until submit
-    const handleDeleteProfile = () => {
+    const handleDeleteProfile = async () => {
         if (!formData.photo_url) return;
-        setFormData((p) => ({
-            ...p,
-            photo_url: "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg",
-            _photoMarkedForDeletion: true, // 🟢 mark for deletion later
-        }));
+        try {
+            const fileRef = ref(storage, formData.photo_firebase_path);
+            await deleteObject(fileRef);
+            setFormData((p) => ({ ...p, photo_url: "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg" }));
+        } catch {
+            setModalMessage("Failed to delete profile picture.");
+            setMessageOpen(true);
+        }
     };
 
-    // --- DOCUMENT UPLOAD ---
     const handleFileChange = async (e, index) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -871,10 +776,16 @@ export default function EditSuperAdmin() {
 
         setUploadingIndex(index);
         try {
+            const oldPath = formData.documents[index]?.url;
+            if (oldPath) {
+                const oldRef = ref(storage, oldPath);
+                await deleteObject(oldRef).catch(() => {});
+            }
+
             const { url, filePath } = await uploadFile(file, "documents");
             setFormData((p) => {
                 const docs = [...p.documents];
-                docs[index] = { ...docs[index], url, uploaded_at: Date.now(), _markedForDeletion: false };
+                docs[index] = { ...docs[index], url, uploaded_at: Date.now() };
                 return { ...p, documents: docs };
             });
             setModalMessage("File uploaded successfully!");
@@ -889,14 +800,22 @@ export default function EditSuperAdmin() {
         }
     };
 
-    // 🟢 Mark document for deletion (don’t delete yet)
-    const handleDeleteFile = (index) => {
-        setFormData((p) => {
-            const docs = [...p.documents];
-            docs[index]._markedForDeletion = true;
-            docs[index].url = "";
-            return { ...p, documents: docs };
-        });
+    const handleDeleteFile = async (index) => {
+        const path = formData.documents[index]?.url;
+        if (!path) return;
+
+        try {
+            const refToDelete = ref(storage, path);
+            await deleteObject(refToDelete);
+            setFormData((p) => {
+                const docs = [...p.documents];
+                docs[index].url = "";
+                return { ...p, documents: docs };
+            });
+        } catch {
+            setModalMessage("Failed to delete file.");
+            setMessageOpen(true);
+        }
     };
 
     const handleDeleteFileConfirm = (index) => {
@@ -929,23 +848,33 @@ export default function EditSuperAdmin() {
             ...p,
             documents: [
                 ...p.documents,
-                { name: "", url: "", number: "", uploaded_at: Date.now(), _markedForDeletion: false },
+                { name: "", url: "", number: "", uploaded_at: Date.now() },
             ],
-        })
-    );
+        }));
 
     const removeDocument = async (index) => {
-        setFormData((p) => ({
-            ...p,
-            documents: p.documents.filter((_, i) => i !== index),
-        }));
+        const filePath = formData.documents[index]?.url;
+        if (filePath) {
+            setConfirmMessage("Are you sure you want to delete this file?");
+            setConfirmAction(() => async () => {
+                try {
+                    const refToDelete = ref(storage, filePath);
+                    await deleteObject(refToDelete);
+                } catch {
+                    setModalMessage("Failed to delete file.");
+                    setMessageOpen(true);
+                }
+                setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
+            });
+            setConfirmOpen(true);
+        } else {
+            setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
+        }
     };
 
-    // 🟢 Delete all marked files only when user saves
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate missing docs
         const invalidDocs = formData.documents.filter(
             (doc) =>
                 !doc.url &&
@@ -961,24 +890,6 @@ export default function EditSuperAdmin() {
         }
 
         try {
-            // 🟢 Delete marked files
-            if (formData._photoMarkedForDeletion && formData.oldPhotoUrl) {
-                const start = formData.oldPhotoUrl.indexOf("/o/") + 3;
-                const end = formData.oldPhotoUrl.indexOf("?alt=");
-                const filePath = decodeURIComponent(formData.oldPhotoUrl.substring(start, end));
-                await deleteObject(ref(storage, filePath)).catch(() => {});
-            }
-
-            for (const doc of formData.documents) {
-                if (doc._markedForDeletion && doc.oldUrl) {
-                    const start = doc.oldUrl.indexOf("/o/") + 3;
-                    const end = doc.oldUrl.indexOf("?alt=");
-                    const filePath = decodeURIComponent(doc.oldUrl.substring(start, end));
-                    await deleteObject(ref(storage, filePath)).catch(() => {});
-                }
-            }
-
-            // Continue normal PUT request
             const superAdminID = params.id;
             const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
             const userState = JSON.parse(persistedRoot.user);
@@ -992,7 +903,6 @@ export default function EditSuperAdmin() {
             });
 
             const data = await res.json();
-
             if (data.success == false) {
                 setFailedToSaveMsgOpen(true);
                 setFailedToSaveMessage(`Failed to update super admin because ${data.message.toLowerCase()}`);
@@ -1012,206 +922,188 @@ export default function EditSuperAdmin() {
         <main className="flex-1 overflow-y-auto p-6">
             <div className="p-4">
                 <div className="bg-white rounded-2xl shadow p-6 max-w-6xl mx-auto">
-                {/* Profile Upload */}
-                <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
-                    {!formData.photo_url ? (
-                    <>
-                        <div className="text-gray-400 text-3xl mb-2">🖼️</div>
-                        <label className="text-blue-600 font-medium cursor-pointer hover:underline">
-                        {uploadingProfile ? "Uploading..." : "Click Here To Add Profile Picture"}
-                        <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} />
-                        </label>
-                    </>
-                    ) : (
-                    <div className="flex flex-col items-center">
-                        <img src={formData.photo_url} alt="Profile" className="w-auto h-40 object-cover rounded-lg mb-2" />
-                        <div className="flex gap-4">
-                        <label className="text-blue-600 cursor-pointer hover:underline">
-                            Replace
-                            <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} />
-                        </label>
-                        <button type="button" className="text-red-600 cursor-pointer hover:underline" onClick={handleDeleteProfileConfirm}>
-                            Delete
-                        </button>
-                        </div>
-                    </div>
-                    )}
-                </div>
 
-                {/* FORM */}
-                <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
-                    <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} />
-
-                    {/* Phone */}
-                    <div className="w-full flex gap-3">
-                    <div className="min-w-[140px]">
-                        <Select id="country_code" options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
-                            onChange={(sel) => {
-                                setSelectedCode(sel);
-                                setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
-                            }}
-                        />
-                    </div>
-                    <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
-                    </div>
-
-                    {/* Rest of the fields */}
-                    <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" },}}/>
-                    <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
-                    <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth />
-
-                    {/* Address */}
-                    <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
-                    <TextField id="street_2" value={formData.street_2} onChange={handleChange} label="Street 2" variant="outlined" fullWidth />
-                    <TextField id="city" value={formData.city} onChange={handleChange} label="City" variant="outlined" fullWidth />
-                    <TextField id="state" value={formData.state} onChange={handleChange} label="State" variant="outlined" fullWidth />
-                    <TextField id="country" value={formData.country} onChange={handleChange} label="Country" variant="outlined" fullWidth />
-                    <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
-
-                    {/* Emergency Contact */}
-                    <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} required sx={asteriskColorStyle} />
-                    <div className="w-full flex flex-row gap-3">
-                    <div className="min-w-[140px]">
-                        <Select id="emergency_country_code" options={emergencyCountryCodeOptions} value={selectedEmergencyCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} styles={selectStyles} required
-                            onChange={(selected) => {
-                                setSelectedEmergencyCode(selected);
-                                setFormData((prev) => ({ ...prev, emergency_contact: { ...prev.emergency_contact, country_code: selected?.value || "" } }));
-                            }}
-                        />
-                    </div>
-                    <TextField id="emergency_phone" type="number" label="Emergency Contact Phone" variant="outlined" fullWidth value={formData.emergency_contact.phone} onChange={handleChange} required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
-                    </div>
-                    <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
-
-                    {/* Documents */}
-                    {formData.documents.map((doc, i) => (
-                    <div key={i} className="col-span-3 border rounded-md p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <TextField id={`documents_${i}_name`} label="Document Type" value={doc.name} onChange={handleChange} fullWidth />
-                        <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
-
-                        <div className="flex flex-col gap-2">
-                            <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={{ textTransform: "none", borderColor: "#2563EB", color: "#2563EB", height: '56px', "&:hover": { borderColor: "#1D4ED8", background: "#EFF6FF" }, }} >
-                                {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : "Select Document (image or pdf only)"}
-                                <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
-                            </Button>
-
-                            {doc.url && (
-                            <div className="flex flex-col items-center gap-3">
-                                <TextField label="Uploaded File URL" value={doc.url} fullWidth slotProps={{ input: { readOnly: true } }} />
-                                <div className="flex flex-row justify-between w-full">
-                                    <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
-                                    <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectAndPreviewDocStyle}>PREVIEW</Button>
+                    {/* Profile Upload */}
+                    <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
+                        {!formData.photo_url ? (
+                            <>
+                                <div className="text-gray-400 text-3xl mb-2">🖼️</div>
+                                <label className="text-blue-600 font-medium cursor-pointer hover:underline">
+                                    {uploadingProfile ? "Uploading..." : "Click Here To Add Profile Picture"}
+                                    <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} />
+                                </label>
+                            </>
+                        ) : (
+                            <div className="flex flex-col items-center">
+                                <img src={formData.photo_url} alt="Profile" className="w-auto h-40 object-cover rounded-lg mb-2" />
+                                <div className="flex gap-4">
+                                    <label className="text-blue-600 cursor-pointer hover:underline">
+                                        Replace
+                                        <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} />
+                                    </label>
+                                    <button type="button" className="text-red-600 cursor-pointer hover:underline" onClick={handleDeleteProfileConfirm}>
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
-                            )}
-                        </div>
-                        </div>
-
-                        <div className="mt-2 flex justify-end">
-                        {formData.documents.length > 1 && (
-                            <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)}>Remove</button>
                         )}
+                    </div>
+
+                    {/* FORM */}
+                    <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
+                        <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} />
+
+                        {/* Phone */}
+                        <div className="w-full flex gap-3">
+                            <div className="min-w-[140px]">
+                                <Select id="country_code" options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                                    onChange={(sel) => {
+                                        setSelectedCode(sel);
+                                        setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
+                                    }}
+                                />
+                            </div>
+                            <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
                         </div>
-                    </div>
-                    ))}
 
-                    <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument}>
-                        + Add Another Document
-                    </button>
+                        {/* Rest of the fields */}
+                        <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" }}}/>
+                        <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
+                        <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth />
 
-                    <div className="col-span-3 mt-6 flex justify-around">
-                        <button type="submit" disabled={loading} className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer">
-                            {loading ? "Updating..." : "Update Details"}
+                        {/* Address */}
+                        <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
+                        <TextField id="street_2" value={formData.street_2} onChange={handleChange} label="Street 2" variant="outlined" fullWidth />
+                        <TextField id="city" value={formData.city} onChange={handleChange} label="City" variant="outlined" fullWidth />
+                        <TextField id="state" value={formData.state} onChange={handleChange} label="State" variant="outlined" fullWidth />
+                        <TextField id="country" value={formData.country} onChange={handleChange} label="Country" variant="outlined" fullWidth />
+                        <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
+
+                        {/* Emergency Contact */}
+                        <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} required sx={asteriskColorStyle} />
+                        <div className="w-full flex flex-row gap-3">
+                            <div className="min-w-[140px]">
+                                <Select id="emergency_country_code" options={emergencyCountryCodeOptions} value={selectedEmergencyCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} styles={selectStyles} required
+                                    onChange={(selected) => {
+                                        setSelectedEmergencyCode(selected);
+                                        setFormData((prev) => ({ ...prev, emergency_contact: { ...prev.emergency_contact, country_code: selected?.value || "" } }));
+                                    }}
+                                />
+                            </div>
+                            <TextField id="emergency_phone" type="number" label="Emergency Contact Phone" variant="outlined" fullWidth value={formData.emergency_contact.phone} onChange={handleChange} required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
+                        </div>
+                        <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
+
+                        {/* Documents Section */}
+                        {formData.documents.map((doc, i) => (
+                            <div key={i} className="col-span-3 border rounded-md p-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    <TextField id={`documents_${i}_name`} label="Document Type" value={doc.name} onChange={handleChange} fullWidth />
+                                    <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
+
+                                    <div className="flex flex-col gap-2">
+                                        <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectAndPreviewDocStyle}>
+                                        {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
+                                            <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
+                                        </Button>
+
+                                        {doc.url && (
+                                            <div className="flex flex-col items-center gap-3">
+                                                <div className="flex flex-row justify-between w-full">
+                                                    <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectAndPreviewDocStyle}>PREVIEW</Button>
+                                                    <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div className="mt-2 flex justify-end">
+                                            {formData.documents.length > 1 && (
+                                                <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)}>Remove</button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                        <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument}>
+                            + Add Another Document
                         </button>
-                        <button onClick={() => confirmDeleteSuperAdmin()} className="bg-red-700 hover:bg-red-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
-                            Delete Super Admin
-                        </button>
-                    </div>
-                </form>
 
-                {previewOpen && ( 
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"> 
-                        <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
-                            <div className="flex justify-end mb-2"> 
+                        {/* Submit */}
+                        <div className="col-span-3 mt-6 flex justify-center">
+                            <button type="submit" disabled={loading} className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer">
+                                {loading ? "Updating..." : "Update Super Admin"}
+                            </button>
+                        </div>
+                        {/* <Button type="submit" variant="contained" color="primary" className="mt-4 col-span-3">
+                            Update Super Admin
+                        </Button> */}
+                    </form>
+
+                    {previewOpen && ( 
+                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"> 
+                         <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
+                             <div className="flex justify-end mb-2"> 
                                 <button className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer" onClick={() => setPreviewOpen(false)}> 
                                     Close 
                                 </button>
-                            </div> 
-                            {previewUrl.includes(".pdf") ? ( 
+                             </div> 
+                             {previewUrl.includes(".pdf") ? ( 
                                 <iframe src={previewUrl} className="w-full h-[500px] rounded" title="Document Preview"></iframe> 
-                            ) : ( 
+                             ) : ( 
                                 <img src={previewUrl} alt="Document Preview" className="w-full max-h-[500px] object-contain rounded" /> 
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {confirmOpen && (
-                    <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
-                        <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                            <p className="text-center font-medium mb-5">{confirmMessage}</p>
-                            <div className="flex justify-center gap-4">
+                             )}
+                         </div>
+                     </div>
+                 )}
+                 {confirmOpen && (
+                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                             <p className="text-center font-medium mb-5">{confirmMessage}</p>
+                             <div className="flex justify-center gap-4">
                                 <button className="bg-[#334155] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { if (confirmAction) confirmAction(); setConfirmOpen(false); }} >
                                     Yes
                                 </button>
                                 <button className="bg-gray-300 border-2 px-4 py-2 rounded-md w-24 hover:bg-gray-400 transition cursor-pointer" onClick={() => setConfirmOpen(false)} >
                                     No
                                 </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {messageOpen && (
-                    <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
-                        <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                             </div>
+                         </div>
+                     </div>
+                 )}
+                 {messageOpen && (
+                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                             <p className="mb-4">{modalMessage}</p>
                             <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setMessageOpen(false)} >
                                 OK
                             </button>
-                        </div>
-                    </div>
+                         </div>
+                     </div>
                 )}
 
-                {failedToSaveMsgOpen && (
-                    <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
-                        <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                            <p className="mb-4">{failedToSaveMessage}</p>
-                            <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
-                                OK
-                            </button>
-                        </div>
-                    </div>
-                )}
+                 {failedToSaveMsgOpen && (
+                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                             <p className="mb-4">{failedToSaveMessage}</p>
+                                 <Button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
+                                     OK
+                                 </Button>
+                         </div>
+                     </div>
+                 )}
 
                 
-                {saveSuccessfulMsgOpen && (
+                 {saveSuccessfulMsgOpen && (
                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
-                        <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                            <p className="mb-4">{saveSuccessfulMessage}</p>
-                            <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
-                                OK
-                            </button>
+                    <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                        <p className="mb-4">{saveSuccessfulMessage}</p>
+                        <Button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
+                            OK
+                        </Button>
                         </div>
                     </div>
-                )}
-
-                {showConfirmDelete && (
-                    <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
-                        <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                            <p className="text-center font-medium mb-5">Are you sure you want to delete this super admin?</p>
-                            <div className="flex justify-center gap-4">
-                            <button className="bg-[#334155] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={handleDeleteConfirmed} >
-                                Yes
-                            </button>
-                            <button className="bg-gray-300 border-2 px-4 py-2 rounded-md w-24 hover:bg-gray-400 transition cursor-pointer" onClick={() => setShowConfirmDelete(false)} >
-                                No
-                            </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                 )}
                 </div>
             </div>
         </main>
