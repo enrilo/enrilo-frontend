@@ -43,7 +43,6 @@ export default function AddNewSuperAdmin() {
 
   const [formData, setFormData] = useState({
     photo_url: "",
-    photo_firebase_path: "",
     full_name: "",
     country_code: "",
     phone: "",
@@ -104,12 +103,12 @@ export default function AddNewSuperAdmin() {
 
     try {
       setUploadingProfile(true);
-      if (formData.photo_firebase_path) {
-        const oldRef = ref(storage, formData.photo_firebase_path);
+      if (formData.photo_url && formData.photo_url != "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg") {
+        const oldRef = ref(storage, formData.photo_url);
         await deleteObject(oldRef).catch(() => {});
       }
       const { url, filePath } = await uploadFile(file, "profile_pictures");
-      setFormData((p) => ({ ...p, photo_url: url, photo_firebase_path: filePath }));
+      setFormData((p) => ({ ...p, photo_url: url }));
     } catch (err) {
       console.error(err);
       setModalMessage("Profile upload failed.");
@@ -126,11 +125,11 @@ export default function AddNewSuperAdmin() {
   };
 
   const handleDeleteProfile = async () => {
-    if (!formData.photo_firebase_path) return;
+    if (!formData.photo_url) return;
     try {
-      const fileRef = ref(storage, formData.photo_firebase_path);
+      const fileRef = ref(storage, formData.photo_url);
       await deleteObject(fileRef);
-      setFormData((p) => ({ ...p, photo_url: "", photo_firebase_path: "" }));
+      setFormData((p) => ({ ...p, photo_url: "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg" }));
     } catch {
       setModalMessage("Failed to delete profile picture.");
       setMessageOpen(true);
@@ -287,7 +286,7 @@ export default function AddNewSuperAdmin() {
         <div className="bg-white rounded-2xl shadow p-6 max-w-6xl mx-auto">
           {/* Profile Upload */}
           <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
-            {!formData.photo_url ? (
+            {(!formData.photo_url || formData.photo_url == "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg") ? (
               <>
                 <div className="text-gray-400 text-3xl mb-2">🖼️</div>
                 <label className="text-blue-600 font-medium cursor-pointer hover:underline">
