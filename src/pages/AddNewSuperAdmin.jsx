@@ -677,7 +677,7 @@ export default function AddNewSuperAdmin() {
     setLocalDocuments((prev) => [
       ...prev,
       { name: "", file: null, number: "", uploaded_at: Date.now() },
-    ]);
+  ]);
 
   const removeDocument = (index) => {
     const docsCopy = [...localDocuments];
@@ -1014,16 +1014,25 @@ export default function AddNewSuperAdmin() {
                     )} */}
 
                     {doc.file && (
-                      <div className="flex flex-col items-center gap-3">
-                        {/* <TextField label="Uploaded File URL" fullWidth slotProps={{ input: { readOnly: true } }}
-                          value={doc.url || ""} // will now show local blob URL if file not yet uploaded
-                        /> */}
-                        <div className="flex flex-row justify-between w-full">
-                          <Button variant="outlined" onClick={() => handlePreview(doc.file)}>Preview</Button>
-                          <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
+                      <div>
+                        <div className="flex flex-col items-center gap-3">
+                          {/* <TextField label="Uploaded File URL" fullWidth slotProps={{ input: { readOnly: true } }}
+                            value={doc.url || ""} // will now show local blob URL if file not yet uploaded
+                          /> */}
+                          <div className="flex flex-row justify-between w-full">
+                            <Button variant="outlined" onClick={() => handlePreview(doc.file)}>Preview</Button>
+                            <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
+                          </div>
                         </div>
                       </div>
                     )}
+
+
+                    <div className="mt-2 flex justify-end">
+                      {localDocuments.length > 1 && (
+                        <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)}>Remove</button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
