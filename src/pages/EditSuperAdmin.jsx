@@ -603,8 +603,8 @@ import { countryCodes } from "./components/CountryCodeList";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectStyles, asteriskColorStyle, slotPropsStyle, selectAndPreviewDocStyle } from "./styles/selectStyles";
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
-import { storage } from "../firebase.js";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject, getStorage } from "firebase/storage";
+// import { getStorage, ref, deleteObject} from 'firebase/storage';
 
 export default function EditSuperAdmin() {
     const { loading } = useSelector((state) => state.user);
@@ -627,6 +627,8 @@ export default function EditSuperAdmin() {
     const [failedToSaveMsgOpen, setFailedToSaveMsgOpen] = useState(false);
     const [saveSuccessfulMessage, setSaveSuccessfulMessage] = useState("");
     const [saveSuccessfulMsgOpen, setSaveSuccessfulMsgOpen] = useState(false);
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
     const [formData, setFormData] = useState({
         photo_url: "",
         photo_firebase_path: "",
@@ -694,6 +696,85 @@ export default function EditSuperAdmin() {
 
         fetchSuperAdmin();
     }, []);
+
+    const confirmDeleteSuperAdmin = () => {
+      setShowConfirmDelete(true);
+    };
+
+     const handleDeleteConfirmed = async () => {
+        // setLoading(true);
+        console.log("handleDeleteConfirmed is confirmed");
+        
+        const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+        // Parse the nested user slice
+        const userState = JSON.parse(persistedRoot.user);
+        // Extract token
+        const token = userState.currentUser?.data?.accessToken;
+    
+        const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+        });
+        const data = await res.json();
+        // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
+        
+        if(data.success === false){
+            // setLoading(false);
+            console.log("data.success === false");
+            return;
+        }
+    
+        if(data.data.superAdmin.photo_url.includes('firebase')) {
+        const storage = getStorage();
+        const desertRef = ref(storage, data.data.superAdmin.photo_url);
+        deleteObject(desertRef).then(() => {
+            console.log("Profile Pic Removed Successfully")
+        }).catch((error) => {
+        console.log("Failed To Remove Image");
+            console.log(error)
+        });
+        }
+        for(var i=0; i < data.data.superAdmin.documents.length;i++) {
+        const storage = getStorage();
+        if(data.data.superAdmin.documents[i].url.includes('firebase')){
+            var docURL = data.data.superAdmin.documents[i].url;
+            const desertRef = ref(storage, docURL);
+            deleteObject(desertRef).then(() => {
+                console.log(`Document with URL ${docURL} Removed Successfully`)
+            }).catch((error) => {
+            console.log("Failed To Remove Image");
+                console.log(error)
+            });
+        }
+        }
+        try {
+            const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                credentials: "include",
+            });
+            const data = await res.json();
+            if (data.success === false) {
+                console.log(data.message);
+                return;
+            }
+            setShowConfirmDelete(false);
+            setShowSuccess(true);
+            setTimeout(() => {
+                window.location.reload(true);
+                // navigate("/all-todos");
+            }, 1500);
+        } catch (error) {
+            console.log(error.message);
+        }
+      };
 
     const emergencyCountryCodeOptions = countryCodes.map((country) => ({
         value: country.code,
@@ -850,7 +931,8 @@ export default function EditSuperAdmin() {
                 ...p.documents,
                 { name: "", url: "", number: "", uploaded_at: Date.now(), _markedForDeletion: false },
             ],
-        }));
+        })
+    );
 
     const removeDocument = async (index) => {
         setFormData((p) => ({
@@ -1038,10 +1120,13 @@ export default function EditSuperAdmin() {
                         + Add Another Document
                     </button>
 
-                    <div className="col-span-3 mt-6 flex justify-center">
-                    <button type="submit" disabled={loading} className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer">
-                        {loading ? "Updating..." : "Update Details"}
-                    </button>
+                    <div className="col-span-3 mt-6 flex justify-around">
+                        <button type="submit" disabled={loading} className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer">
+                            {loading ? "Updating..." : "Update Details"}
+                        </button>
+                        <button onClick={() => confirmDeleteSuperAdmin()} className="bg-red-700 hover:bg-red-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                            Delete Super Admin
+                        </button>
                     </div>
                 </form>
 
@@ -1082,9 +1167,9 @@ export default function EditSuperAdmin() {
                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                             <p className="mb-4">{modalMessage}</p>
-                                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setMessageOpen(false)} >
-                                    OK
-                                </button>
+                            <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setMessageOpen(false)} >
+                                OK
+                            </button>
                         </div>
                     </div>
                 )}
@@ -1093,9 +1178,9 @@ export default function EditSuperAdmin() {
                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                             <p className="mb-4">{failedToSaveMessage}</p>
-                                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
-                                    OK
-                                </button>
+                            <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
+                                OK
+                            </button>
                         </div>
                     </div>
                 )}
@@ -1108,6 +1193,22 @@ export default function EditSuperAdmin() {
                             <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
                                 OK
                             </button>
+                        </div>
+                    </div>
+                )}
+
+                {showConfirmDelete && (
+                    <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                            <p className="text-center font-medium mb-5">Are you sure you want to delete this super admin?</p>
+                            <div className="flex justify-center gap-4">
+                            <button className="bg-[#334155] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={handleDeleteConfirmed} >
+                                Yes
+                            </button>
+                            <button className="bg-gray-300 border-2 px-4 py-2 rounded-md w-24 hover:bg-gray-400 transition cursor-pointer" onClick={() => setShowConfirmDelete(false)} >
+                                No
+                            </button>
+                            </div>
                         </div>
                     </div>
                 )}

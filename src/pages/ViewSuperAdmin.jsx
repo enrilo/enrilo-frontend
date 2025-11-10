@@ -342,11 +342,9 @@ export default function ViewSuperAdmin() {
                 <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center">
                     <div className="flex flex-row bg-[rgb(7,57,106)] text-white p-3 rounded-lg shadow-lg">
                         <p>Super Admin has been deleted!</p>
-                        <button className="ml-2 font-bold hover:cursor-pointer text-white" onClick={() => {
-                            setShowSuccess(false);
-                            window.location.reload(true);
-                            navigate("/all-super-admin");
-                        }} >✖</button>
+                        <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setShowSuccess(false); navigate("/all-super-admin");}}>
+                            OK
+                        </button>
                     </div>
                 </div>
             )}
