@@ -25,9 +25,18 @@ export const slotPropsStyle = {
     } 
 };
 
-export const selectAndPreviewDocStyle = {
+export const selectDocumentBtnStyle = {
     textTransform: "none",
     borderColor: "#2563EB",
     color: "#2563EB",
+    height: "56px",
+    "&:hover": { borderColor: "#1D4ED8", background: "#EFF6FF" },
+}
+
+export const previewDocumentBtnStyle = {
+    textTransform: "none",
+    borderColor: "#2563EB",
+    color: "#2563EB",
+    height: "40px",
     "&:hover": { borderColor: "#1D4ED8", background: "#EFF6FF" },
 }

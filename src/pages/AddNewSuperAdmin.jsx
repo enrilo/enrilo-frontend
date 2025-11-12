@@ -6,7 +6,7 @@
 // import { countryCodes } from "./components/CountryCodeList";
 // import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
-// import { selectStyles, asteriskColorStyle, slotPropsStyle, selectAndPreviewDocStyle } from "./styles/selectStyles";
+// import { selectStyles, asteriskColorStyle, slotPropsStyle, selectDocumentBtnStyle } from "./styles/selectStyles";
 // import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 // import { storage } from "../firebase.js";
 
@@ -379,7 +379,7 @@
 //                         <TextField label="Uploaded File URL" value={doc.url} fullWidth slotProps={{ input: { readOnly: true } }} />
 //                         <div className="flex flex-row justify-between w-full">
 //                           <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
-//                           <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectAndPreviewDocStyle}>PREVIEW</Button>
+//                           <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectDocumentBtnStyle}>PREVIEW</Button>
 //                         </div>
 //                       </div>
 //                     )}
@@ -489,7 +489,7 @@ import heic2any from "heic2any";
 import { countryCodes } from "./components/CountryCodeList";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectStyles, asteriskColorStyle, slotPropsStyle, selectAndPreviewDocStyle } from "./styles/selectStyles";
+import { selectStyles, asteriskColorStyle, slotPropsStyle, selectDocumentBtnStyle, previewDocumentBtnStyle } from "./styles/selectStyles";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebase.js";
 
@@ -989,14 +989,7 @@ export default function AddNewSuperAdmin() {
                       <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
                     </Button> */}
 
-                    <Button variant="outlined" component="label" disabled={uploadingIndex === i}
-                      sx={{
-                        textTransform: "none",
-                        borderColor: "#2563EB",
-                        color: "#2563EB",
-                        height: "56px",
-                        "&:hover": { borderColor: "#1D4ED8", background: "#EFF6FF" },
-                      }} >
+                    <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle} >
                       {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
                       
                       <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
@@ -1020,7 +1013,7 @@ export default function AddNewSuperAdmin() {
                             value={doc.url || ""} // will now show local blob URL if file not yet uploaded
                           /> */}
                           <div className="flex flex-row justify-between w-full">
-                            <Button variant="outlined" onClick={() => handlePreview(doc.file)}>Preview</Button>
+                            <Button variant="outlined" sx={previewDocumentBtnStyle} onClick={() => handlePreview(doc.file)}>Preview</Button>
                             <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
                           </div>
                         </div>

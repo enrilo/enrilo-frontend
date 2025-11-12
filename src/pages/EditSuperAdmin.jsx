@@ -6,7 +6,7 @@
 // import { countryCodes } from "./components/CountryCodeList";
 // import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate, useParams } from "react-router-dom";
-// import { selectStyles, asteriskColorStyle, slotPropsStyle, selectAndPreviewDocStyle } from "./styles/selectStyles";
+// import { selectStyles, asteriskColorStyle, slotPropsStyle, selectDocumentBtnStyle } from "./styles/selectStyles";
 // import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 // import { storage } from "../firebase.js";
 
@@ -494,7 +494,7 @@
 //                                 <TextField label="Uploaded File URL" value={doc.url} fullWidth slotProps={{ input: { readOnly: true } }} />
 //                                 <div className="flex flex-row justify-between w-full">
 //                                     <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
-//                                     <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectAndPreviewDocStyle}>PREVIEW</Button>
+//                                     <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectDocumentBtnStyle}>PREVIEW</Button>
 //                                 </div>
 //                             </div>
 //                             )}
@@ -602,7 +602,7 @@ import heic2any from "heic2any";
 import { countryCodes } from "./components/CountryCodeList";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectStyles, asteriskColorStyle, slotPropsStyle, selectAndPreviewDocStyle } from "./styles/selectStyles";
+import { selectStyles, asteriskColorStyle, slotPropsStyle, selectDocumentBtnStyle, previewDocumentBtnStyle } from "./styles/selectStyles";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { storage } from "../firebase.js";
 
@@ -1044,9 +1044,7 @@ export default function EditSuperAdmin() {
                 setFailedToSaveMsgOpen(true);
                 setFailedToSaveMessage(`Failed to update super admin because ${data.message.toLowerCase()}`);
             } else {
-                setSaveSuccessfulMessage(
-                    "Super admin updated successfully! You will now be redirected to All Super Admin Page."
-                );
+                setSaveSuccessfulMessage("Super admin updated successfully! You will now be redirected to All Super Admin Page.");
                 setSaveSuccessfulMsgOpen(true);
 
                 // Reset temp flags
@@ -1148,7 +1146,7 @@ export default function EditSuperAdmin() {
         //                             <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
 
         //                             <div className="flex flex-col gap-2">
-        //                                 <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectAndPreviewDocStyle}>
+        //                                 <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle}>
         //                                 {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
         //                                     <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
         //                                 </Button>
@@ -1156,7 +1154,7 @@ export default function EditSuperAdmin() {
         //                                 {doc.url && (
         //                                     <div className="flex flex-col items-center gap-3">
         //                                         <div className="flex flex-row justify-between w-full">
-        //                                             <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectAndPreviewDocStyle}>PREVIEW</Button>
+        //                                             <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectDocumentBtnStyle}>PREVIEW</Button>
         //                                             <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
         //                                         </div>
         //                                     </div>
@@ -1338,7 +1336,7 @@ export default function EditSuperAdmin() {
                                     <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
 
                                     <div className="flex flex-col gap-2">
-                                        <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectAndPreviewDocStyle}>
+                                        <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle}>
                                         {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
                                             <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
                                         </Button>
@@ -1346,7 +1344,7 @@ export default function EditSuperAdmin() {
                                         {doc.url && (
                                             <div className="flex flex-col items-center gap-3">
                                                 <div className="flex flex-row justify-between w-full">
-                                                    <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={selectAndPreviewDocStyle}>PREVIEW</Button>
+                                                    <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={previewDocumentBtnStyle}>PREVIEW</Button>
                                                     <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
                                                 </div>
                                             </div>
