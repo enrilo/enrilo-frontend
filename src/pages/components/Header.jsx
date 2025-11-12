@@ -17,6 +17,7 @@ export default function Header() {
     "/masteradmin/add": "Add Master Admin",
     "/masteradmin/all": "All Master Admin",
     "/company/profile": "Company Profile",
+    "/my-profile": "Profile Page",
     "/company/gst": "GST Collection",
     "/settings": "Settings",
   };

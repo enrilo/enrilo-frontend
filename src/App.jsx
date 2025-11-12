@@ -52,6 +52,7 @@ import AddNewSuperAdmin from "./pages/AddNewSuperAdmin.jsx";
 import AllSuperAdminPage from "./pages/AllSuperAdminPage.jsx";
 import ViewSuperAdmin from "./pages/ViewSuperAdmin.jsx";
 import EditSuperAdmin from "./pages/EditSuperAdmin.jsx";
+import MyProfile from "./pages/MyProfile.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -82,6 +83,7 @@ function AppContent() {
               <Route path="/all-super-admin" element={<AllSuperAdminPage />} />
               <Route path="/view-super-admin/:id" element={<ViewSuperAdmin />} />
               <Route path="/edit-super-admin/:id" element={<EditSuperAdmin />} />
+              <Route path="/my-profile" element={<MyProfile />} />
             </Route>
           </Routes>
         <Footer />

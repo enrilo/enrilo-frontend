@@ -44,6 +44,8 @@ export default function Sidebar() {
         { name: "GST Collection", icon: <IndianRupeeIcon size={18} />, path: "/company/gst" },
       ],
     },
+
+    { name: "My Profile", icon: <LayoutDashboard size={18} />, path: "/my-profile" },
   ];
 
   const bottomMenu = [
