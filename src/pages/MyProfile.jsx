@@ -43,7 +43,7 @@ export default function MyProfile() {
                 const token = userState.currentUser?.data?.accessToken;
 
                 const superAdminID = userState.currentUser.data.superAdmin.id;
-                console.log("Token from localStorage:", token, "superAdminID: ", superAdminID);
+                // console.log("Token from localStorage:", token, "superAdminID: ", superAdminID);
                 const res = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
                     method: "GET",
                     headers: {
@@ -215,7 +215,7 @@ export default function MyProfile() {
 
                     <div className="mt-6 flex flex-row justify-center">
                         <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
-                            <button type="submit" className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer">
+                            <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                                 Edit Profile
                             </button>
                         </Link>
