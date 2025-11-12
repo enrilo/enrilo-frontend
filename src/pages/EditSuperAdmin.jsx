@@ -1393,7 +1393,7 @@ export default function EditSuperAdmin() {
                     {confirmOpen && (
                         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                                <p className="text-center font-medium mb-5">{confirmMessage}</p>
+                                <p className="text-center font-medium text-xl mb-5">{confirmMessage}</p>
                                 <div className="flex justify-center gap-4">
                                     <button className="bg-[#334155] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { if (confirmAction) confirmAction(); setConfirmOpen(false); }} >
                                         Yes
@@ -1408,7 +1408,7 @@ export default function EditSuperAdmin() {
                     {messageOpen && (
                         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                                <p className="mb-4">{modalMessage}</p>
+                                <p className="mb-4 text-xl">{modalMessage}</p>
                                 <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setMessageOpen(false)} >
                                     OK
                                 </button>
@@ -1419,7 +1419,7 @@ export default function EditSuperAdmin() {
                     {failedToSaveMsgOpen && (
                         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                                <p className="mb-4">{failedToSaveMessage}</p>
+                                <p className="mb-4 text-xl">{failedToSaveMessage}</p>
                                 <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
                                     OK
                                 </button>
@@ -1430,7 +1430,7 @@ export default function EditSuperAdmin() {
                     {saveSuccessfulMsgOpen && (
                         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                                <p className="mb-4">{saveSuccessfulMessage}</p>
+                                <p className="mb-4 text-xl">{saveSuccessfulMessage}</p>
                                 <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
                                     OK
                                 </button>

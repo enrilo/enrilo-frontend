@@ -88,7 +88,7 @@ export default function SuperAdminLogin() {
       {messageOpen && (
         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-[#334155] rounded-lg p-6 max-w-lg w-full shadow-xl text-center">
-            <p className="mb-6 text-lg font-medium">{modalMessage}</p>
+            <p className="mb-6 text-xl font-medium">{modalMessage}</p>
             <button className="bg-[#1E293B] text-white border-2 px-5 py-3 rounded-md w-28 hover:bg-[#1D4ED8] transition cursor-pointer text-base font-medium"
               onClick={() => {
                 setMessageOpen(false);
