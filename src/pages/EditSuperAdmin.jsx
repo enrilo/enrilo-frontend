@@ -817,7 +817,7 @@ export default function EditSuperAdmin() {
         setNewProfileFile(null);
         setFormData((prev) => ({
             ...prev,
-            photo_url: "",
+            photo_url: "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg",
             photo_firebase_path: "",
         }));
     };
@@ -1367,7 +1367,7 @@ export default function EditSuperAdmin() {
 
                         {/* Submit */}
                         <div className="col-span-3 mt-6 flex justify-center">
-                            <button type="submit" disabled={loading} className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer">
+                            <button type="submit" disabled={loading} className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                                 {loading ? "Updating..." : "Update Super Admin"}
                             </button>
                         </div>
@@ -1395,10 +1395,10 @@ export default function EditSuperAdmin() {
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="text-center font-medium text-xl mb-5">{confirmMessage}</p>
                                 <div className="flex justify-center gap-4">
-                                    <button className="bg-[#334155] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { if (confirmAction) confirmAction(); setConfirmOpen(false); }} >
+                                    <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { if (confirmAction) confirmAction(); setConfirmOpen(false); }} >
                                         Yes
                                     </button>
-                                    <button className="bg-gray-300 border-2 px-4 py-2 rounded-md w-24 hover:bg-gray-400 transition cursor-pointer" onClick={() => setConfirmOpen(false)} >
+                                    <button className="bg-gray-300 px-4 py-2 rounded-md w-24 hover:bg-gray-400 transition cursor-pointer" onClick={() => setConfirmOpen(false)} >
                                         No
                                     </button>
                                 </div>
@@ -1409,7 +1409,7 @@ export default function EditSuperAdmin() {
                         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="mb-4 text-xl">{modalMessage}</p>
-                                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setMessageOpen(false)} >
+                                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => setMessageOpen(false)} >
                                     OK
                                 </button>
                             </div>
@@ -1420,7 +1420,7 @@ export default function EditSuperAdmin() {
                         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="mb-4 text-xl">{failedToSaveMessage}</p>
-                                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
+                                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
                                     OK
                                 </button>
                             </div>
@@ -1431,7 +1431,7 @@ export default function EditSuperAdmin() {
                         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="mb-4 text-xl">{saveSuccessfulMessage}</p>
-                                <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
+                                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
                                     OK
                                 </button>
                             </div>

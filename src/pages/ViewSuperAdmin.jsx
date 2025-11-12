@@ -289,12 +289,12 @@ export default function ViewSuperAdmin() {
 
                     <div className="mt-6 flex flex-row justify-evenly">
                         <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
-                            <button type="submit" className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer">
+                            <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                                 Edit Profile
                             </button>
                         </Link>
 
-                        <button onClick={() => confirmDelete() } type="submit" className="bg-red-700 hover:bg-red-600 text-white px-8 py-2 rounded-md transition cursor-pointer">
+                        <button onClick={() => confirmDelete() } type="submit" className="bg-red-700 hover:bg-red-600 text-white font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                             Delete Profile
                         </button>
                     </div>
@@ -340,9 +340,9 @@ export default function ViewSuperAdmin() {
 
             {showSuccess && (
                 <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center">
-                    <div className="flex flex-row bg-[rgb(7,57,106)] text-white p-3 rounded-lg shadow-lg">
+                    <div className="flex flex-col bg-[rgb(7,57,106)] text-white p-3 rounded-lg shadow-lg">
                         <p className="mb-5 text-xl">Super Admin has been deleted!</p>
-                        <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setShowSuccess(false); navigate("/all-super-admin");}}>
+                        <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setShowSuccess(false); navigate("/all-super-admin");}}>
                             OK
                         </button>
                     </div>

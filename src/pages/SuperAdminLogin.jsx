@@ -77,7 +77,7 @@ export default function SuperAdminLogin() {
 
           {/* Submit Button */}
           <div className="mt-6 flex justify-center">
-            <button type="submit" className="w-full cursor-pointer sm:w-auto bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition">
+            <button type="submit" className="w-full cursor-pointer sm:w-auto bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition">
               Login
             </button>
           </div>
@@ -89,7 +89,7 @@ export default function SuperAdminLogin() {
         <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white text-[#334155] rounded-lg p-6 max-w-lg w-full shadow-xl text-center">
             <p className="mb-6 text-xl font-medium">{modalMessage}</p>
-            <button className="bg-[#1E293B] text-white border-2 px-5 py-3 rounded-md w-28 hover:bg-[#1D4ED8] transition cursor-pointer text-base font-medium"
+            <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-5 py-3 rounded-md w-28 transition cursor-pointer text-base"
               onClick={() => {
                 setMessageOpen(false);
                 if (modalMessage.includes("successfully")) {
