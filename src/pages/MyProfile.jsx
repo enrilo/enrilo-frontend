@@ -225,12 +225,12 @@ export default function MyProfile() {
             
             {previewOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-[#334155] bg-opacity-50 z-50">
-                    <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
+                    <div className="bg-white rounded-2xl shadow-lg p-4 max-w-5xl max-h-2xl w-full">
                         <div className="flex justify-between items-center mb-2">
                             <div className='text-xl font-semibold p-1'>
                                 {previewName}
                             </div>
-                            <button className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer" onClick={() => setPreviewOpen(false)} >
+                            <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer" onClick={() => setPreviewOpen(false)} >
                                 Close
                             </button>
                         </div>
@@ -239,17 +239,6 @@ export default function MyProfile() {
                         ) : (
                             <img src={previewUrl} alt="Document Preview" className="w-full max-h-[500px] object-contain rounded" />
                         )}
-                    </div>
-                </div>
-            )}
-
-            {showSuccess && (
-                <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center">
-                    <div className="flex flex-row bg-[rgb(7,57,106)] text-white p-3 rounded-lg shadow-lg">
-                        <p className="mb-5 text-xl">Super Admin has been deleted!</p>
-                        <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setShowSuccess(false); navigate("/all-super-admin");}}>
-                            OK
-                        </button>
                     </div>
                 </div>
             )}

@@ -188,13 +188,7 @@ export default function ViewSuperAdmin() {
                         </div> */}
                         {(formData.street_1 || formData.street_2 || formData.city || formData.state || formData.country || formData.zipcode) && (
                             <div className='text-xl'>
-                                <span className="font-semibold">Home Address:</span> <br /> {[
-                                    formData.street_1,
-                                    formData.street_2,
-                                    formData.city,
-                                    formData.state,
-                                    formData.country,
-                                ].filter(Boolean).join(', ')} - {formData.zipcode}
+                                <span className="font-semibold">Home Address:</span> <br /> {[ formData.street_1, formData.street_2, formData.city, formData.state, formData.country ].filter(Boolean).join(', ')} - {formData.zipcode}
                             </div>
                         )}
                     </div>
@@ -264,12 +258,12 @@ export default function ViewSuperAdmin() {
                                     <div>
                                     {doc.name && (
                                         <div>
-                                        <span className="font-semibold">Name:</span> {doc.name}
+                                            <span className="font-semibold">Name:</span> {doc.name}
                                         </div>
                                     )}
                                     {doc.number && (
                                         <div>
-                                        <span className="font-semibold">Number:</span> {doc.number}
+                                            <span className="font-semibold">Number:</span> {doc.number}
                                         </div>
                                     )}
                                     </div>
@@ -307,7 +301,7 @@ export default function ViewSuperAdmin() {
                     <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                         <p className="text-center font-medium text-xl mb-5">Are you sure you want to delete this super admin?</p>
                         <div className="flex justify-center gap-4">
-                        <button className="bg-[#334155] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={handleDeleteConfirmed} >
+                        <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={handleDeleteConfirmed} >
                             Yes
                         </button>
                         <button className="bg-gray-300 border-2 px-4 py-2 rounded-md w-24 hover:bg-gray-400 transition cursor-pointer" onClick={() => setShowConfirmDelete(false)} >
