@@ -154,7 +154,7 @@ export default function AllSuperAdminPage() {
           <div className="overflow-x-auto rounded-lg">
             <div className="flex justify-end mb-5">
               <Link to={`/add-new-superadmin`} className='flex flex-row justify-center'>
-                <button className="bg-slate-800 hover:bg-slate-900 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                   Add New Super Admin
                 </button>
               </Link>
@@ -197,7 +197,33 @@ export default function AllSuperAdminPage() {
                     </td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">
                       <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
-                        <Link to={`/view-super-admin/${c._id}`} className='flex flex-row justify-center'>
+                        {c.company_email !== currentUserEmail && (
+                          <>
+                            <Link to={`/view-super-admin/${c._id}`} className='flex flex-row justify-center'>
+                              <button className="bg-slate-500 hover:bg-slate-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                                View
+                              </button>
+                            </Link>
+                            <Link to={`/edit-super-admin/${c._id}`} className='flex flex-row justify-center'>
+                              <button className="bg-[#1E293B] hover:bg-[#334155] text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                                Edit
+                              </button>
+                            </Link>
+                            <button onClick={() => confirmDelete(c._id)} className="bg-red-700 hover:bg-red-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                              Delete
+                            </button>
+                          </>
+                        )}
+                        {c.company_email === currentUserEmail && (
+                          <>
+                            <Link to={`/my-profile`} className='flex flex-row justify-center'>
+                              <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                                View Your Profile
+                              </button>
+                            </Link>
+                          </>
+                        )}
+                        {/* <Link to={`/view-super-admin/${c._id}`} className='flex flex-row justify-center'>
                           <button className="bg-slate-500 hover:bg-slate-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                             View
                           </button>
@@ -211,7 +237,7 @@ export default function AllSuperAdminPage() {
                           <button onClick={() => confirmDelete(c._id)} className="bg-red-700 hover:bg-red-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                             Delete
                           </button>
-                        )}
+                        )} */}
                         
                       </div>
                     </td>
