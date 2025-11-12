@@ -1337,7 +1337,7 @@ export default function EditSuperAdmin() {
 
                                     <div className="flex flex-col gap-2">
                                         <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle}>
-                                        {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
+                                            {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
                                             <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
                                         </Button>
 
@@ -1374,9 +1374,9 @@ export default function EditSuperAdmin() {
                     {/* Modals (Preview, Confirm, Message, Failed, Success) */}
                     {previewOpen && ( 
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"> 
-                            <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
+                            <div className="bg-white rounded-2xl shadow-lg p-4 max-w-5xl max-h-2xl w-full">
                                 <div className="flex justify-end mb-2"> 
-                                    <button className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer" onClick={() => setPreviewOpen(false)}> 
+                                    <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer" onClick={() => setPreviewOpen(false)}> 
                                         Close 
                                     </button>
                                 </div> 
