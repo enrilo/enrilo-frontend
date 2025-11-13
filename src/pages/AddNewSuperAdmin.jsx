@@ -497,6 +497,7 @@ export default function AddNewSuperAdmin() {
   const { loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [pageLoading, setPageLoading] = useState(false);
   const hashedPassword = bcryptjs.hashSync("SuperSecureAdmin123!", 10);
   const [profilePreviewUrl, setProfilePreviewUrl] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -579,24 +580,7 @@ export default function AddNewSuperAdmin() {
         "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg",
     }));
   };
-
-  // --- DOCUMENTS UPLOAD (LOCAL ONLY) ---
-  // const handleFileChange = async (e, index) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-
-  //   const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/heic", "application/pdf"];
-  //   if (!validTypes.includes(file.type)) {
-  //     setModalMessage("Please upload a JPG, JPEG, PNG, HEIC, or PDF.");
-  //     setMessageOpen(true);
-  //     return;
-  //   }
-
-  //   const docsCopy = [...localDocuments];
-  //   docsCopy[index] = { ...docsCopy[index], file, uploaded_at: Date.now() };
-  //   setLocalDocuments(docsCopy);
-  // };
-
+  
   const handleFileChange = async (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -629,17 +613,6 @@ export default function AddNewSuperAdmin() {
     };
     setLocalDocuments(docsCopy);
   };
-
-
-  // const handleDeleteFileConfirm = (index) => {
-  //   setConfirmMessage("Are you sure you want to delete this file?");
-  //   setConfirmAction(() => () => {
-  //     const docsCopy = [...localDocuments];
-  //     docsCopy.splice(index, 1);
-  //     setLocalDocuments(docsCopy);
-  //   });
-  //   setConfirmOpen(true);
-  // };
 
   const handleDeleteFileConfirm = (index) => {
     setConfirmMessage("Are you sure you want to delete this file?");
@@ -686,8 +659,64 @@ export default function AddNewSuperAdmin() {
   };
 
   // --- HANDLE SUBMIT (UPLOAD TO FIREBASE ONLY ON SUBMIT) ---
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+  //     const userState = JSON.parse(persistedRoot.user);
+  //     const token = userState.currentUser?.data?.accessToken;
+
+  //     // --- UPLOAD PROFILE IMAGE ---
+  //     let profile_url = formData.photo_url;
+  //     if (localProfileFile) {
+  //       const { url } = await uploadFile(localProfileFile, "profile_pictures");
+  //       profile_url = url;
+  //     }
+
+  //     // --- UPLOAD DOCUMENTS ---
+  //     const uploadedDocs = [];
+  //     for (let doc of localDocuments) {
+  //       if (doc.file) {
+  //         const { url } = await uploadFile(doc.file, "documents");
+  //         uploadedDocs.push({ ...doc, url });
+  //       }
+  //     }
+
+  //     const payload = {
+  //       ...formData,
+  //       photo_url: profile_url,
+  //       documents: uploadedDocs,
+  //     };
+
+  //     const res = await fetch("http://localhost:3000/api/super-admins/", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+  //       body: JSON.stringify(payload),
+  //       credentials: "include",
+  //     });
+
+  //     const data = await res.json();
+  //     if (!data.success) {
+  //       setFailedToSaveMessage(`Failed to add super admin because ${data.message.toLowerCase()}`);
+  //       setFailedToSaveMsgOpen(true);
+  //       return;
+  //     }
+
+  //     setSaveSuccessfulMessage(
+  //       "Super admin added successfully! You will now be redirected to All Super Admin Page."
+  //     );
+  //     setSaveSuccessfulMsgOpen(true);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setFailedToSaveMessage(`Failed to add super admin: ${err.message}`);
+  //     setFailedToSaveMsgOpen(true);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setPageLoading(true); // show the overlay
 
     try {
       const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
@@ -727,17 +756,18 @@ export default function AddNewSuperAdmin() {
       if (!data.success) {
         setFailedToSaveMessage(`Failed to add super admin because ${data.message.toLowerCase()}`);
         setFailedToSaveMsgOpen(true);
+        setPageLoading(false); // hide overlay
         return;
       }
 
-      setSaveSuccessfulMessage(
-        "Super admin added successfully! You will now be redirected to All Super Admin Page."
-      );
+      setSaveSuccessfulMessage("Super admin added successfully! You will now be redirected to All Super Admin Page.");
       setSaveSuccessfulMsgOpen(true);
     } catch (err) {
       console.error(err);
       setFailedToSaveMessage(`Failed to add super admin: ${err.message}`);
       setFailedToSaveMsgOpen(true);
+    } finally {
+      setPageLoading(false); // always hide overlay
     }
   };
 
@@ -769,18 +799,6 @@ export default function AddNewSuperAdmin() {
       );
     });
   };
-
-  // --- DOCUMENT PREVIEW MODAL ---
-  // const handlePreview = async (file) => {
-  //   if (!file) return;
-  //   let previewFile = file;
-  //   if (file.type === "image/heic") {
-  //     const blob = await heic2any({ blob: file, toType: "image/jpeg" });
-  //     previewFile = blob;
-  //   }
-  //   setPreviewUrl(URL.createObjectURL(previewFile));
-  //   setPreviewOpen(true);
-  // };
 
   const handlePreview = async (file) => {
     if (!file) return;
@@ -863,33 +881,9 @@ export default function AddNewSuperAdmin() {
     <main className="flex-1 overflow-y-auto p-6">
       <div className="p-4">
         <div className="bg-white rounded-2xl shadow p-6 max-w-6xl mx-auto">
-
           {/* PROFILE UPLOAD */}
           <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
-            {/* {(!localProfileFile && formData.photo_url === "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg") ? (
-              <>
-                <div className="text-gray-400 text-3xl mb-2">🖼️</div>
-                <label className="text-blue-600 font-medium cursor-pointer hover:underline">
-                  Click Here To Add Profile Picture
-                  <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} />
-                </label>
-              </>
-            ) : (
-              <div className="flex flex-col items-center">
-                <img src={profilePreviewUrl} alt="Profile" className="w-auto h-40 object-cover rounded-lg mb-2" />
-
-                <div className="flex gap-4">
-                  <label className="text-blue-600 cursor-pointer hover:underline">
-                    Replace
-                    <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} />
-                  </label>
-                  <button type="button" className="text-red-600 cursor-pointer hover:underline" onClick={handleDeleteProfileConfirm} >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            )} */}
-
+            
             {profilePreviewUrl ? (
               <div className="flex flex-col items-center">
                 <img src={profilePreviewUrl} alt="Profile" className="w-auto h-40 object-cover rounded-lg mb-2" />
@@ -915,17 +909,9 @@ export default function AddNewSuperAdmin() {
 
           </div>
 
-          {/* FORM FIELDS AND DOCUMENTS REMAIN UNCHANGED */}
-
-
-
-          {/* FORM */}
           <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
-
-            {/* Admin Full Name */}
             <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} />
 
-            {/* Phone */}
             <div className="w-full flex gap-3">
               <div className="min-w-[140px]">
                 <Select options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
@@ -938,16 +924,12 @@ export default function AddNewSuperAdmin() {
               <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
             </div>
 
-            {/* Company Email */}
             <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }} />
 
-            {/* Personal Email */}
             <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
 
-            {/* Position */}
             <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth />
 
-            {/* Address */}
             <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
             <TextField id="street_2" value={formData.street_2} onChange={handleChange} label="Street 2" variant="outlined" fullWidth />
             <TextField id="city" value={formData.city} onChange={handleChange} label="City" variant="outlined" fullWidth />
@@ -955,7 +937,6 @@ export default function AddNewSuperAdmin() {
             <TextField id="country" value={formData.country} onChange={handleChange} label="Country" variant="outlined" fullWidth />
             <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
 
-            {/* Emergency Contact */}
             <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} required sx={asteriskColorStyle} />
             <div className="w-full flex flex-row gap-3">
               <div className="min-w-[140px]">
@@ -970,7 +951,6 @@ export default function AddNewSuperAdmin() {
             </div>
             <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
 
-            {/* Documents */}
             {localDocuments.map((doc, i) => (
               <div key={i} className="col-span-3 border rounded-md p-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -978,40 +958,15 @@ export default function AddNewSuperAdmin() {
                   <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
 
                   <div className="flex flex-col gap-2">
-                    {/* <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={{
-                          textTransform: "none",
-                          borderColor: "#2563EB",
-                          color: "#2563EB",
-                          height: '56px',
-                          "&:hover": { borderColor: "#1D4ED8", background: "#EFF6FF" },
-                      }} >
-                      {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : "Select Document (image or pdf only)"}
-                      <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
-                    </Button> */}
-
                     <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle} >
                       {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
                       
                       <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
                     </Button>
 
-
-                    {/* {doc.file && (
-                      <div className="flex flex-col items-center gap-3">
-                        <TextField label="Uploaded File URL" value={doc.url || ""} fullWidth slotProps={{ input: { readOnly: true } }} />
-                        <div className="flex flex-row justify-between w-full">
-                          <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
-                          <Button variant="outlined" onClick={() => handlePreview(doc.file)}>Preview</Button>
-                        </div>
-                      </div>
-                    )} */}
-
                     {doc.file && (
                       <div>
                         <div className="flex flex-col items-center gap-3">
-                          {/* <TextField label="Uploaded File URL" fullWidth slotProps={{ input: { readOnly: true } }}
-                            value={doc.url || ""} // will now show local blob URL if file not yet uploaded
-                          /> */}
                           <div className="flex flex-row justify-between w-full">
                             <Button variant="outlined" sx={previewDocumentBtnStyle} onClick={() => handlePreview(doc.file)}>Preview</Button>
                             <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
@@ -1042,55 +997,6 @@ export default function AddNewSuperAdmin() {
             </div>
           </form>
 
-          {/* PREVIEW MODAL */}
-          {/* {previewOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"> 
-               <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
-                 <div className="flex justify-end mb-2"> 
-                   <button className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer" onClick={() => setPreviewOpen(false)}> 
-                     Close 
-                   </button>
-                 </div> 
-                 {previewUrl.includes(".pdf") ? ( 
-                   <iframe src={previewUrl} className="w-full h-[500px] rounded" title="Document Preview"></iframe> 
-                 ) : ( 
-                   <img src={previewUrl} alt="Document Preview" className="w-full max-h-[500px] object-contain rounded" /> 
-                 )}
-               </div>
-             </div>
-
-            // <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
-            //   <div className="bg-white p-6 rounded-lg max-h-[90%] max-w-[90%] overflow-auto">
-            //     {previewUrl.endsWith(".pdf") ? (
-            //       <iframe src={previewUrl} className="w-full h-[80vh]" />
-            //     ) : (
-            //       <img src={previewUrl} alt="Preview" className="max-h-[80vh] object-contain" />
-            //     )}
-            //     <Button onClick={() => setPreviewOpen(false)}>Close</Button>
-            //   </div>
-            // </div>
-          )} */}
-
-          {/* {previewOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"> 
-              <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
-                <div className="flex justify-end mb-2"> 
-                  <button
-                    className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer"
-                    onClick={() => setPreviewOpen(false)}
-                  > 
-                    Close 
-                  </button>
-                </div> 
-                {previewUrl.includes(".pdf") ? ( 
-                  <iframe src={previewUrl} className="w-full h-[500px] rounded" title="Document Preview"></iframe> 
-                ) : ( 
-                  <img src={previewUrl} alt="Document Preview" className="w-full max-h-[500px] object-contain rounded" /> 
-                )}
-              </div>
-            </div>
-          )} */}
-
           {/* Document Preview Section */}
           {previewOpen && previewUrl && (
             <div className="fixed inset-0 flex items-center justify-center bg-[#334155] bg-opacity-50 z-50">
@@ -1103,10 +1009,8 @@ export default function AddNewSuperAdmin() {
 
                 <div className="w-full">
                   {previewType === "application/pdf" ? (
-                    // pdf preview
                     <iframe src={previewUrl} className="w-full h-[70vh] rounded border border-gray-200" title="Document Preview" />
                   ) : (
-                    // image preview (jpeg/png/heic->jpeg)
                     <img src={previewUrl} alt="Document Preview" className="w-full max-h-[70vh] object-contain rounded border border-gray-200" />
                   )}
                 </div>
@@ -1114,18 +1018,12 @@ export default function AddNewSuperAdmin() {
             </div>
           )}
 
-
-
           {confirmOpen && (
             <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                 <p className="text-center font-medium text-xl mb-5">{confirmMessage}</p>
                 <div className="flex justify-center gap-4">
-                  <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold  border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer"
-                    onClick={() => {
-                      if (confirmAction) confirmAction();
-                      setConfirmOpen(false);
-                    }} >
+                  <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold  border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { if (confirmAction) confirmAction(); setConfirmOpen(false); }} >
                     Yes
                   </button>
                   <button className="bg-gray-300 border-2 px-4 py-2 rounded-md w-24 hover:bg-gray-400 transition cursor-pointer" onClick={() => setConfirmOpen(false)} >
@@ -1158,19 +1056,34 @@ export default function AddNewSuperAdmin() {
             </div>
           )}
 
-          
           {saveSuccessfulMsgOpen && (
             <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                 <p className="mb-4 text-xl">{saveSuccessfulMessage}</p>
-                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
+                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
                   OK
                 </button>
               </div>
             </div>
           )}
+
+          {/* Page Loading Code */}
+          {pageLoading && (
+            <div className="fixed inset-0 bg-[#334155] bg-opacity-60 flex justify-center items-center z-50">
+              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                  <p className="text-xl font-semibold flex justify-center items-center gap-3">
+                    <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span>
+                    {/* Updating Your Super Admin Details... */}
+                    <div className="flex flex-col">
+                      <p className="text-xl font-semibold mb-2">Loading...</p>
+                      <p className="text-[#334155]">Please wait while we save your details.</p>
+                    </div>
+                  </p>
+              </div>
+            </div>
+          )}
         </div>
-        </div>
+      </div>
     </main>
   );
 }
