@@ -928,7 +928,7 @@ export default function AddNewSuperAdmin() {
 
             <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
 
-            <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth />
+            <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}  />
 
             <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
             <TextField id="street_2" value={formData.street_2} onChange={handleChange} label="Street 2" variant="outlined" fullWidth />
