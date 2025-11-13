@@ -11,6 +11,7 @@ export default function ViewSuperAdmin() {
     const [previewUrl, setPreviewUrl] = useState("");
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [pageLoading, setPageLoading] = useState(false);
     const [formData, setFormData] = useState({
         photo_url: "",
         full_name: "",
@@ -33,7 +34,7 @@ export default function ViewSuperAdmin() {
     useEffect(() =>{
         const fetchSuperAdmin = async () => {
             try {
-                // setLoading(true);
+                setPageLoading(true);
                 const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
                 // Parse the nested user slice
                 const userState = JSON.parse(persistedRoot.user);
@@ -52,16 +53,17 @@ export default function ViewSuperAdmin() {
                 // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
                 
                 if(data.success === false){
-                    // setLoading(false);
+                    setPageLoading(false);
                     console.log("data.success === false");
                     return;
                 }
+                
                 setFormData(data.data.superAdmin);
-                // setLoading(false);
+                setPageLoading(false);
                 // setError(false);
             } catch (error) {
                 console.log(`error.message: ${error.message}`);
-                // setLoading(false);
+                setPageLoading(false);
                 // setError(true);
             }
         };
@@ -74,7 +76,7 @@ export default function ViewSuperAdmin() {
     };
 
     const handleDeleteConfirmed = async () => {
-        // setLoading(true);
+        setPageLoading(true);
         const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
         // Parse the nested user slice
         const userState = JSON.parse(persistedRoot.user);
@@ -93,7 +95,7 @@ export default function ViewSuperAdmin() {
         // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
         
         if(data.success === false){
-            // setLoading(false);
+            setPageLoading(false);
             console.log("data.success === false");
             return;
         }
@@ -144,6 +146,8 @@ export default function ViewSuperAdmin() {
             }, 1500);
         } catch (error) {
             console.log(error.message);
+        } finally {
+            setPageLoading(false); // ✅ Hide loader after delete
         }
     };
 
@@ -153,7 +157,7 @@ export default function ViewSuperAdmin() {
                 <div className="bg-white rounded-2xl shadow p-6 gap-5 max-w-6xl mx-auto items-center">
                     <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
                         <div className="flex flex-col items-center">
-                            <img src={formData.photo_url} alt="Profile" className="w-auto h-64 object-cover rounded-lg mb-2" />
+                            <img src={formData.photo_url || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"} alt="Profile" className="w-auto h-64 object-cover rounded-lg mb-2" />
                         </div>
                     </div>
 
@@ -279,7 +283,7 @@ export default function ViewSuperAdmin() {
                         </>
                     )}
 
-                  
+                    
 
                     <div className="mt-6 flex flex-row justify-evenly">
                         <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
@@ -296,7 +300,6 @@ export default function ViewSuperAdmin() {
             </div>
 
             {showConfirmDelete && (
-
                 <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                         <p className="text-center font-medium text-xl mb-5">Are you sure you want to delete this super admin?</p>
@@ -340,6 +343,22 @@ export default function ViewSuperAdmin() {
                             OK
                         </button>
                     </div>
+                </div>
+            )}
+
+            {/* Page Loading Code */}
+            {pageLoading && (
+                <div className="fixed inset-0 bg-[#334155] bg-opacity-60 flex justify-center items-center z-50">
+                <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                    <p className="text-xl font-semibold flex justify-center items-center gap-3">
+                        <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span>
+                        {/* Loading Your Super Admin Details... */}
+                        <div className="flex flex-col">
+                            <p className="text-xl font-semibold mb-2">Loading...</p>
+                            <p className="text-[#334155]">Please wait while we load your details.</p>
+                        </div>
+                    </p>
+                </div>
                 </div>
             )}
         </main>

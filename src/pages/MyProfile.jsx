@@ -77,7 +77,7 @@ export default function MyProfile() {
         <main className="flex-1 overflow-y-auto p-6">
             <div className="p-4 sm:p-6">
                 <div className="bg-white rounded-2xl shadow p-6 gap-5 max-w-6xl mx-auto items-center">
-                    <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
+                    <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 hover:bg-gray-50 transition">
                         <div className="flex flex-col items-center">
                             <img src={formData.photo_url} alt="Profile" className="w-auto h-64 object-cover rounded-lg mb-2" />
                         </div>
