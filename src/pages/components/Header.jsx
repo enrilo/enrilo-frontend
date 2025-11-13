@@ -15,7 +15,7 @@ export default function Header() {
     "/consultancy/payments": "All Payment Details",
     "/add-new-superadmin": "Add Super Admin",
     "/all-super-admin": "All Super Admin",
-    "/edit-super-admin": "Edit Super Admin",
+    "/edit-super-admin": "Update Super Admin",
     "/view-super-admin": "View Super Admin",
     "/masteradmin/add": "Add Master Admin",
     "/masteradmin/all": "All Master Admin",
@@ -33,7 +33,7 @@ export default function Header() {
   if (titleMap[path]) {
     currentTitle = titleMap[path];
   } else if (/^\/edit-super-admin\/[A-Za-z0-9_-]+$/.test(path)) {
-    currentTitle = "Edit Super Admin";
+    currentTitle = "Update Super Admin";
   } else if (/^\/view-super-admin\/[A-Za-z0-9_-]+$/.test(path)) {
     currentTitle = "View Super Admin";
   } else if (/^\/consultancy\/\d+\/payments$/.test(path)) {
@@ -41,7 +41,7 @@ export default function Header() {
   }
   // Add more patterns if needed
   else {
-    currentTitle = "Enrilo Dashboard";
+    currentTitle = "Enrilo";
   }
 
   return (
