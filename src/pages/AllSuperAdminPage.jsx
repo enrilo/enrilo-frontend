@@ -15,6 +15,7 @@ export default function AllSuperAdminPage() {
   const [allSuperAdmin, setAllSuperAdmin] = useState([]);
   const [deleteId, setDeleteId] = useState('');
   const [currentUserEmail, setCurrentUserEmail] = useState('');
+  const [currentUserID, setCurrentUserID] = useState('');
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -31,9 +32,7 @@ export default function AllSuperAdminPage() {
     const userState = JSON.parse(persistedRoot.user);
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
-
-    console.log(`params.id:${params.id}`);
-    console.log(`deleteId:${deleteId}`);
+    
     const res = await fetch(`http://localhost:3000/api/super-admins/${deleteId}`, {
         method: "GET",
         headers: {
@@ -109,15 +108,16 @@ export default function AllSuperAdminPage() {
 
   useEffect(() => {
     const fetchSuperAdmin = async () => {
-
       try {
         const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
         // Parse the nested user slice
         const userState = JSON.parse(persistedRoot.user);
         // Extract token
         const token = userState.currentUser?.data?.accessToken;
-        console.log("Token from localStorage:", token);
         setCurrentUserEmail(userState.currentUser?.data?.superAdmin?.company_email);
+        setCurrentUserID(userState.currentUser?.data?.superAdmin?.id);
+        console.log(`CurrentUserID: ${currentUserID}`);
+        
         const res = await fetch("http://localhost:3000/api/super-admins/", {
           method: "GET",
           headers: {
@@ -197,7 +197,7 @@ export default function AllSuperAdminPage() {
                     </td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">
                       <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
-                        {c.company_email !== currentUserEmail && (
+                        {c._id !== currentUserID && (
                           <>
                             <Link to={`/view-super-admin/${c._id}`} className='flex flex-row justify-center'>
                               <button className="bg-slate-500 hover:bg-slate-600 text-white cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
