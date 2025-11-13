@@ -31,7 +31,7 @@ export default function Sidebar() {
       ],
     }, {
       name: "Master Admin Details",
-      icon: <User size={18} />,
+      icon: <Users size={18} />,
       subMenu: [
         { name: "Add Master Admin", icon: <UserPlus size={18} />, path: "/masteradmin/add" },
         { name: "All Master Admin", icon: <Users size={18} />, path: "/masteradmin/all" },
@@ -45,7 +45,7 @@ export default function Sidebar() {
       ],
     },
 
-    { name: "My Profile", icon: <LayoutDashboard size={18} />, path: "/my-profile" },
+    { name: "My Profile", icon: <User size={18} />, path: "/my-profile" },
   ];
 
   const bottomMenu = [
