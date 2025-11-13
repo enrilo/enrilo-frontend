@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Users, User, BriefcaseBusiness, UserPlus, IdCard, IndianRupeeIcon, LayoutDashboard, Building, Settings as SettingsIcon, LogOut, Menu, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Users, User, BriefcaseBusiness, UserPlus, IdCard, IndianRupeeIcon, LayoutDashboard, Building, Settings as SettingsIcon, LogOut, Menu, X, BriefcaseMedical, GraduationCap } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ Added useNavigate
 import enriloFullLogoSrc from '../../assets/images/transparent-background/enrilo-with-tagline-300x300.png';
 import enriloLetterESrc from '../../assets/images/transparent-background/enrilo-e-100x100.png';
@@ -23,15 +23,15 @@ export default function Sidebar() {
       ],
     }, {
       name: "Consultancy Details",
-      icon: <User size={18} />,
+      icon: <BriefcaseBusiness size={18} />,
       subMenu: [
-        { name: "Add Consultancy", icon: <UserPlus size={18} />, path: "/add-new-consultancy" },
-        { name: "All Consultancies", icon: <Users size={18} />, path: "/all-consultancies" },
+        { name: "Add Consultancy", icon: <BriefcaseMedical size={18} />, path: "/add-new-consultancy" },
+        { name: "All Consultancies", icon: <GraduationCap size={18} />, path: "/all-consultancies" },
         { name: "All Payment Details", icon: <IndianRupeeIcon size={18} />, path: "/consultancy/payments" },
       ],
     }, {
       name: "Master Admin Details",
-      icon: <BriefcaseBusiness size={18} />,
+      icon: <User size={18} />,
       subMenu: [
         { name: "Add Master Admin", icon: <UserPlus size={18} />, path: "/masteradmin/add" },
         { name: "All Master Admin", icon: <Users size={18} />, path: "/masteradmin/all" },
