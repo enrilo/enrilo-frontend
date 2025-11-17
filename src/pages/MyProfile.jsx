@@ -42,7 +42,7 @@ export default function MyProfile() {
                 
                 const token = userState.currentUser?.data?.accessToken;
 
-                const superAdminID = userState.currentUser.data.superAdmin.id;
+                const superAdminID = userState.currentUser.data.id;
                 // console.log("Token from localStorage:", token, "superAdminID: ", superAdminID);
                 const res = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
                     method: "GET",

@@ -96,8 +96,8 @@ export default function AllSuperAdminPage() {
         const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
         const userState = JSON.parse(persistedRoot.user);
         const token = userState.currentUser?.data?.accessToken;
-        setCurrentUserEmail(userState.currentUser?.data?.superAdmin?.company_email);
-        setCurrentUserID(userState.currentUser?.data?.superAdmin?.id);
+        setCurrentUserEmail(userState.currentUser?.data?.company_email);
+        setCurrentUserID(userState.currentUser?.data?.id);
         
         const res = await fetch("http://localhost:3000/api/super-admins/", {
           method: "GET",
