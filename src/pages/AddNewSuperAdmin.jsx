@@ -518,12 +518,30 @@ export default function AddNewSuperAdmin() {
   const [saveSuccessfulMessage, setSaveSuccessfulMessage] = useState("");
   const [saveSuccessfulMsgOpen, setSaveSuccessfulMsgOpen] = useState(false);
   const [documentFile, setDocumentFile] = useState(null);
+  const [id1, setId1] = useState(null); // first dropdown
+  const [id2, setId2] = useState(null); // second dropdown
+
 
   const emergencyCountryCodeOptions = countryCodes.map((country) => ({
     value: country.code,
     label: `${country.code} - ${country.name}`,
   }));
+
   const options = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
+
+  const idOptions = [
+    { value: "aadhar_card", label: "Aadhar Card" },
+    { value: "pan_card", label: "Pan Card" }
+  ];
+
+  const filteredOptionsForId1 = idOptions.filter(
+    (opt) => opt.value !== id2?.value
+  );
+
+  const filteredOptionsForId2 = idOptions.filter(
+    (opt) => opt.value !== id1?.value
+  );
+
 
   // --- LOCAL PREVIEW STATE ---
   const [localProfileFile, setLocalProfileFile] = useState(null);
@@ -882,8 +900,11 @@ export default function AddNewSuperAdmin() {
       <div className="p-4">
         <div className="bg-white rounded-2xl shadow p-6 max-w-6xl mx-auto">
           {/* PROFILE UPLOAD */}
+
+          <div className='text-2xl underline font-semibold mb-2'>
+            Personal Details:
+          </div>
           <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
-            
             {profilePreviewUrl ? (
               <div className="flex flex-col items-center">
                 <img src={profilePreviewUrl} alt="Profile" className="w-auto h-40 object-cover rounded-lg mb-2" />
@@ -909,50 +930,66 @@ export default function AddNewSuperAdmin() {
 
           </div>
 
-          <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
-            <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} />
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+              <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} />
 
-            <div className="w-full flex gap-3">
-              <div className="min-w-[140px]">
-                <Select options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
-                  onChange={(sel) => {
-                    setSelectedCode(sel);
-                    setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
-                  }}
-                />
+              <div className="w-full flex gap-3">
+                <div className="min-w-[140px]">
+                  <Select options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                    onChange={(sel) => {
+                      setSelectedCode(sel);
+                      setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
+                    }}
+                  />
+                </div>
+                <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
               </div>
-              <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
+
+              <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }} />
+
+              <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
+
+              <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}  />
             </div>
 
-            <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }} />
-
-            <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
-
-            <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}  />
-
-            <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
-            <TextField id="street_2" value={formData.street_2} onChange={handleChange} label="Street 2" variant="outlined" fullWidth />
-            <TextField id="city" value={formData.city} onChange={handleChange} label="City" variant="outlined" fullWidth />
-            <TextField id="state" value={formData.state} onChange={handleChange} label="State" variant="outlined" fullWidth />
-            <TextField id="country" value={formData.country} onChange={handleChange} label="Country" variant="outlined" fullWidth />
-            <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
-
-            <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} required sx={asteriskColorStyle} />
-            <div className="w-full flex flex-row gap-3">
-              <div className="min-w-[140px]">
-                <Select id="emergency_country_code" options={emergencyCountryCodeOptions} value={selectedEmergencyCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} styles={selectStyles} required
-                  onChange={(selected) => {
-                    setSelectedEmergencyCode(selected);
-                    setFormData((prev) => ({ ...prev, emergency_contact: { ...prev.emergency_contact, country_code: selected?.value || "" } }));
-                  }}
-                />
-              </div>
-              <TextField id="emergency_phone" type="number" label="Emergency Contact Phone" variant="outlined" fullWidth value={formData.emergency_contact.phone} onChange={handleChange} required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
+            <div className='text-2xl underline font-semibold mb-2'>
+              Home Address:
             </div>
-            <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+              <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
+              <TextField id="street_2" value={formData.street_2} onChange={handleChange} label="Street 2" variant="outlined" fullWidth />
+              <TextField id="city" value={formData.city} onChange={handleChange} label="City" variant="outlined" fullWidth />
+              <TextField id="state" value={formData.state} onChange={handleChange} label="State" variant="outlined" fullWidth />
+              <TextField id="country" value={formData.country} onChange={handleChange} label="Country" variant="outlined" fullWidth />
+              <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
+            </div>
 
-            {localDocuments.map((doc, i) => (
-              <div key={i} className="col-span-3 border rounded-md p-4">
+            <div className='text-2xl underline font-semibold mb-2'>
+              Emergency Contact Details:
+            </div>            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+              <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} required sx={asteriskColorStyle} />
+              <div className="w-full flex flex-row gap-3">
+                <div className="min-w-[140px]">
+                  <Select id="emergency_country_code" options={emergencyCountryCodeOptions} value={selectedEmergencyCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} styles={selectStyles} required
+                    onChange={(selected) => {
+                      setSelectedEmergencyCode(selected);
+                      setFormData((prev) => ({ ...prev, emergency_contact: { ...prev.emergency_contact, country_code: selected?.value || "" } }));
+                    }}
+                  />
+                </div>
+                <TextField id="emergency_phone" type="number" label="Emergency Contact Phone" variant="outlined" fullWidth value={formData.emergency_contact.phone} onChange={handleChange} required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
+              </div>
+              <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
+            </div>
+
+
+            <div className='text-2xl underline font-semibold mb-2'>
+              Documents:
+            </div>
+            {/* {localDocuments.map((doc, i) => (
+              <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <TextField id={`documents_${i}_name`} label="Document Type" value={doc.name} onChange={handleChange} fullWidth />
                   <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
@@ -984,11 +1021,69 @@ export default function AddNewSuperAdmin() {
                   </div>
                 </div>
               </div>
+            ))} */}
+
+            {localDocuments.slice(0, 2).map((doc, i) => (
+              <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+                  {/* Document Type Dropdown */}
+                  <Select id={`documents_${i}_name`} placeholder="Select Document Type" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                    options={idOptions.filter((opt) =>
+                      i === 0 ? opt.value !== localDocuments[1]?.name : opt.value !== localDocuments[0]?.name
+                    )}
+                    value={
+                      doc.name ? { value: doc.name, label: idOptions.find((o) => o.value === doc.name)?.label || doc.name } : null
+                    }
+                    onChange={(sel) =>
+                      handleChange({
+                        target: {
+                          id: `documents_${i}_name`,
+                          value: sel?.value || "",
+                        },
+                      })
+                    }
+                  />
+
+                  {/* Document Number */}
+                  <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
+
+                  {/* File Upload */}
+                  <div className="flex flex-col gap-2">
+                    <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle} >
+                      {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
+                      <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
+                    </Button>
+
+                    {doc.file && (
+                      <div className="flex flex-col items-center gap-3 mt-2">
+                        <div className="flex flex-row justify-between w-full">
+                          <Button variant="outlined" sx={previewDocumentBtnStyle} onClick={() => handlePreview(doc.file)}>Preview</Button>
+                          <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Remove Button */}
+                    <div className="mt-2 flex justify-end">
+                      {localDocuments.length > 1 && (
+                        <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)}>Remove</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
 
-            <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument}>
+
+            {/* <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument}>
                + Add Another Document
-            </button>
+            </button> */}
+            {localDocuments.length < 2 && (
+              <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument}>
+                + Add New Document
+              </button>
+            )}
 
             <div className="col-span-3 mt-6 flex justify-center">
                <button type="submit" disabled={loading} className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
