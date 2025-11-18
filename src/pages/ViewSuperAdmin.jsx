@@ -300,7 +300,7 @@ export default function ViewSuperAdmin() {
             </div>
 
             {showConfirmDelete && (
-                <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                     <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                         <p className="text-center font-medium text-xl mb-5">Are you sure you want to delete this super admin?</p>
                         <div className="flex justify-center gap-4">
@@ -316,7 +316,7 @@ export default function ViewSuperAdmin() {
                 
             )}
             {previewOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-[#334155] bg-opacity-50 z-50">
+                <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
                     <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
                         <div className="flex justify-between items-center mb-2">
                             <div className='text-xl font-semibold p-1'>
@@ -348,7 +348,7 @@ export default function ViewSuperAdmin() {
 
             {/* Page Loading Code */}
             {pageLoading && (
-                <div className="fixed inset-0 bg-[#334155] bg-opacity-60 flex justify-center items-center z-50">
+                <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                 <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                     <p className="text-xl font-semibold flex justify-center items-center gap-3">
                         {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}

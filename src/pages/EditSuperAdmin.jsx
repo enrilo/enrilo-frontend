@@ -538,7 +538,7 @@
 //                 )}
 
 //                 {confirmOpen && (
-//                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+//                     <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
 //                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
 //                             <p className="text-center font-medium mb-5">{confirmMessage}</p>
 //                             <div className="flex justify-center gap-4">
@@ -554,7 +554,7 @@
 //                 )}
 
 //                 {messageOpen && (
-//                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+//                     <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
 //                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
 //                             <p className="mb-4">{modalMessage}</p>
 //                                 <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setMessageOpen(false)} >
@@ -565,7 +565,7 @@
 //                 )}
 
 //                 {failedToSaveMsgOpen && (
-//                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+//                     <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
 //                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
 //                             <p className="mb-4">{failedToSaveMessage}</p>
 //                                 <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
@@ -577,7 +577,7 @@
 
                 
 //                 {saveSuccessfulMsgOpen && (
-//                     <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+//                     <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
 //                         <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
 //                             <p className="mb-4">{saveSuccessfulMessage}</p>
 //                             <button className="bg-[#1E293B] text-white border-2 px-4 py-2 rounded-md w-24 hover:bg-[#1D4ED8] transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
@@ -1118,7 +1118,7 @@ export default function EditSuperAdmin() {
                         </div>
                     )}
                     {confirmOpen && (
-                        <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="text-center font-medium text-xl mb-5">{confirmMessage}</p>
                                 <div className="flex justify-center gap-4">
@@ -1133,7 +1133,7 @@ export default function EditSuperAdmin() {
                         </div>
                     )}
                     {messageOpen && (
-                        <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="mb-4 text-xl">{modalMessage}</p>
                                 <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => setMessageOpen(false)} >
@@ -1144,7 +1144,7 @@ export default function EditSuperAdmin() {
                     )}
 
                     {failedToSaveMsgOpen && (
-                        <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="mb-4 text-xl">{failedToSaveMessage}</p>
                                 <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
@@ -1155,7 +1155,7 @@ export default function EditSuperAdmin() {
                     )}
 
                     {saveSuccessfulMsgOpen && (
-                        <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="mb-4 text-xl">{saveSuccessfulMessage}</p>
                                 <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
@@ -1166,7 +1166,7 @@ export default function EditSuperAdmin() {
                     )}
 
                     {pageLoading && (
-                        <div className="fixed inset-0 bg-[#334155] bg-opacity-60 flex justify-center items-center z-50">
+                        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="text-xl font-semibold flex justify-center items-center gap-3">
                                     {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}

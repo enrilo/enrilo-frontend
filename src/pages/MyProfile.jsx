@@ -224,7 +224,7 @@ export default function MyProfile() {
             </div>
             
             {previewOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-[#334155] bg-opacity-50 z-50">
+                <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
                     <div className="bg-white rounded-2xl shadow-lg p-4 max-w-5xl max-h-2xl w-full">
                         <div className="flex justify-between items-center mb-2">
                             <div className='text-xl font-semibold p-1'>

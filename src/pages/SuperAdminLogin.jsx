@@ -86,7 +86,7 @@ export default function SuperAdminLogin() {
 
       {/* Custom Modal */}
       {messageOpen && (
-        <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
           <div className="bg-white text-[#334155] rounded-lg p-6 max-w-lg w-full shadow-xl text-center">
             <p className="mb-6 text-xl font-medium">{modalMessage}</p>
             <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-5 py-3 rounded-md w-28 transition cursor-pointer text-base" onClick={() => { setMessageOpen(false); if (modalMessage.includes("successfully")) { navigate("/dashboard"); } }}>
