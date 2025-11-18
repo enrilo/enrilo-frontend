@@ -221,7 +221,7 @@ export default function AllSuperAdminPage() {
           </div>
 
           {showConfirmDelete && (
-            <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+            <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
               <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                 <p className="text-center font-medium text-xl mb-5">Are you sure you want to delete this super admin?</p>
                 <div className="flex justify-center gap-4">
@@ -237,12 +237,14 @@ export default function AllSuperAdminPage() {
           )}
 
           {showSuccess && (
-            <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center">
-              <div className="flex flex-row bg-[rgb(7,57,106)] text-white p-3 rounded-lg shadow-lg">
-                <p className="mb-4 text-xl">Super Admin has been deleted!</p>
-                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setShowSuccess(false); window.location.reload(true); }}>
+            <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                <p className="text-center font-medium text-xl mb-5">Super Admin has been deleted!</p>
+                <div className="flex justify-center gap-4">
+                  <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setShowSuccess(false); window.location.reload(true); }}>
                   OK
                 </button>
+                </div>
               </div>
             </div>
           )}

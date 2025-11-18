@@ -189,7 +189,7 @@ export default function Sidebar() {
 
       {/* ✅ Logout confirmation modal */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-[#334155] bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
           <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
             <h3 className="text-lg font-semibold mb-3">Confirm Logout</h3>
             <p className="mb-5">Are you sure you want to log out?</p>
