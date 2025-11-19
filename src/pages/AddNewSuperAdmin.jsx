@@ -896,35 +896,65 @@ export default function AddNewSuperAdmin() {
     };
   }, [localProfileFile, formData.photo_url]);
   
-    const clearRow = async (index) => {
-      const filePath = formData.documents[index]?.url;
-      if (filePath) {
-          setConfirmMessage("Are you sure you want to delete this row?");
-          setConfirmAction(() => async () => {
-              try {
-                  const refToDelete = ref(storage, filePath);
-                  await deleteObject(refToDelete);
-              } catch {
-                  setModalMessage("Failed to delete file.");
-                  setMessageOpen(true);
-              }
-              setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
-          });
-          setConfirmOpen(true);
-      } else {
-          setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
-      }
-      const docsCopy = [...localDocuments];
+  // const clearRow = async (index) => {
+  //   const filePath = formData.documents[index]?.url;
+  //   if (filePath) {
+  //     setConfirmMessage("Are you sure you want to delete this row?");
+  //     setConfirmAction(() => () => {
+  //     const docsCopy = [...localDocuments];
+  //     docsCopy[index] = {
+  //       ...docsCopy[index],
+  //       file: null,
+  //       url: "",
+  //       uploaded_at: Date.now(),
+  //     };
+  //     setLocalDocuments(docsCopy);
+  //   });
+  //     // setConfirmAction(() => async () => {
+  //     //   try {
+  //     //       const refToDelete = ref(storage, filePath);
+  //     //       await deleteObject(refToDelete);
+  //     //   } catch {
+  //     //       setModalMessage("Failed to delete file.");
+  //     //       setMessageOpen(true);
+  //     //   }
+  //     //     setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
+  //     // });
+  //     setConfirmOpen(true);
+  //   } else {
+  //     setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
+  //   }
+  //   const docsCopy = [...localDocuments];
 
-      docsCopy[index] = {
-          name: "",
-          file: null,
-          url: "",
-          number: "",
-          uploaded_at: Date.now(),
-      };
-      setLocalDocuments(docsCopy);
+  //   docsCopy[index] = {
+  //     name: "",
+  //     file: null,
+  //     url: "",
+  //     number: "",
+  //     uploaded_at: Date.now(),
+  //   };
+  //   setLocalDocuments(docsCopy);
+  // };
+
+  const clearRow = (index) => {
+    // Reset the document row in localDocuments
+    const docsCopy = [...localDocuments];
+    docsCopy[index] = {
+      name: "",
+      file: null,
+      url: "",
+      number: "",
+      uploaded_at: Date.now(),
     };
+    setLocalDocuments(docsCopy);
+
+    // Also reset the formData.documents array at the same index
+    setFormData((prev) => {
+      const docs = [...prev.documents];
+      docs[index] = { ...docs[index], name: "", file: null, url: "", number: "" };
+      return { ...prev, documents: docs };
+    });
+  };
 
   return (
     <main className="flex-1 overflow-y-auto p-6">
