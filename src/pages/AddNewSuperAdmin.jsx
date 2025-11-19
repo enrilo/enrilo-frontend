@@ -530,6 +530,7 @@ export default function AddNewSuperAdmin() {
   const options = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
 
   const idOptions = [
+    { value: "", label: "" },
     { value: "aadhar_card", label: "Aadhar Card" },
     { value: "pan_card", label: "Pan Card" }
   ];
@@ -894,6 +895,36 @@ export default function AddNewSuperAdmin() {
       }
     };
   }, [localProfileFile, formData.photo_url]);
+  
+    const clearRow = async (index) => {
+      const filePath = formData.documents[index]?.url;
+      if (filePath) {
+          setConfirmMessage("Are you sure you want to delete this row?");
+          setConfirmAction(() => async () => {
+              try {
+                  const refToDelete = ref(storage, filePath);
+                  await deleteObject(refToDelete);
+              } catch {
+                  setModalMessage("Failed to delete file.");
+                  setMessageOpen(true);
+              }
+              setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
+          });
+          setConfirmOpen(true);
+      } else {
+          setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
+      }
+      const docsCopy = [...localDocuments];
+
+      docsCopy[index] = {
+          name: "",
+          file: null,
+          url: "",
+          number: "",
+          uploaded_at: Date.now(),
+      };
+      setLocalDocuments(docsCopy);
+    };
 
   return (
     <main className="flex-1 overflow-y-auto p-6">
@@ -901,7 +932,7 @@ export default function AddNewSuperAdmin() {
         <div className="bg-white rounded-2xl shadow p-6 max-w-6xl mx-auto">
           {/* PROFILE UPLOAD */}
 
-          <div className='text-2xl underline font-semibold mb-2'>
+          <div className='text-2xl underline font-semibold mb-5'>
             Personal Details:
           </div>
           <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
@@ -947,13 +978,11 @@ export default function AddNewSuperAdmin() {
               </div>
 
               <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }} />
-
               <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
-
               <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}  />
             </div>
 
-            <div className='text-2xl underline font-semibold mb-2'>
+            <div className='text-2xl underline font-semibold mb-5'>
               Home Address:
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
@@ -965,9 +994,9 @@ export default function AddNewSuperAdmin() {
               <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
             </div>
 
-            <div className='text-2xl underline font-semibold mb-2'>
+            <div className='text-2xl underline font-semibold mb-5'>
               Emergency Contact Details:
-            </div>            
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
               <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} required sx={asteriskColorStyle} />
               <div className="w-full flex flex-row gap-3">
@@ -984,8 +1013,7 @@ export default function AddNewSuperAdmin() {
               <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
             </div>
 
-
-            <div className='text-2xl underline font-semibold mb-2'>
+            <div className='text-2xl underline font-semibold mb-5'>
               Documents:
             </div>
             {/* {localDocuments.map((doc, i) => (
@@ -1028,7 +1056,7 @@ export default function AddNewSuperAdmin() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
 
                   {/* Document Type Dropdown */}
-                  <Select id={`documents_${i}_name`} placeholder="Select Document Type" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                  <Select id={`documents_${i}_name`} placeholder="Select Document Type" isSearchable menuPortalTarget={document.body} styles={selectStyles}
                     options={idOptions.filter((opt) =>
                       i === 0 ? opt.value !== localDocuments[1]?.name : opt.value !== localDocuments[0]?.name
                     )}
@@ -1070,6 +1098,10 @@ export default function AddNewSuperAdmin() {
                         <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)}>Remove</button>
                       )}
                     </div>
+                  </div>
+
+                  <div className="flex flex-row">
+                      <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => clearRow(i)}>Clear Row</button>
                   </div>
                 </div>
               </div>
