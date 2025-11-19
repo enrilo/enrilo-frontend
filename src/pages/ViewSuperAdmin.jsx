@@ -29,6 +29,7 @@ export default function ViewSuperAdmin() {
         zipcode: "",
         emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
         documents: [{ name: "", url: "", number: "", uploaded_at: "" }],
+        is_active:null
     });
 
     useEffect(() =>{
@@ -57,6 +58,7 @@ export default function ViewSuperAdmin() {
                     console.log("data.success === false");
                     return;
                 }
+                console.log(`data.data.superAdmin:${JSON.stringify(data.data.superAdmin)}`);
                 
                 setFormData(data.data.superAdmin);
                 setPageLoading(false);
@@ -155,7 +157,12 @@ export default function ViewSuperAdmin() {
         <main className="flex-1 overflow-y-auto p-6">
             <div className="p-4 sm:p-6">
                 <div className="bg-white rounded-2xl shadow p-6 gap-5 max-w-6xl mx-auto items-center">
-                    <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
+                    {!formData.is_active && (
+                        <div className='text-2xl font-bold flex flex-row justify-center mb-5'>
+                            This Super Admin is Not Active Anymore!
+                        </div>
+                    )}
+                    <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 hover:bg-gray-50 transition">
                         <div className="flex flex-col items-center">
                             <img src={formData.photo_url || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"} alt="Profile" className="w-auto h-64 object-cover rounded-lg mb-2" />
                         </div>
@@ -201,7 +208,7 @@ export default function ViewSuperAdmin() {
                     <div className='text-2xl font-semibold underline mb-2'>
                         Emergency Contact:
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3  gap-5 mb-8">
+                    <div className={`grid grid-cols-1 md:grid-cols-3 gap-5 ${formData.documents && formData.documents.some(doc => doc.name || doc.number) ? "mb-8" : "mb-15"}`}>
                         <div className='text-xl'>
                             <span className="font-semibold">Name:</span> <br /> {formData.emergency_contact.name}
                         </div>
@@ -252,7 +259,7 @@ export default function ViewSuperAdmin() {
                             <div className='text-2xl font-semibold underline mb-2'>
                             Documents:
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-15">
                             {formData.documents.map((doc, index) => {
                                 // Skip empty documents
                                 if (!doc.name && !doc.number) return null;
