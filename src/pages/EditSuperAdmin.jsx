@@ -614,7 +614,7 @@ export default function EditSuperAdmin() {
     const [uploadingIndex, setUploadingIndex] = useState(null);
     const [uploadingProgress, setUploadingProgress] = useState(0);
     const [uploadingProfile, setUploadingProfile] = useState(false);
-    const [selectedCode, setSelectedCode] = useState(null);
+    const [selectedCountryCode, setSelectedCountryCode] = useState(null);
     const [selectedEmergencyCode, setSelectedEmergencyCode] = useState(null);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [confirmMessage, setConfirmMessage] = useState("");
@@ -629,6 +629,8 @@ export default function EditSuperAdmin() {
     const [deletedProfile, setDeletedProfile] = useState(false);
     const [newProfileFile, setNewProfileFile] = useState(null);
     const [pageLoading, setPageLoading] = useState(false);
+    const [isUserActive, setIsUserActive] = useState(null);
+    const [currentUserID, setCurrentUserID] = useState('');
     const [id1, setId1] = useState(null); // first dropdown
     const [id2, setId2] = useState(null); // second dropdown
     const [tempClearedRows, setTempClearedRows] = useState({}); // { index: true }
@@ -652,6 +654,7 @@ export default function EditSuperAdmin() {
         zipcode: "",
         emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
         documents: [{ name: "", url: "", number: "", uploaded_at: Date.now() }],
+        is_active:true
     });
 
     useEffect(() => {
@@ -659,7 +662,7 @@ export default function EditSuperAdmin() {
             const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
             const userState = JSON.parse(persistedRoot.user);
             const token = userState.currentUser?.data?.accessToken;
-
+            setCurrentUserID(userState.currentUser?.data?.id);
             const superAdminID = params.id;
             const res = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
                 method: "GET",
@@ -676,38 +679,32 @@ export default function EditSuperAdmin() {
             const fetchedAdmin = data.data.superAdmin;
             setFormData(prev => ({ ...prev, ...fetchedAdmin }));
 
-            const codeOption = options.find(opt => opt.value === fetchedAdmin.country_code);
-            setSelectedCode(codeOption || null);
+            const codeOption = countryCodeOptions.find(opt => opt.value === fetchedAdmin.country_code);
+            setSelectedCountryCode(codeOption || null);
 
-            const emergencyCodeOption = emergencyCountryCodeOptions.find(
-                opt => opt.value === fetchedAdmin.emergency_contact?.country_code
-            );
+            const userActiveStatus = isActiveUserDetailsOptions.find(opt => opt.value === fetchedAdmin.is_active);
+            setIsUserActive(userActiveStatus || null);
+
+            const emergencyCodeOption = emergencyCountryCodeOptions.find(opt => opt.value === fetchedAdmin.emergency_contact?.country_code);
             setSelectedEmergencyCode(emergencyCodeOption || null);
         };
 
         fetchSuperAdmin();
     }, []);
 
-    const emergencyCountryCodeOptions = countryCodes.map((country) => ({
-        value: country.code,
-        label: `${country.code} - ${country.name}`,
-    }));
+    const emergencyCountryCodeOptions = countryCodes.map((country) => ({value: country.code, label: `${country.code} - ${country.name}`, }));
 
-    const options = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
+    const countryCodeOptions = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
 
-    const idOptions = [
-        { value: "", label: "" },
-        { value: "aadhar_card", label: "Aadhar Card" },
-        { value: "pan_card", label: "Pan Card" }
-    ];
+    const isActiveUserDetails = [ { name: "Yes", code: true }, { name: "No", code: false }, ];
 
-    const filteredOptionsForId1 = idOptions.filter(
-        (opt) => opt.value !== id2?.value
-    );
+    const isActiveUserDetailsOptions = isActiveUserDetails.map((isActiveUser) => ({ value: isActiveUser.code, label: isActiveUser.name }));
 
-    const filteredOptionsForId2 = idOptions.filter(
-        (opt) => opt.value !== id1?.value
-    );
+    const idOptions = [ { value: "", label: "" }, { value: "aadhar_card", label: "Aadhar Card" }, { value: "pan_card", label: "Pan Card" } ];
+
+    const filteredOptionsForId1 = idOptions.filter( (opt) => opt.value !== id2?.value );
+
+    const filteredOptionsForId2 = idOptions.filter( (opt) => opt.value !== id1?.value );
 
     // --- UPLOAD FILE LOGIC ---
     const uploadFile = async (file, pathPrefix) => {
@@ -1006,29 +1003,47 @@ export default function EditSuperAdmin() {
         <main className="flex-1 overflow-y-auto p-6">
             <div className="p-4">
                 <div className="bg-white rounded-2xl shadow p-6 max-w-6xl mx-auto">
-                   <div className='text-2xl underline font-semibold mb-5'>
+                    {formData._id !== currentUserID && (
+                        <div className="flex flex-row items-center mb-10">
+                            <div className='text-2xl font-semibold mr-5'>
+                                Is This Super Admin Active?
+                            </div>
+                            <div className="max-w-[250px]">
+                                {/* <Select id="is_active" options={isActiveUserDetailsOptions} value={isUserActive} placeholder="Select Status" menuPortalTarget={document.body} styles={selectStyles} isSearchable required
+                                    onChange={(sel) => {
+                                        setIsUserActive(sel);
+                                        setFormData((p) => ({ ...p, is_active: sel.value }));
+                                }}/> */}
+                                <Select className="cursor-pointer" id="is_active" options={isActiveUserDetailsOptions} value={isUserActive} placeholder="Select Status" menuPortalTarget={document.body} styles={selectStyles} isSearchable required onChange={(sel) => { setIsUserActive(sel); setFormData((p) => ({ ...p, is_active: sel.value })); }} />
+                            </div>
+                        </div>
+                    )}
+                    <div className='text-2xl underline font-semibold mb-5'>
                         Personal Details:
                     </div>
                     {/* Profile Upload */}
-                    <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 cursor-pointer hover:bg-gray-50 transition">
+                    <div className={`flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 hover:bg-gray-50 transition ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer"}`}>
                         {!formData.photo_url || formData.photo_url === 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg' ? (
                             <>
-                                <div className="text-gray-400 text-3xl mb-2">🖼️</div>
-                                <label className="text-blue-600 font-medium cursor-pointer hover:underline">
+                                {/* <div className="text-gray-400 text-3xl mb-2 disabled:cursor-not-allowed">🖼️</div> */}
+                                <div className={`text-gray-400 text-3xl mb-2 ${!isUserActive?.value ? "cursor-not-allowed" : ""}`}>🖼️</div>
+                                <label className={`text-blue-600 font-medium hover:underline ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer"}`}>
                                     {uploadingProfile ? "Uploading..." : "Click Here To Add Profile Picture"}
-                                    <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} />
+                                    {/* <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} /> */}
+                                    <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile || !isUserActive?.value} className=" disabled:cursor-not-allowed" />
                                 </label>
                             </>
                         ) : (
                             <div className="flex flex-col items-center">
-                                <img src={formData.photo_url || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"} alt="Profile Photo" className="w-auto h-40 object-cover rounded-lg mb-2" />
+                                <img src={formData.photo_url || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"} alt="Profile Photo" className="w-auto h-40 object-cover rounded-lg mb-2" disabled={!isUserActive?.value} />
 
                                 <div className="flex gap-4">
-                                    <label className="text-blue-600 cursor-pointer hover:underline">
+                                    <label className={`text-blue-600 ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`}>
                                         Replace
-                                        <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} />
+                                        {/* <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} /> */}
+                                        <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile || !isUserActive?.value} />
                                     </label>
-                                    <button type="button" className="text-red-600 cursor-pointer hover:underline" onClick={handleDeleteProfileConfirm}>
+                                    <button type="button" className={`text-red-600 ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`} onClick={handleDeleteProfileConfirm} disabled={!isUserActive?.value}>
                                         Delete
                                     </button>
                                 </div>
@@ -1039,25 +1054,25 @@ export default function EditSuperAdmin() {
                     {/* FORM */}
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                            <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} />
+                            <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} disabled={!isUserActive?.value} />
 
                             {/* Phone */}
                             <div className="w-full flex gap-3">
                                 <div className="min-w-[140px]">
-                                    <Select id="country_code" options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                                    <Select id="country_code" options={countryCodeOptions} value={selectedCountryCode} isDisabled={!isUserActive?.value} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
                                         onChange={(sel) => {
-                                            setSelectedCode(sel);
+                                            setSelectedCountryCode(sel);
                                             setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
                                         }}
                                     />
                                 </div>
-                                <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
+                                <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} disabled={!isUserActive?.value} />
                             </div>
 
                             {/* Rest of the fields */}
-                            <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" }}}/>
-                            <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
-                            <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth />
+                            <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" }}} disabled={!isUserActive?.value} />
+                            <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth disabled={!isUserActive?.value} />
+                            <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth disabled={!isUserActive?.value} />
                         </div>
 
                         <div className='text-2xl underline font-semibold mb-5'>
@@ -1065,12 +1080,12 @@ export default function EditSuperAdmin() {
                         </div>
                         {/* Address */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                            <TextField id="street_1" value={formData.street_1} onChange={handleChange} label="Street 1" variant="outlined" fullWidth />
-                            <TextField id="street_2" value={formData.street_2} onChange={handleChange} label="Street 2" variant="outlined" fullWidth />
-                            <TextField id="city" value={formData.city} onChange={handleChange} label="City" variant="outlined" fullWidth />
-                            <TextField id="state" value={formData.state} onChange={handleChange} label="State" variant="outlined" fullWidth />
-                            <TextField id="country" value={formData.country} onChange={handleChange} label="Country" variant="outlined" fullWidth />
-                            <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
+                            <TextField id="street_1" value={formData.street_1} onChange={handleChange} disabled={!isUserActive?.value} label="Street 1" variant="outlined" fullWidth />
+                            <TextField id="street_2" value={formData.street_2} onChange={handleChange} disabled={!isUserActive?.value} label="Street 2" variant="outlined" fullWidth />
+                            <TextField id="city" value={formData.city} onChange={handleChange} disabled={!isUserActive?.value} label="City" variant="outlined" fullWidth />
+                            <TextField id="state" value={formData.state} onChange={handleChange} disabled={!isUserActive?.value} label="State" variant="outlined" fullWidth />
+                            <TextField id="country" value={formData.country} onChange={handleChange} disabled={!isUserActive?.value} label="Country" variant="outlined" fullWidth />
+                            <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} disabled={!isUserActive?.value} label="Zipcode" variant="outlined" fullWidth />
                         </div>
 
                         <div className='text-2xl underline font-semibold mb-5'>
@@ -1078,19 +1093,19 @@ export default function EditSuperAdmin() {
                         </div>
                         {/* Emergency Contact */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                            <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" fullWidth value={formData.emergency_contact.name} onChange={handleChange} required sx={asteriskColorStyle} />
+                            <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" value={formData.emergency_contact.name} onChange={handleChange} disabled={!isUserActive?.value} sx={asteriskColorStyle} required fullWidth />
                             <div className="w-full flex flex-row gap-3">
                                 <div className="min-w-[140px]">
-                                    <Select id="emergency_country_code" options={emergencyCountryCodeOptions} value={selectedEmergencyCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} styles={selectStyles} required
+                                    <Select id="emergency_country_code" options={emergencyCountryCodeOptions} value={selectedEmergencyCode} placeholder="Country Code" menuPortalTarget={document.body} styles={selectStyles} isDisabled={!isUserActive?.value} required isSearchable
                                         onChange={(selected) => {
                                             setSelectedEmergencyCode(selected);
                                             setFormData((prev) => ({ ...prev, emergency_contact: { ...prev.emergency_contact, country_code: selected?.value || "" } }));
                                         }}
                                     />
                                 </div>
-                                <TextField id="emergency_phone" type="number" label="Emergency Contact Phone" variant="outlined" fullWidth value={formData.emergency_contact.phone} onChange={handleChange} required sx={asteriskColorStyle} slotProps={slotPropsStyle} />
+                                <TextField id="emergency_phone" type="number" label="Emergency Contact Phone" variant="outlined" value={formData.emergency_contact.phone} onChange={handleChange} disabled={!isUserActive?.value} sx={asteriskColorStyle} slotProps={slotPropsStyle} required fullWidth />
                             </div>
-                            <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
+                            <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" value={formData.emergency_contact.relation} onChange={handleChange} sx={asteriskColorStyle} disabled={!isUserActive?.value} required fullWidth />
                         </div>
                     <div className='text-2xl underline font-semibold mb-5'>
                         Documents:
@@ -1103,15 +1118,15 @@ export default function EditSuperAdmin() {
                         return (
                         <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
-                                <Select id={`documents_${i}_name`} placeholder="Select Document Type" isSearchable menuPortalTarget={document.body} styles={selectStyles}
+                                <Select isSearchable id={`documents_${i}_name`} placeholder="Select Document Type" menuPortalTarget={document.body} styles={selectStyles} disabled={!isUserActive?.value}
                                     options={idOptions.filter((opt) => i === 0 ? opt.value !== formData.documents[1]?.name : opt.value !== formData.documents[0]?.name )}
                                     value={ displayName ? { value: displayName, label: idOptions.find((o) => o.value === displayName)?.label || displayName } : null }
                                     onChange={(sel) => handleChange({ target: {id: `documents_${i}_name`, value: sel?.value || "", } })}
                                 />
-                                <TextField id={`documents_${i}_number`} label="Document Number" value={displayNumber} onChange={handleChange} fullWidth />
+                                <TextField id={`documents_${i}_number`} label="Document Number" value={displayNumber} onChange={handleChange} disabled={!isUserActive?.value} fullWidth />
 
                                 <div className="flex flex-col gap-2">
-                                    <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle}>
+                                    <Button variant="outlined" component="label" disabled={uploadingIndex === i || !isUserActive?.value} sx={selectDocumentBtnStyle}>
                                         {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : displayUrl ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
                                         <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
                                     </Button>
@@ -1119,8 +1134,8 @@ export default function EditSuperAdmin() {
                                     {displayUrl && (
                                         <div className="flex flex-col items-center gap-3">
                                             <div className="flex flex-row justify-between w-full">
-                                                <Button variant="outlined" onClick={() => { setPreviewUrl(displayUrl); setPreviewOpen(true); }} sx={previewDocumentBtnStyle}>PREVIEW</Button>
-                                                <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
+                                                <Button variant="outlined" onClick={() => { setPreviewUrl(displayUrl); setPreviewOpen(true); }} sx={previewDocumentBtnStyle} disabled={!isUserActive?.value}>PREVIEW</Button>
+                                                <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)} disabled={!isUserActive?.value}>Delete</Button> 
                                             </div>
                                         </div>
                                     )}
@@ -1128,10 +1143,10 @@ export default function EditSuperAdmin() {
                             </div>
 
                             <div className="flex flex-row justify-between">
-                                <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => clearRow(i)}>Clear Row</button>
+                                <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => clearRow(i)} disabled={!isUserActive?.value}>Clear Row</button>
                                 <div className="flex">
                                         {formData.documents.length > 1 && (
-                                            <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)}>Remove Row</button>
+                                            <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
                                         )}
                                 </div>
                             </div>
@@ -1141,11 +1156,11 @@ export default function EditSuperAdmin() {
 
                     {formData.documents.length < 2 && (
                         formData.documents.length === 0 ? (
-                            <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument} >
+                            <button type="button" className={`col-span-3 mb-4 text-blue-600 ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`} onClick={addDocument} disabled={!isUserActive?.value}>
                                 + Add New Document
                             </button>
                         ) : (
-                            <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument} >
+                            <button type="button" className={`col-span-3 mb-4 text-blue-600 ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`} onClick={addDocument} disabled={!isUserActive?.value}>
                                 + Add Another Document
                             </button>
                         )
