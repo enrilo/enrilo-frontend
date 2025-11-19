@@ -1107,65 +1107,74 @@ export default function EditSuperAdmin() {
                             </div>
                             <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" value={formData.emergency_contact.relation} onChange={handleChange} sx={asteriskColorStyle} disabled={!isUserActive?.value} required fullWidth />
                         </div>
-                    <div className='text-2xl underline font-semibold mb-5'>
-                        Documents:
-                    </div>
-                    {Array.isArray(formData.documents) && formData.documents.slice(0, 2).map((doc, i) => {
-                        const displayName = doc?.name || "";
-                        const displayNumber = doc?.number || "";
-                        const displayUrl = doc?.url || "";
-
-                        return (
-                        <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
-                                <Select isSearchable id={`documents_${i}_name`} placeholder="Select Document Type" menuPortalTarget={document.body} styles={selectStyles} disabled={!isUserActive?.value}
-                                    options={idOptions.filter((opt) => i === 0 ? opt.value !== formData.documents[1]?.name : opt.value !== formData.documents[0]?.name )}
-                                    value={ displayName ? { value: displayName, label: idOptions.find((o) => o.value === displayName)?.label || displayName } : null }
-                                    onChange={(sel) => handleChange({ target: {id: `documents_${i}_name`, value: sel?.value || "", } })}
-                                />
-                                <TextField id={`documents_${i}_number`} label="Document Number" value={displayNumber} onChange={handleChange} disabled={!isUserActive?.value} fullWidth />
-
-                                <div className="flex flex-col gap-2">
-                                    <Button variant="outlined" component="label" disabled={uploadingIndex === i || !isUserActive?.value} sx={selectDocumentBtnStyle}>
-                                        {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : displayUrl ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
-                                        <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
-                                    </Button>
-
-                                    {displayUrl && (
-                                        <div className="flex flex-col items-center gap-3">
-                                            <div className="flex flex-row justify-between w-full">
-                                                <Button variant="outlined" onClick={() => { setPreviewUrl(displayUrl); setPreviewOpen(true); }} sx={previewDocumentBtnStyle} disabled={!isUserActive?.value}>PREVIEW</Button>
-                                                <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)} disabled={!isUserActive?.value}>Delete</Button> 
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="flex flex-row justify-between">
-                                <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => clearRow(i)} disabled={!isUserActive?.value}>Clear Row</button>
-                                <div className="flex">
-                                        {formData.documents.length > 1 && (
-                                            <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
-                                        )}
-                                </div>
-                            </div>
+                        <div className='text-2xl underline font-semibold mb-5'>
+                            Documents:
                         </div>
-                        );
-                    })}
+                        {
+                            formData.documents.length === 0 && (
+                                <div className='text-lg font-semibold mb-5'>
+                                    This Super Admin Has No Associated Documents
+                                </div>
+                            )
+                        }
+                        {Array.isArray(formData.documents) && formData.documents.slice(0, 2).map((doc, i) => {
+                            const displayName = doc?.name || "";
+                            const displayNumber = doc?.number || "";
+                            const displayUrl = doc?.url || "";
 
-                    {formData.documents.length < 2 && (
-                        formData.documents.length === 0 ? (
-                            <button type="button" className={`col-span-3 mb-4 text-blue-600 ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`} onClick={addDocument} disabled={!isUserActive?.value}>
-                                + Add New Document
-                            </button>
-                        ) : (
-                            <button type="button" className={`col-span-3 mb-4 text-blue-600 ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`} onClick={addDocument} disabled={!isUserActive?.value}>
-                                + Add Another Document
-                            </button>
-                        )
-                    )}
+                            return (
+                            <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+                                    <Select isSearchable id={`documents_${i}_name`} placeholder="Select Document Type" menuPortalTarget={document.body} styles={selectStyles} disabled={!isUserActive?.value}
+                                        options={idOptions.filter((opt) => i === 0 ? opt.value !== formData.documents[1]?.name : opt.value !== formData.documents[0]?.name )}
+                                        value={ displayName ? { value: displayName, label: idOptions.find((o) => o.value === displayName)?.label || displayName } : null }
+                                        onChange={(sel) => handleChange({ target: {id: `documents_${i}_name`, value: sel?.value || "", } })}
+                                    />
+                                    <TextField id={`documents_${i}_number`} label="Document Number" value={displayNumber} onChange={handleChange} disabled={!isUserActive?.value} fullWidth />
 
+                                    <div className="flex flex-col gap-2">
+                                        <Button variant="outlined" component="label" disabled={uploadingIndex === i || !isUserActive?.value} sx={selectDocumentBtnStyle}>
+                                            {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : displayUrl ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
+                                            <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
+                                        </Button>
+
+                                        {displayUrl && (
+                                            <div className="flex flex-col items-center gap-3">
+                                                <div className="flex flex-row justify-between w-full">
+                                                    <Button variant="outlined" onClick={() => { setPreviewUrl(displayUrl); setPreviewOpen(true); }} sx={previewDocumentBtnStyle} disabled={!isUserActive?.value}>PREVIEW</Button>
+                                                    <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)} disabled={!isUserActive?.value}>Delete</Button> 
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-row justify-between">
+                                    <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => clearRow(i)} disabled={!isUserActive?.value}>Clear Row</button>
+                                    <div className="flex">
+                                            {formData.documents.length > 1 && (
+                                                <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
+                                            )}
+                                    </div>
+                                </div>
+                            </div>
+                            );
+                        })}
+                        {
+                            isUserActive?.value && (
+                                formData.documents.length < 2 && (
+                                    formData.documents.length === 0 ? (
+                                        <button type="button" className="col-span-3 mb-4 text-blue-600 cursor-pointer hover:underline" onClick={addDocument} disabled={!isUserActive?.value}>
+                                            + Add New Document
+                                        </button>
+                                    ) : (
+                                        <button type="button" className="col-span-3 mb-4 text-blue-600 cursor-pointer hover:underline" onClick={addDocument} disabled={!isUserActive?.value}>
+                                            + Add Another Document
+                                        </button>
+                                    )
+                                )
+                            )
+                        }
 
                         {/* Submit */}
                         <div className="col-span-3 mt-6 flex justify-center">
