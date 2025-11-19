@@ -17,6 +17,7 @@ export default function Sidebar() {
     {
       name: "Super Admin Details",
       icon: <Users size={18} />,
+      matchPrefixes:["/view-super-admin", "/edit-super-admin"],
       subMenu: [
         { name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/add-new-superadmin" },
         { name: "All Super Admin", icon: <Users size={18} />, path: "/all-super-admin" },
@@ -110,7 +111,9 @@ export default function Sidebar() {
           <ul className="mt-4 space-y-3">
             {menuItems.map((item, idx) => {
               const hasSubMenu = !!item.subMenu;
-              const isMenuActive = location.pathname === item.path || item.subMenu?.some(sub => sub.path === location.pathname);
+              // const isMenuActive = location.pathname === item.path || item.subMenu?.some(sub => sub.path === location.pathname);
+              const isMenuActive = location.pathname === item.path || item.subMenu?.some(sub => sub.path === location.pathname) || item.matchPrefixes?.some(prefix => location.pathname.startsWith(prefix));
+
 
               return (
                 <li key={idx} className="relative group">
