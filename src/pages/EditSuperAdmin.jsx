@@ -631,7 +631,8 @@ export default function EditSuperAdmin() {
     const [deletedProfile, setDeletedProfile] = useState(false);
     const [newProfileFile, setNewProfileFile] = useState(null);
     const [pageLoading, setPageLoading] = useState(false);
-
+    const [id1, setId1] = useState(null); // first dropdown
+    const [id2, setId2] = useState(null); // second dropdown
 
     const [formData, setFormData] = useState({
         photo_url: "",
@@ -693,6 +694,20 @@ export default function EditSuperAdmin() {
     }));
 
     const options = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
+
+    const idOptions = [
+        { value: "", label: "" },
+        { value: "aadhar_card", label: "Aadhar Card" },
+        { value: "pan_card", label: "Pan Card" }
+    ];
+
+    const filteredOptionsForId1 = idOptions.filter(
+        (opt) => opt.value !== id2?.value
+    );
+
+    const filteredOptionsForId2 = idOptions.filter(
+        (opt) => opt.value !== id1?.value
+    );
 
     // --- UPLOAD FILE LOGIC ---
     const uploadFile = async (file, pathPrefix) => {
@@ -896,6 +911,38 @@ export default function EditSuperAdmin() {
         }
     };
 
+    const clearRow = async (index) => {
+        const filePath = formData.documents[index]?.url;
+        if (filePath) {
+            setConfirmMessage("Are you sure you want to delete this row?");
+            setConfirmAction(() => async () => {
+                try {
+                    const refToDelete = ref(storage, filePath);
+                    await deleteObject(refToDelete);
+                } catch {
+                    setModalMessage("Failed to delete file.");
+                    setMessageOpen(true);
+                }
+                setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
+            });
+            setConfirmOpen(true);
+        } else {
+            setFormData((p) => ({ ...p, documents: p.documents.filter((_, i) => i !== index) }));
+        }
+        const docsCopy = [...localDocuments];
+
+        docsCopy[index] = {
+            name: "",
+            file: null,
+            url: "",
+            number: "",
+            uploaded_at: Date.now(),
+        };
+
+        setLocalDocuments(docsCopy);
+
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setPageLoading(true);
@@ -1058,7 +1105,7 @@ export default function EditSuperAdmin() {
                         <TextField id="emergency_relation" label="Emergency Contact Relation" variant="outlined" fullWidth value={formData.emergency_contact.relation} onChange={handleChange} required sx={asteriskColorStyle} />
 
                         {/* Documents Section */}
-                        {formData.documents.map((doc, i) => (
+                        {/* {formData.documents.map((doc, i) => (
                             <div key={i} className="col-span-3 border rounded-md p-4">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                     <TextField id={`documents_${i}_name`} label="Document Type" value={doc.name} onChange={handleChange} fullWidth />
@@ -1086,11 +1133,89 @@ export default function EditSuperAdmin() {
                                     </div>
                                 </div>
                             </div>
+                        ))} */}
+
+                        {formData.documents.slice(0, 2).map((doc, i) => (
+                            <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+                                    {/* Document Type Dropdown */}
+                                    <Select id={`documents_${i}_name`} placeholder="Select Document Type" isSearchable menuPortalTarget={document.body} styles={selectStyles}
+                                        options={idOptions.filter((opt) => i === 0 ? opt.value !== formData.documents[1]?.name : opt.value !== formData.documents[0]?.name )}
+                                        value={ doc.name ? { value: doc.name, label: idOptions.find((o) => o.value === doc.name)?.label || doc.name, } : null }
+                                        onChange={(sel) => handleChange({ target: {id: `documents_${i}_name`, value: sel?.value || "", } }) }
+                                    />
+
+                                    {/* Document Number */}
+                                    <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
+
+                                    {/* File Upload */}
+                                    {/* <div className="flex flex-col gap-2">
+                                        <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle} >
+                                            {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
+
+                                            <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
+                                        </Button>
+
+                                        {doc.file && (
+                                        <div className="flex flex-col items-center gap-3 mt-2">
+                                            <div className="flex flex-row justify-between w-full">
+                                                <Button variant="outlined" sx={previewDocumentBtnStyle} onClick={() => handlePreview(doc.file)} >
+                                                    Preview
+                                                </Button>
+                                                <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>
+                                                    Delete
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        )}
+
+                                        <div className="mt-2 flex justify-end">
+                                            {formData.documents.length > 1 && (
+                                                <button type="button" className="text-red-600 hover:underline cursor-pointer"onClick={() => removeDocument(i)} >
+                                                Remove
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div> */}
+                                    <div className="flex flex-col gap-2">
+                                        <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle}>
+                                            {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
+                                            <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
+                                        </Button>
+
+                                        {doc.url && (
+                                            <div className="flex flex-col items-center gap-3">
+                                                <div className="flex flex-row justify-between w-full">
+                                                    <Button variant="outlined" onClick={() => { setPreviewUrl(doc.url); setPreviewOpen(true); }} sx={previewDocumentBtnStyle}>PREVIEW</Button>
+                                                    <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div className="mt-2 flex">
+                                            {formData.documents.length > 1 && (
+                                                <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)}>Remove</button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-row">
+                                        <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => clearRow(i)}>Clear Row</button>
+                                    </div>
+                                </div>
+                            </div>
                         ))}
 
-                        <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument}>
+
+                        {formData.documents.length < 2 && (
+                            <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument} >
+                                + Add Another Document
+                            </button>
+                        )}
+
+
+                        {/* <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument}>
                             + Add Another Document
-                        </button>
+                        </button> */}
 
                         {/* Submit */}
                         <div className="col-span-3 mt-6 flex justify-center">
