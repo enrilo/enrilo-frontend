@@ -164,7 +164,13 @@ export default function Sidebar() {
             {bottomMenu.map((item, idx) => (
               <li key={idx}>
                 {item.action === "logout" ? (
-                  <MenuLink icon={item.icon} name={item.name} onClick={() => setShowLogoutConfirm(true)} className="cursor-pointer" />
+                  <div onClick={() => setShowLogoutConfirm(true)} className="flex items-center p-2 rounded-md cursor-pointer hover:bg-[#334155]">
+                    <span className="flex justify-center w-6">{item.icon}</span>
+                    {isOpen && <span className="ml-3 text-sm">{item.name}</span>}
+                  </div>
+
+
+                  // <MenuLink icon={item.icon} name={item.name} onClick={() => setShowLogoutConfirm(true)} className="cursor-pointer" />
                 ) : (
                   <Link to={item.path} className="flex items-center p-2 rounded-md cursor-pointer hover:bg-[#334155]">
                     <span className="flex justify-center w-6">{item.icon}</span>
