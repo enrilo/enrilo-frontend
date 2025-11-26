@@ -506,6 +506,7 @@ export default function AddNewSuperAdmin() {
   const [uploadingProgress, setUploadingProgress] = useState(0);
   const [uploadingProfile, setUploadingProfile] = useState(false);
   const [selectedCode, setSelectedCode] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
   const [selectedEmergencyCode, setSelectedEmergencyCode] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState("");
@@ -527,12 +528,17 @@ export default function AddNewSuperAdmin() {
     label: `${country.code} - ${country.name}`,
   }));
 
-  const options = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
+  const countryCodeOptions = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
 
   const idOptions = [
     { value: "", label: "" },
     { value: "aadhar_card", label: "Aadhar Card" },
     { value: "pan_card", label: "Pan Card" }
+  ];
+
+   const roleOptions = [
+    { value: "user", label: "User" },
+    { value: "admin", label: "Admin" }
   ];
 
   const filteredOptionsForId1 = idOptions.filter(
@@ -559,12 +565,22 @@ export default function AddNewSuperAdmin() {
     password: hashedPassword,
     email: "",
     position: "",
+    role:"",
     street_1: "",
     street_2: "",
     city: "",
     state: "",
     country: "",
     zipcode: "",
+    bank_details: {
+      account_number: "",
+      account_holder_name: "",
+      bank_name: "",
+      branch_name: "",
+      branch_address: "",
+      ifsc_code:"",
+      uploaded_at: { type: Date, default: Date.now },
+    },
     emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
     documents: [],
   });
@@ -997,7 +1013,7 @@ export default function AddNewSuperAdmin() {
 
               <div className="w-full flex gap-3">
                 <div className="min-w-[140px]">
-                  <Select options={options} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                  <Select options={countryCodeOptions} value={selectedCode} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
                     onChange={(sel) => {
                       setSelectedCode(sel);
                       setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
@@ -1010,6 +1026,12 @@ export default function AddNewSuperAdmin() {
               <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }} />
               <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth />
               <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}  />
+              <Select id="role" options={roleOptions} value={selectedRole} placeholder="Role" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                onChange={(sel) => {
+                  setSelectedRole(sel);
+                  setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
+                }}
+              />
             </div>
 
             <div className='text-2xl underline font-semibold mb-5'>
@@ -1022,6 +1044,18 @@ export default function AddNewSuperAdmin() {
               <TextField id="state" value={formData.state} onChange={handleChange} label="State" variant="outlined" fullWidth />
               <TextField id="country" value={formData.country} onChange={handleChange} label="Country" variant="outlined" fullWidth />
               <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} label="Zipcode" variant="outlined" fullWidth />
+            </div>
+
+            <div className='text-2xl underline font-semibold mb-5'>
+              Bank Details:
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+              <TextField id="account_holder_name" value={formData.bank_details.account_holder_name} onChange={handleChange} label="Account Holder Name" variant="outlined" fullWidth />
+              <TextField id="account_number" value={formData.bank_details.account_number} onChange={handleChange} label="Account Number" variant="outlined" fullWidth />
+              <TextField id="ifsc_code" value={formData.bank_details.ifsc_code} onChange={handleChange} label="IFSC Code" variant="outlined" fullWidth />
+              <TextField id="bank_name" value={formData.bank_details.bank_name} onChange={handleChange} label="Bank Name" variant="outlined" fullWidth />
+              <TextField id="branch_name" value={formData.bank_details.branch_name} onChange={handleChange} label="Branch Name" variant="outlined" fullWidth />
+              <TextField id="branch_address" value={formData.bank_details.branch_address} onChange={handleChange} label="Branch Address" variant="outlined" fullWidth />
             </div>
 
             <div className='text-2xl underline font-semibold mb-5'>
