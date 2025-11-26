@@ -630,6 +630,7 @@ export default function EditSuperAdmin() {
     const [newProfileFile, setNewProfileFile] = useState(null);
     const [pageLoading, setPageLoading] = useState(false);
     const [isUserActive, setIsUserActive] = useState(null);
+    const [selectedRole, setSelectedRole] = useState(null);
     const [currentUserID, setCurrentUserID] = useState('');
     const [id1, setId1] = useState(null); // first dropdown
     const [id2, setId2] = useState(null); // second dropdown
@@ -643,15 +644,25 @@ export default function EditSuperAdmin() {
         country_code: "",
         phone: "",
         company_email: "",
-        password: "",
+        // password: "",
         email: "",
         position: "",
+        role:"",
         street_1: "",
         street_2: "",
         city: "",
         state: "",
         country: "",
         zipcode: "",
+        bank_details: {
+            account_number: "",
+            account_holder_name: "",
+            bank_name: "",
+            branch_name: "",
+            branch_address: "",
+            ifsc_code:"",
+            uploaded_at: { type: Date, default: Date.now },
+        },
         emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
         documents: [{ name: "", url: "", number: "", uploaded_at: Date.now() }],
         is_active:true
@@ -700,7 +711,16 @@ export default function EditSuperAdmin() {
 
     const isActiveUserDetailsOptions = isActiveUserDetails.map((isActiveUser) => ({ value: isActiveUser.code, label: isActiveUser.name }));
 
-    const idOptions = [ { value: "", label: "" }, { value: "aadhar_card", label: "Aadhar Card" }, { value: "pan_card", label: "Pan Card" } ];
+    const idOptions = [ 
+        { value: "", label: "" },
+        { value: "aadhar_card", label: "Aadhar Card" },
+        { value: "pan_card", label: "Pan Card" }
+    ];
+  
+   const roleOptions = [
+        { value: "user", label: "User" },
+        { value: "admin", label: "Admin" }
+    ];
 
     const filteredOptionsForId1 = idOptions.filter( (opt) => opt.value !== id2?.value );
 
@@ -1073,6 +1093,12 @@ export default function EditSuperAdmin() {
                             <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" }}} disabled={!isUserActive?.value} />
                             <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth disabled={!isUserActive?.value} />
                             <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth disabled={!isUserActive?.value} />
+                            <Select id="role" options={roleOptions} value={selectedRole} placeholder="Role" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                                onChange={(sel) => {
+                                    setSelectedRole(sel);
+                                    setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
+                                }}
+                            />
                         </div>
 
                         <div className='text-2xl underline font-semibold mb-5'>
@@ -1086,6 +1112,18 @@ export default function EditSuperAdmin() {
                             <TextField id="state" value={formData.state} onChange={handleChange} disabled={!isUserActive?.value} label="State" variant="outlined" fullWidth />
                             <TextField id="country" value={formData.country} onChange={handleChange} disabled={!isUserActive?.value} label="Country" variant="outlined" fullWidth />
                             <TextField id="zipcode" value={formData.zipcode} onChange={handleChange} disabled={!isUserActive?.value} label="Zipcode" variant="outlined" fullWidth />
+                        </div>
+
+                        <div className='text-2xl underline font-semibold mb-5'>
+                            Bank Details:
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                            <TextField id="account_holder_name" value={formData.bank_details.account_holder_name} onChange={handleChange} label="Account Holder Name" variant="outlined" fullWidth />
+                            <TextField id="account_number" value={formData.bank_details.account_number} onChange={handleChange} label="Account Number" variant="outlined" fullWidth />
+                            <TextField id="ifsc_code" value={formData.bank_details.ifsc_code} onChange={handleChange} label="IFSC Code" variant="outlined" fullWidth />
+                            <TextField id="bank_name" value={formData.bank_details.bank_name} onChange={handleChange} label="Bank Name" variant="outlined" fullWidth />
+                            <TextField id="branch_name" value={formData.bank_details.branch_name} onChange={handleChange} label="Branch Name" variant="outlined" fullWidth />
+                            <TextField id="branch_address" value={formData.bank_details.branch_address} onChange={handleChange} label="Branch Address" variant="outlined" fullWidth />
                         </div>
 
                         <div className='text-2xl underline font-semibold mb-5'>
