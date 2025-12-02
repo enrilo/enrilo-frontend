@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { persistor } from "../../redux/store";
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Users, User, BriefcaseBusiness, UserPlus, IdCard, IndianRupeeIcon, LayoutDashboard, Building, Settings as SettingsIcon, LogOut, Menu, X, BriefcaseMedical, GraduationCap } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ Added useNavigate
 import enriloFullLogoSrc from '../../assets/images/transparent-background/enrilo-with-tagline-300x300.png';
@@ -63,23 +64,50 @@ export default function Sidebar() {
 
   const toggleSubMenu = (menuName) => setActiveMenu(activeMenu === menuName ? null : menuName);
 
+  // const handleLogout = async () => {
+  //   try {
+  //     const res = await fetch('http://localhost:3000/api/super-admins/logout', {
+  //       method: 'POST',
+  //       credentials: 'include',
+  //     });
+
+  //     const data = await res.json();
+  //     if (data.success) {
+  //       alert("You have been logged out successfully.");
+  //       navigate('/'); // ✅ redirect to home
+  //     } else {
+  //       alert("Logout failed. Try Again.");
+  //     }
+  //   } catch (err) {
+  //     console.error("Logout error:", err);
+  //     alert("⚠️ Server error while logging out.");
+  //   }
+  // };
+
   const handleLogout = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/super-admins/logout', {
-        method: 'POST',
-        credentials: 'include',
+      const res = await fetch("http://localhost:3000/api/super-admins/logout", {
+        method: "POST",
+        credentials: "include",
       });
 
       const data = await res.json();
       if (data.success) {
+
+        // 🔥 Clear Redux Persist cache
+        await persistor.purge();
+
+        // 🔥 Remove localStorage (optional but clean)
+        localStorage.clear();
+
         alert("You have been logged out successfully.");
-        navigate('/'); // ✅ redirect to home
+        navigate("/");
       } else {
         alert("Logout failed. Try Again.");
       }
     } catch (err) {
       console.error("Logout error:", err);
-      alert("⚠️ Server error while logging out.");
+      alert("⚠️ Server error during logout");
     }
   };
 

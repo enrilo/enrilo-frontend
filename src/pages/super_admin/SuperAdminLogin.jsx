@@ -2,7 +2,7 @@ import { TextField } from "@mui/material";
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { signInStart, signInSuccess, signInFailure } from '../../redux/user/userSlice';
 
 export default function SuperAdminLogin() {
   const [formData, setFormData] = useState({});

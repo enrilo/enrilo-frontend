@@ -486,12 +486,12 @@ import { TextField, Button } from "@mui/material";
 import Select from "react-select";
 import bcryptjs from "bcryptjs";
 import heic2any from "heic2any";
-import { countryCodes } from "./components/CountryCodeList";
+import { countryCodes } from "../components/CountryCodeList.js";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectStyles, asteriskColorStyle, slotPropsStyle, selectDocumentBtnStyle, previewDocumentBtnStyle } from "./styles/selectStyles";
+import { selectStyles, asteriskColorStyle, slotPropsStyle, selectDocumentBtnStyle, previewDocumentBtnStyle } from "../styles/selectStyles.js";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase.js";
+import { storage } from "../../firebase.js";
 
 export default function AddNewSuperAdmin() {
   const { loading } = useSelector((state) => state.user);
