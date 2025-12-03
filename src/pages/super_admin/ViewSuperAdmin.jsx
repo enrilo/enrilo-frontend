@@ -32,16 +32,18 @@ export default function ViewSuperAdmin() {
         is_active:null
     });
 
+    const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+    // Parse the nested user slice
+    const userState = JSON.parse(persistedRoot.user);
+    // Extract token
+    const token = userState.currentUser?.data?.accessToken;
+    const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+
     useEffect(() =>{
         const fetchSuperAdmin = async () => {
             try {
                 setPageLoading(true);
-                const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-                // Parse the nested user slice
-                const userState = JSON.parse(persistedRoot.user);
-                // Extract token
-                const token = userState.currentUser?.data?.accessToken;
-                console.log("Token from localStorage:", token);
+
                 const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
                     method: "GET",
                     headers: {
@@ -290,9 +292,22 @@ export default function ViewSuperAdmin() {
                         </>
                     )}
 
-                    
+                    {
+                        allowWriteAccess && (
+                            <div className="mt-6 flex flex-row justify-evenly">
+                                <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
+                                    <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
+                                        Edit Profile
+                                    </button>
+                                </Link>
 
-                    <div className="mt-6 flex flex-row justify-evenly">
+                                <button onClick={() => confirmDelete() } type="submit" className="bg-red-700 hover:bg-red-600 text-white font-semibold px-8 py-2 rounded-md transition cursor-pointer">
+                                    Delete Profile
+                                </button>
+                            </div>
+                        )
+                    }
+                    {/* <div className="mt-6 flex flex-row justify-evenly">
                         <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
                             <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                                 Edit Profile
@@ -302,7 +317,7 @@ export default function ViewSuperAdmin() {
                         <button onClick={() => confirmDelete() } type="submit" className="bg-red-700 hover:bg-red-600 text-white font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                             Delete Profile
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -356,23 +371,23 @@ export default function ViewSuperAdmin() {
             {/* Page Loading Code */}
             {pageLoading && (
                 <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
-                <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                    <p className="text-xl font-semibold flex justify-center items-center gap-3">
-                        {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}
-                        <div class="w-20 h-20">
-                            <svg class="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-                                <text x="50" y="68" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" font-size="100" font-weight="700" fill="currentColor">
-                                e
-                                </text>
-                            </svg>
+                    <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                        <div className="text-xl font-semibold flex justify-center items-center gap-3">
+                            {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}
+                            <div className="w-20 h-20">
+                                <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                                    <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
+                                    e
+                                    </text>
+                                </svg>
+                            </div>
+                            {/* Loading Your Super Admin Details... */}
+                            <div className="flex flex-col">
+                                <p className="text-xl font-semibold mb-2">Loading...</p>
+                                <p className="text-[#334155]">Please wait while we load your details.</p>
+                            </div>
                         </div>
-                        {/* Loading Your Super Admin Details... */}
-                        <div className="flex flex-col">
-                            <p className="text-xl font-semibold mb-2">Loading...</p>
-                            <p className="text-[#334155]">Please wait while we load your details.</p>
-                        </div>
-                    </p>
-                </div>
+                    </div>
                 </div>
             )}
         </main>

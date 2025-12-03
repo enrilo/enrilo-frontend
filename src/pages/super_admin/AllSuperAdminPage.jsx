@@ -15,6 +15,14 @@ export default function AllSuperAdminPage() {
   const [currentUserID, setCurrentUserID] = useState('');
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);  
+
+  const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+  // Parse the nested user slice
+  const userState = JSON.parse(persistedRoot.user);
+  // Extract token
+  const token = userState.currentUser?.data?.accessToken;
+  const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
 
   const confirmDelete = (id) => {
     console.log(`confirmDelete id:${id}`);
@@ -22,7 +30,7 @@ export default function AllSuperAdminPage() {
     setShowConfirmDelete(true);
   };
 
- const handleDeleteConfirmed = async () => {
+  const handleDeleteConfirmed = async () => {
     const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
     const userState = JSON.parse(persistedRoot.user);
     const token = userState.currentUser?.data?.accessToken;
@@ -38,8 +46,8 @@ export default function AllSuperAdminPage() {
     const data = await res.json();
     
     if(data.success === false){
-        console.log("data.success === false");
-        return;
+      console.log("data.success === false");
+      return;
     }
 
     if(data.data.superAdmin.photo_url.includes('firebase')) {
@@ -93,9 +101,10 @@ export default function AllSuperAdminPage() {
   useEffect(() => {
     const fetchSuperAdmin = async () => {
       try {
-        const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-        const userState = JSON.parse(persistedRoot.user);
-        const token = userState.currentUser?.data?.accessToken;
+        setPageLoading(true);
+        // const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+        // const userState = JSON.parse(persistedRoot.user);
+        // const token = userState.currentUser?.data?.accessToken;
         setCurrentUserEmail(userState.currentUser?.data?.company_email);
         setCurrentUserID(userState.currentUser?.data?.id);
         
@@ -109,9 +118,14 @@ export default function AllSuperAdminPage() {
         });
 
         const data = await res.json();
-        if (data.success === false) return;
+        if (data.success === false) {
+          setPageLoading(false);
+          return;
+        };
         setAllSuperAdmin(data.data.superAdmins);
+        setPageLoading(false);
       } catch (error) {
+        setPageLoading(false);
         console.error("Error fetching superadmin data:", error);
       }
     };
@@ -123,13 +137,25 @@ export default function AllSuperAdminPage() {
       <div className="p-4 sm:p-6">
         <div className="bg-white rounded-2xl shadow p-4 sm:p-6 max-w-7xl mx-auto">
           <div className="overflow-x-auto rounded-lg">
-            <div className="flex justify-end mb-5">
+            {/* <div className="flex justify-end mb-5">
               <Link to={`/add-new-superadmin`} className='flex flex-row justify-center'>
                 <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
                   Add New Super Admin
                 </button>
               </Link>
-            </div>
+            </div> */}
+
+            {
+              allowWriteAccess && (
+                <div className="flex justify-end mb-5">
+                  <Link to={`/add-new-superadmin`} className='flex flex-row justify-center'>
+                    <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
+                      Add New Super Admin
+                    </button>
+                  </Link>
+                </div>
+              )
+            }
 
             {/* === TABLE START === */}
             <table className="min-w-full text-sm md:text-[17px] text-left border-collapse rounded-lg">
@@ -160,10 +186,20 @@ export default function AllSuperAdminPage() {
                             <Link to={`/view-super-admin/${c._id}`}>
                               <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
                             </Link>
-                            <Link to={`/edit-super-admin/${c._id}`}>
+                            {
+                              allowWriteAccess && (
+                                <>
+                                  <Link to={`/edit-super-admin/${c._id}`}>
+                                    <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
+                                  </Link>
+                                  <button onClick={() => confirmDelete(c._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Delete</button>
+                                </>
+                              )
+                            }
+                            {/* <Link to={`/edit-super-admin/${c._id}`}>
                               <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
                             </Link>
-                            <button onClick={() => confirmDelete(c._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Delete</button>
+                            <button onClick={() => confirmDelete(c._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Delete</button> */}
                           </>
                         )}
                         {c.company_email === currentUserEmail && (
@@ -250,6 +286,28 @@ export default function AllSuperAdminPage() {
           )}
         </div>
       </div>
+
+      {pageLoading && (
+        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+          <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+            <div className="text-xl font-semibold flex justify-center items-center gap-3">
+              {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}
+              <div className="w-20 h-20">
+                <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                  <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
+                  e
+                  </text>
+                </svg>
+              </div>
+              {/* Loading All Super Admin Details... */}
+              <div className="flex flex-col">
+                <p className="text-xl font-semibold mb-2">Loading...</p>
+                <p className="text-[#334155]">Please wait while we load the details of all superadmin.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

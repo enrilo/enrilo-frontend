@@ -32,15 +32,20 @@ export default function MyProfile() {
         documents: [{ name: "", url: "", number: "", uploaded_at: "" }],
     });
 
+    const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+    // Parse the nested user slice
+    const userState = JSON.parse(persistedRoot.user);
+    // Extract token
+    const token = userState.currentUser?.data?.accessToken;
+    const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+
     useEffect(() =>{
         const fetchSuperAdmin = async () => {
             try {
                 // setLoading(true);
-                const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-                const userState = JSON.parse(persistedRoot.user);
-                
-                
-                const token = userState.currentUser?.data?.accessToken;
+                // const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+                // const userState = JSON.parse(persistedRoot.user);
+                // const token = userState.currentUser?.data?.accessToken;
 
                 const superAdminID = userState.currentUser.data.id;
                 // console.log("Token from localStorage:", token, "superAdminID: ", superAdminID);
@@ -211,15 +216,25 @@ export default function MyProfile() {
                         </>
                     )}
 
-                  
+                    {
+                        allowWriteAccess && (
+                            <div className="mt-6 flex flex-row justify-center">
+                                <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
+                                    <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
+                                        Edit Profile
+                                    </button>
+                                </Link>
+                            </div>
+                        )
+                    }
 
-                    <div className="mt-6 flex flex-row justify-center">
+                    {/* <div className="mt-6 flex flex-row justify-center">
                         <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
                             <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                                 Edit Profile
                             </button>
                         </Link>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             

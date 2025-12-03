@@ -1290,10 +1290,10 @@ export default function EditSuperAdmin() {
                     {pageLoading && (
                         <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                                <p className="text-xl font-semibold flex justify-center items-center gap-3">
-                                    <div class="w-20 h-20">
-                                        <svg class="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-                                            <text x="50" y="68" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" font-size="100" font-weight="700" fill="currentColor">
+                                <div className="text-xl font-semibold flex justify-center items-center gap-3">
+                                    <div className="w-20 h-20">
+                                        <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                                            <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
                                             e
                                             </text>
                                         </svg>
@@ -1303,7 +1303,7 @@ export default function EditSuperAdmin() {
                                         <p className="text-xl font-semibold mb-2">Loading...</p>
                                         <p className="text-[#334155]">Please wait while we save your details.</p>
                                     </div>
-                                </p>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -1964,9 +1964,9 @@ export default function EditSuperAdmin() {
 //                                 <p className="text-xl font-semibold flex justify-center items-center gap-3">
 //                                     {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}
 //                                    {/* <!-- Filled "e" spinner --> */}
-//                                     <div class="w-20 h-20">
+//                                     <div className="w-20 h-20">
 //                                         <svg class="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-//                                             <text x="50" y="68" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" font-size="100" font-weight="700" fill="currentColor">
+//                                             <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
 //                                             e
 //                                             </text>
 //                                         </svg>

@@ -42,17 +42,17 @@ import AddNewConsultancy from "./pages/AddNewConsultancy.jsx";
 import Header from "./pages/components/Header.jsx";
 import Footer from "./pages/components/Footer.jsx";
 import Sidebar from "./pages/components/Sidebar.jsx";
-import SuperAdminLogin from "./pages/SuperAdminLogin.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
+import SuperAdminLogin from "./pages/super_admin/SuperAdminLogin.jsx";
+import Dashboard from "./pages/super_admin/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import AllConsultanciesPage from "./pages/AllConsultanciesPage.jsx";
 import PrivateRoute from "./pages/components/PrivateRoute.jsx";
 import "./App.css";
-import AddNewSuperAdmin from "./pages/AddNewSuperAdmin.jsx";
-import AllSuperAdminPage from "./pages/AllSuperAdminPage.jsx";
-import ViewSuperAdmin from "./pages/ViewSuperAdmin.jsx";
-import EditSuperAdmin from "./pages/EditSuperAdmin.jsx";
-import MyProfile from "./pages/MyProfile.jsx";
+import AddNewSuperAdmin from "./pages/super_admin/AddNewSuperAdmin.jsx";
+import AllSuperAdminPage from "./pages/super_admin/AllSuperAdminPage.jsx";
+import ViewSuperAdmin from "./pages/super_admin/ViewSuperAdmin.jsx";
+import EditSuperAdmin from "./pages/super_admin/EditSuperAdmin.jsx";
+import MyProfile from "./pages/super_admin/MyProfile.jsx";
 
 function AppContent() {
   const location = useLocation();
