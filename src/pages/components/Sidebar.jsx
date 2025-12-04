@@ -13,6 +13,11 @@ export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate(); // ✅ navigation after logout
 
+  const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+  // Parse the nested user slice
+  const userState = JSON.parse(persistedRoot.user);
+  const role = userState.currentUser?.data?.role;
+
   const menuItems = [
     { name: "Dashboard", icon: <LayoutDashboard size={18} />, path: "/dashboard" },
     {
@@ -20,7 +25,11 @@ export default function Sidebar() {
       icon: <Users size={18} />,
       matchPrefixes:["/view-super-admin", "/edit-super-admin"],
       subMenu: [
-        { name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/add-new-superadmin" },
+        // { name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/add-new-superadmin" },
+        ...(role === "admin"
+          ? [{ name: "Add Super Admin", icon: <UserPlus size={18} />, path: "/add-new-superadmin" }]
+          : []
+        ),
         { name: "All Super Admin", icon: <Users size={18} />, path: "/all-super-admin" },
       ],
     }, {
@@ -63,26 +72,6 @@ export default function Sidebar() {
   }, [location.pathname]);
 
   const toggleSubMenu = (menuName) => setActiveMenu(activeMenu === menuName ? null : menuName);
-
-  // const handleLogout = async () => {
-  //   try {
-  //     const res = await fetch('http://localhost:3000/api/super-admins/logout', {
-  //       method: 'POST',
-  //       credentials: 'include',
-  //     });
-
-  //     const data = await res.json();
-  //     if (data.success) {
-  //       alert("You have been logged out successfully.");
-  //       navigate('/'); // ✅ redirect to home
-  //     } else {
-  //       alert("Logout failed. Try Again.");
-  //     }
-  //   } catch (err) {
-  //     console.error("Logout error:", err);
-  //     alert("⚠️ Server error while logging out.");
-  //   }
-  // };
 
   const handleLogout = async () => {
     try {
@@ -196,8 +185,6 @@ export default function Sidebar() {
                     <span className="flex justify-center w-6">{item.icon}</span>
                     {isOpen && <span className="ml-3 text-sm">{item.name}</span>}
                   </div>
-
-
                   // <MenuLink icon={item.icon} name={item.name} onClick={() => setShowLogoutConfirm(true)} className="cursor-pointer" />
                 ) : (
                   <Link to={item.path} className="flex items-center p-2 rounded-md cursor-pointer hover:bg-[#334155]">

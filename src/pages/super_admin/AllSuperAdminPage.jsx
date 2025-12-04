@@ -23,6 +23,7 @@ export default function AllSuperAdminPage() {
   // Extract token
   const token = userState.currentUser?.data?.accessToken;
   const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+  const role = userState.currentUser?.data?.role;
 
   const confirmDelete = (id) => {
     console.log(`confirmDelete id:${id}`);
@@ -146,7 +147,7 @@ export default function AllSuperAdminPage() {
             </div> */}
 
             {
-              allowWriteAccess && (
+              allowWriteAccess && role === 'admin' && (
                 <div className="flex justify-end mb-5">
                   <Link to={`/add-new-superadmin`} className='flex flex-row justify-center'>
                     <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
@@ -187,7 +188,7 @@ export default function AllSuperAdminPage() {
                               <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
                             </Link>
                             {
-                              allowWriteAccess && (
+                              allowWriteAccess && role === 'admin' && (
                                 <>
                                   <Link to={`/edit-super-admin/${c._id}`}>
                                     <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
