@@ -50,9 +50,6 @@ export default function AddNewConsultancy() {
       acc[`office_phone_number_${num}`] = office.phoneNumber;
       return acc;
     }, {});
-
-    console.log("Database Payload:", payload);
-    // TODO: Send `payload` to backend
   };
 
   return (

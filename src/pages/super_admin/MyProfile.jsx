@@ -44,12 +44,7 @@ export default function MyProfile() {
         const fetchSuperAdmin = async () => {
             try {
                 setPageLoading(true);
-                // const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-                // const userState = JSON.parse(persistedRoot.user);
-                // const token = userState.currentUser?.data?.accessToken;
-
                 const superAdminID = userState.currentUser.data.id;
-                // console.log("Token from localStorage:", token, "superAdminID: ", superAdminID);
                 const res = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
                     method: "GET",
                     headers: {
@@ -59,7 +54,6 @@ export default function MyProfile() {
                     credentials: "include",
                 });
                 const data = await res.json();
-                // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
                 
                 if(data.success === false){
                     setPageLoading(true);
@@ -106,18 +100,11 @@ export default function MyProfile() {
                         <div className='text-xl'>
                             <span className="font-semibold">Company Email ID:</span> <br /> {formData.company_email}
                         </div>
-                        {/* <div className='text-xl'>
-                            Personal Email ID: {formData.email}
-                        </div> */}
                         {formData.email && (
                             <div className='text-xl'>
                                 <span className="font-semibold">Personal Email ID:</span> <br /> {formData.email}
                             </div>
                         )}
-
-                        {/* <div className='text-xl'>
-                            Home Address: {formData.street_1}, {formData.street_2}, {formData.city}, {formData.state}, {formData.country} - {formData.zipcode}
-                        </div> */}
                         {(formData.street_1 || formData.street_2 || formData.city || formData.state || formData.country || formData.zipcode) && (
                             <div className='text-xl'>
                                 <span className="font-semibold">Home Address:</span> <br /> {[
@@ -146,41 +133,6 @@ export default function MyProfile() {
                             <span className="font-semibold">Relation with Super Admin:</span> <br /> {formData.emergency_contact.relation}
                         </div>
                     </div>
-                    
-                    {/* DOCUMENTS INFO */}
-                    {/* <div className='text-2xl font-semibold underline mb-2'>
-                        Documents:
-                    </div>
-                    {formData.documents && formData.documents.length > 0 && (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-                            {formData.documents.map((doc, index) => {
-                            // Skip empty documents
-                            if (!doc.name && !doc.number) return null;
-
-                                return (
-                                    <div key={index} className="text-xl flex items-center justify-between p-2 border rounded">
-                                        <div>
-                                            {doc.name && (
-                                                <div>
-                                                    <span className="font-semibold">Name:</span> {doc.name}
-                                                </div>
-                                            )}
-                                            {doc.number && (
-                                                <div>
-                                                    <span className="font-semibold">Number:</span> {doc.number}
-                                                </div>
-                                            )}
-                                        </div>
-                                        {doc.url && (
-                                            <Button variant="outlined" onClick={() => { setPreviewName(doc.name); setPreviewUrl(doc.url); setPreviewOpen(true); }} >
-                                                VIEW
-                                            </Button>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )} */}
                     {formData.documents && formData.documents.some(doc => doc.name || doc.number) && (
                         <>
                             <div className='text-2xl font-semibold underline mb-2'>
@@ -228,14 +180,6 @@ export default function MyProfile() {
                             </div>
                         )
                     }
-
-                    {/* <div className="mt-6 flex flex-row justify-center">
-                        <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
-                            <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                                Edit Profile
-                            </button>
-                        </Link>
-                    </div> */}
                 </div>
             </div>
 
@@ -243,7 +187,6 @@ export default function MyProfile() {
                 <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                     <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                         <div className="text-xl font-semibold flex justify-center items-center gap-3">
-                            {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}
                             <div className="w-20 h-20">
                                 <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
                                     <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">

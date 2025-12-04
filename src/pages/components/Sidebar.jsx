@@ -12,7 +12,6 @@ export default function Sidebar() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // ✅ for modal
   const location = useLocation();
   const navigate = useNavigate(); // ✅ navigation after logout
-
   const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
   // Parse the nested user slice
   const userState = JSON.parse(persistedRoot.user);
@@ -112,12 +111,12 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Hamburger */}
-      <button className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-md bg-[#1E293B] text-white shadow" onClick={() => setMobileOpen(true)} >
+      <button className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-md bg-[#1E293B] text-white shadow" onClick={() => setMobileOpen(true)}>
         <Menu size={24} />
       </button>
 
       {/* Sidebar */}
-      <aside className={`fixed md:static top-0 left-0 h-screen bg-[#1E293B] text-white flex flex-col justify-between transition-all duration-300 z-40 overflow-hidden ${
+      <aside className={`fixed md:static top-0 left-0 h-screen bg-[#1E293B] text-white flex flex-col justify-between transition-all duration-300 z-40 pt-2 overflow-hidden ${
           isOpen ? "w-64" : "w-20"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
 
@@ -130,7 +129,6 @@ export default function Sidebar() {
               const hasSubMenu = !!item.subMenu;
               // const isMenuActive = location.pathname === item.path || item.subMenu?.some(sub => sub.path === location.pathname);
               const isMenuActive = location.pathname === item.path || item.subMenu?.some(sub => sub.path === location.pathname) || item.matchPrefixes?.some(prefix => location.pathname.startsWith(prefix));
-
 
               return (
                 <li key={idx} className="relative group">
