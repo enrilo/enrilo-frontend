@@ -521,19 +521,19 @@ export default function AddNewSuperAdmin() {
   const [documentFile, setDocumentFile] = useState(null);
   const [id1, setId1] = useState(null); // first dropdown
   const [id2, setId2] = useState(null); // second dropdown
-
   const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
   // Parse the nested user slice
   const userState = JSON.parse(persistedRoot.user);
   // Extract token
   const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
 
-
+  // EMERGENCY PHONE NUMBER COUNTRY CODE DROPDOWN OPTIONS
   const emergencyCountryCodeOptions = countryCodes.map((country) => ({
     value: country.code,
     label: `${country.code} - ${country.name}`,
   }));
 
+  // USER'S PHONE NUMBER COUNTRY CODE DROPDOWN OPTIONS
   const countryCodeOptions = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
 
   const idOptions = [
@@ -556,7 +556,7 @@ export default function AddNewSuperAdmin() {
   );
 
 
-  // --- LOCAL PREVIEW STATE ---
+  // LOCAL PREVIEW STATE
   const [localProfileFile, setLocalProfileFile] = useState(null);
   const [localDocuments, setLocalDocuments] = useState([
     { name: "", file: null, number: "", uploaded_at: Date.now() },
@@ -591,7 +591,7 @@ export default function AddNewSuperAdmin() {
     documents: [],
   });
 
-  // --- PROFILE UPLOAD (LOCAL ONLY) ---
+  // PROFILE UPLOAD (LOCAL ONLY)
   const handleProfileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -670,6 +670,20 @@ export default function AddNewSuperAdmin() {
     setConfirmOpen(true);
   };
 
+  // ADD/REMOVE DOCUMENT ROW LOGIC
+  const addDocument = () =>
+    setLocalDocuments((prev) => [
+      ...prev,
+      { name: "", file: null, number: "", uploaded_at: Date.now() },
+  ]);
+
+  const removeDocument = (index) => {
+    const docsCopy = [...localDocuments];
+    docsCopy.splice(index, 1);
+    setLocalDocuments(docsCopy);
+  };
+
+  // HANDLE CHANGE LOGIC FOR WHEN TEXTFIELDS CHANGE THEIR VALUES
   const handleChange = (e) => {
     const { id, value } = e.target;
     if (id.startsWith("emergency_")) {
@@ -690,18 +704,6 @@ export default function AddNewSuperAdmin() {
         bank_details: { ...p.bank_details, [id]: value },
       }));
     } else setFormData((p) => ({ ...p, [id]: value }));
-  };
-
-  const addDocument = () =>
-    setLocalDocuments((prev) => [
-      ...prev,
-      { name: "", file: null, number: "", uploaded_at: Date.now() },
-  ]);
-
-  const removeDocument = (index) => {
-    const docsCopy = [...localDocuments];
-    docsCopy.splice(index, 1);
-    setLocalDocuments(docsCopy);
   };
 
   // --- HANDLE SUBMIT (UPLOAD TO FIREBASE ONLY ON SUBMIT) ---

@@ -697,58 +697,32 @@ export default function EditSuperAdmin() {
         fetchSuperAdmin();
     }, []);
 
+    // EMERGENCY PHONE NUMBER COUNTRY CODE DROPDOWN OPTIONS
     const emergencyCountryCodeOptions = countryCodes.map((country) => ({value: country.code, label: `${country.code} - ${country.name}`, }));
 
+    // USER'S PHONE NUMBER COUNTRY CODE DROPDOWN OPTIONS
     const countryCodeOptions = countryCodes.map((c) => ({ value: c.code, label: `${c.code} - ${c.name}` }));
 
+    // IS USER ACTIVE DROPDOWN OPTIONS
     const isActiveUserDetails = [ { name: "Yes", code: true }, { name: "No", code: false }, ];
 
     const isActiveUserDetailsOptions = isActiveUserDetails.map((isActiveUser) => ({ value: isActiveUser.code, label: isActiveUser.name }));
 
+    // USER'S ID SELECTION DROPDOWN OPTIONS
     const idOptions = [ 
         { value: "", label: "" },
         { value: "aadhar_card", label: "Aadhar Card" },
         { value: "pan_card", label: "Pan Card" }
-    ];
-  
-   const roleOptions = [
-        { value: "user", label: "User" },
-        { value: "admin", label: "Admin" }
     ];
 
     const filteredOptionsForId1 = idOptions.filter( (opt) => opt.value !== id2?.value );
 
     const filteredOptionsForId2 = idOptions.filter( (opt) => opt.value !== id1?.value );
 
-    // --- UPLOAD FILE LOGIC ---
-    const uploadFile = async (file, pathPrefix) => {
-        let uploadFile = file;
-        if (file.type === "image/heic") {
-            const blob = await heic2any({ blob: file, toType: "image/jpeg" });
-            uploadFile = new File([blob], file.name.replace(/\.heic$/i, ".jpeg"), {
-                type: "image/jpeg",
-            });
-        }
-        const filePath = `${pathPrefix}/${Date.now()}_${uploadFile.name}`;
-        const fileRef = ref(storage, filePath);
+    // USER'S ROLE OPTIONS
+   const roleOptions = [ { value: "user", label: "User" }, { value: "admin", label: "Admin" } ];
 
-        const uploadTask = uploadBytesResumable(fileRef, uploadFile);
-        return new Promise((resolve, reject) => {
-            uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    setUploadingProgress(progress);
-                },
-                (error) => reject(error),
-                async () => {
-                    const url = await getDownloadURL(uploadTask.snapshot.ref);
-                    resolve({ url, filePath });
-                }
-            );
-        });
-    };
-
+    // UPLOAD PROFILE PIC LOGIC (ADD/UPDATE/DELETE)
     const handleProfileUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -787,6 +761,35 @@ export default function EditSuperAdmin() {
             photo_url: "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg",
             photo_firebase_path: "",
         }));
+    };
+
+    // UPLOAD FILE LOGIC (ADD/UPDATE/DELETE)
+    const uploadFile = async (file, pathPrefix) => {
+        let uploadFile = file;
+        if (file.type === "image/heic") {
+            const blob = await heic2any({ blob: file, toType: "image/jpeg" });
+            uploadFile = new File([blob], file.name.replace(/\.heic$/i, ".jpeg"), {
+                type: "image/jpeg",
+            });
+        }
+        const filePath = `${pathPrefix}/${Date.now()}_${uploadFile.name}`;
+        const fileRef = ref(storage, filePath);
+
+        const uploadTask = uploadBytesResumable(fileRef, uploadFile);
+        return new Promise((resolve, reject) => {
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setUploadingProgress(progress);
+                },
+                (error) => reject(error),
+                async () => {
+                    const url = await getDownloadURL(uploadTask.snapshot.ref);
+                    resolve({ url, filePath });
+                }
+            );
+        });
     };
 
     const handleFileChange = async (e, index) => {
@@ -850,40 +853,7 @@ export default function EditSuperAdmin() {
         setConfirmOpen(true);
     };
 
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        if (id.startsWith("emergency_")) {
-            const key = id.replace("emergency_", "");
-            setFormData((p) => ({
-                ...p,
-                emergency_contact: { ...p.emergency_contact, [key]: value },
-            }));
-        } else if (id.startsWith("documents_")) {
-            const [_, index, field] = id.split("_");
-            const i = parseInt(index, 10);
-            setFormData((p) => {
-                const docs = Array.isArray(p.documents) ? [...p.documents] : [];
-                while (docs.length <= i) docs.push({ name: "", url: "", number: "", uploaded_at: Date.now() });
-                docs[i][field] = value;
-                return { ...p, documents: docs };
-            });
-            // If user types into a cleared row, mark it as not cleared
-            const idx = parseInt(index, 10);
-            if (tempClearedRows[idx]) {
-                setTempClearedRows((prev) => {
-                    const copy = { ...prev };
-                    delete copy[idx];
-                    return copy;
-                });
-            }
-        } else if (["account_holder_name","account_number","ifsc_code","bank_name","branch_name","branch_address"].includes(id)) {
-            setFormData((p) => ({
-                ...p,
-                bank_details: { ...p.bank_details, [id]: value },
-            }));
-        } else setFormData((p) => ({ ...p, [id]: value }));
-    };
-
+    // ADD/REMOVE DOCUMENT ROW LOGIC
     const addDocument = () => setFormData((p) => ({ ...p, documents: [ ...(Array.isArray(p.documents) ? p.documents : []), { name: "", url: "", number: "", uploaded_at: Date.now() }, ], }));
 
     const removeDocument = async (index) => {
@@ -919,6 +889,41 @@ export default function EditSuperAdmin() {
             return { ...prev, documents: docs };
         });
         setTempClearedRows((prev) => ({ ...prev, [index]: true }));
+    };
+
+    // HANDLE CHANGE LOGIC FOR WHEN TEXTFIELDS CHANGE THEIR VALUES
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        if (id.startsWith("emergency_")) {
+            const key = id.replace("emergency_", "");
+            setFormData((p) => ({
+                ...p,
+                emergency_contact: { ...p.emergency_contact, [key]: value },
+            }));
+        } else if (id.startsWith("documents_")) {
+            const [_, index, field] = id.split("_");
+            const i = parseInt(index, 10);
+            setFormData((p) => {
+                const docs = Array.isArray(p.documents) ? [...p.documents] : [];
+                while (docs.length <= i) docs.push({ name: "", url: "", number: "", uploaded_at: Date.now() });
+                docs[i][field] = value;
+                return { ...p, documents: docs };
+            });
+            // If user types into a cleared row, mark it as not cleared
+            const idx = parseInt(index, 10);
+            if (tempClearedRows[idx]) {
+                setTempClearedRows((prev) => {
+                    const copy = { ...prev };
+                    delete copy[idx];
+                    return copy;
+                });
+            }
+        } else if (["account_holder_name","account_number","ifsc_code","bank_name","branch_name","branch_address"].includes(id)) {
+            setFormData((p) => ({
+                ...p,
+                bank_details: { ...p.bank_details, [id]: value },
+            }));
+        } else setFormData((p) => ({ ...p, [id]: value }));
     };
 
     const handleSubmit = async (e) => {
