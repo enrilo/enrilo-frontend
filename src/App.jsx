@@ -47,7 +47,6 @@ import Dashboard from "./pages/super_admin/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import AllConsultanciesPage from "./pages/AllConsultanciesPage.jsx";
 import PrivateRoute from "./pages/components/PrivateRoute.jsx";
-import "./App.css";
 import AddNewSuperAdmin from "./pages/super_admin/AddNewSuperAdmin.jsx";
 import AllSuperAdminPage from "./pages/super_admin/AllSuperAdminPage.jsx";
 import ViewSuperAdmin from "./pages/super_admin/ViewSuperAdmin.jsx";
