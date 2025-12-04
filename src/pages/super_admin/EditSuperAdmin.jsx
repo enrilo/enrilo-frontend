@@ -654,15 +654,7 @@ export default function EditSuperAdmin() {
         state: "",
         country: "",
         zipcode: "",
-        bank_details: {
-            account_number: "",
-            account_holder_name: "",
-            bank_name: "",
-            branch_name: "",
-            branch_address: "",
-            ifsc_code:"",
-            uploaded_at: { type: Date, default: Date.now },
-        },
+        bank_details: { account_number: "", account_holder_name: "", bank_name: "", branch_name:"", branch_address: "", ifsc_code:"" },
         emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
         documents: [{ name: "", url: "", number: "", uploaded_at: Date.now() }],
         is_active:true
@@ -692,6 +684,9 @@ export default function EditSuperAdmin() {
 
             const codeOption = countryCodeOptions.find(opt => opt.value === fetchedAdmin.country_code);
             setSelectedCountryCode(codeOption || null);
+
+            const roleOption = roleOptions.find(opt => opt.value === fetchedAdmin.role);
+            setSelectedRole(roleOption || null);
 
             const userActiveStatus = isActiveUserDetailsOptions.find(opt => opt.value === fetchedAdmin.is_active);
             setIsUserActive(userActiveStatus || null);
@@ -882,6 +877,11 @@ export default function EditSuperAdmin() {
                     return copy;
                 });
             }
+        } else if (["account_holder_name","account_number","ifsc_code","bank_name","branch_name","branch_address"].includes(id)) {
+            setFormData((p) => ({
+                ...p,
+                bank_details: { ...p.bank_details, [id]: value },
+            }));
         } else setFormData((p) => ({ ...p, [id]: value }));
     };
 
@@ -1096,7 +1096,7 @@ export default function EditSuperAdmin() {
                             <Select id="role" options={roleOptions} value={selectedRole} placeholder="Role" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
                                 onChange={(sel) => {
                                     setSelectedRole(sel);
-                                    setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
+                                    setFormData((p) => ({ ...p, role: sel?.value || "" }));
                                 }}
                             />
                         </div>
@@ -1118,12 +1118,12 @@ export default function EditSuperAdmin() {
                             Bank Details:
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-                            <TextField id="account_holder_name" value={formData.bank_details.account_holder_name} onChange={handleChange} label="Account Holder Name" variant="outlined" fullWidth />
-                            <TextField id="account_number" value={formData.bank_details.account_number} onChange={handleChange} label="Account Number" variant="outlined" fullWidth />
-                            <TextField id="ifsc_code" value={formData.bank_details.ifsc_code} onChange={handleChange} label="IFSC Code" variant="outlined" fullWidth />
-                            <TextField id="bank_name" value={formData.bank_details.bank_name} onChange={handleChange} label="Bank Name" variant="outlined" fullWidth />
-                            <TextField id="branch_name" value={formData.bank_details.branch_name} onChange={handleChange} label="Branch Name" variant="outlined" fullWidth />
-                            <TextField id="branch_address" value={formData.bank_details.branch_address} onChange={handleChange} label="Branch Address" variant="outlined" fullWidth />
+                            <TextField id="account_holder_name" value={formData.bank_details.account_holder_name} onChange={handleChange} disabled={!isUserActive?.value} label="Account Holder Name" variant="outlined" fullWidth />
+                            <TextField id="account_number" value={formData.bank_details.account_number} onChange={handleChange} disabled={!isUserActive?.value} label="Account Number" variant="outlined" fullWidth />
+                            <TextField id="ifsc_code" value={formData.bank_details.ifsc_code} onChange={handleChange} disabled={!isUserActive?.value} label="IFSC Code" variant="outlined" fullWidth />
+                            <TextField id="bank_name" value={formData.bank_details.bank_name} onChange={handleChange} disabled={!isUserActive?.value} label="Bank Name" variant="outlined" fullWidth />
+                            <TextField id="branch_name" value={formData.bank_details.branch_name} onChange={handleChange} disabled={!isUserActive?.value} label="Branch Name" variant="outlined" fullWidth />
+                            <TextField id="branch_address" value={formData.bank_details.branch_address} onChange={handleChange} disabled={!isUserActive?.value} label="Branch Address" variant="outlined" fullWidth />
                         </div>
 
                         <div className='text-2xl underline font-semibold mb-5'>
