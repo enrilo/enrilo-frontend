@@ -12,6 +12,7 @@ export default function ViewSuperAdmin() {
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [pageLoading, setPageLoading] = useState(false);
+    const [allowWriteAccess, setAllowWriteAccess] = useState(false);
     const [formData, setFormData] = useState({
         photo_url: "",
         full_name: "",
@@ -38,43 +39,108 @@ export default function ViewSuperAdmin() {
     const userState = JSON.parse(persistedRoot.user);
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
-    const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+    // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
     const role = userState.currentUser?.data?.role;
+    const loggedInUserID = userState.currentUser?.data?.id;
 
     useEffect(() =>{
-        const fetchSuperAdmin = async () => {
-            try {
-                setPageLoading(true);
+        if(params.id === loggedInUserID) {
+            console.log('You are viewing your own profile');
+            const fetchSuperAdmin = async () => {
+                try {
+                    setPageLoading(true);
 
-                const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+                    const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                        credentials: "include",
+                    });
+                    const data = await res.json();
+                    // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
+                    
+                    if(data.success === false){
+                        setPageLoading(false);
+                        console.log("data.success === false");
+                        return;
+                    }
+                    console.log(`data.data.superAdmin:${JSON.stringify(data.data.superAdmin)}`);
+                    
+                    setFormData(data.data.superAdmin);
+                    setAllowWriteAccess(data.data.superAdmin.allow_write_access);
+                    setPageLoading(false);
+                    // setError(false);
+                } catch (error) {
+                    console.log(`error.message: ${error.message}`);
+                    setPageLoading(false);
+                    // setError(true);
+                }
+            };
+
+            fetchSuperAdmin();
+        } else {
+            const fetchASuperAdmin = async () => {
+                try {
+                    setPageLoading(true);
+
+                    const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                        credentials: "include",
+                    });
+                    const data = await res.json();
+                    // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
+                    
+                    if(data.success === false){
+                        setPageLoading(false);
+                        console.log("data.success === false");
+                        return;
+                    }
+                    console.log(`data.data.superAdmin:${JSON.stringify(data.data.superAdmin)}`);
+                    
+                    setFormData(data.data.superAdmin);
+                    setPageLoading(false);
+                    // setError(false);
+                } catch (error) {
+                    console.log(`error.message: ${error.message}`);
+                    setPageLoading(false);
+                    // setError(true);
+                }
+            };
+
+            fetchASuperAdmin();
+
+            // FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
+            const fetchLoggedInSuperAdmin = async () => {
+                try {
+                    const res = await fetch(`http://localhost:3000/api/super-admins/${loggedInUserID}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
                     },
                     credentials: "include",
-                });
-                const data = await res.json();
-                // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
-                
-                if(data.success === false){
-                    setPageLoading(false);
+                    });
+                    const data = await res.json();
+                    
+                    if(data.success === false){
                     console.log("data.success === false");
                     return;
+                    }
+                    setAllowWriteAccess(data.data.superAdmin.allow_write_access);
+                } catch (error) {
+                    console.log(`error.message: ${error.message}`);
                 }
-                console.log(`data.data.superAdmin:${JSON.stringify(data.data.superAdmin)}`);
-                
-                setFormData(data.data.superAdmin);
-                setPageLoading(false);
-                // setError(false);
-            } catch (error) {
-                console.log(`error.message: ${error.message}`);
-                setPageLoading(false);
-                // setError(true);
-            }
-        };
+            };
 
-        fetchSuperAdmin();
+            fetchLoggedInSuperAdmin();
+        }
+        
     }, [params.id]);
 
     const confirmDelete = () => {

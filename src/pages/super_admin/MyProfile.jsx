@@ -14,6 +14,7 @@ export default function MyProfile() {
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [pageLoading, setPageLoading] = useState(false);
+    const [allowWriteAccess, setAllowWriteAccess] = useState(false);
     const [formData, setFormData] = useState({
         photo_url: "",
         full_name: "",
@@ -38,7 +39,7 @@ export default function MyProfile() {
     const userState = JSON.parse(persistedRoot.user);
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
-    const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+    // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
 
     useEffect(() =>{
         const fetchSuperAdmin = async () => {
@@ -61,6 +62,8 @@ export default function MyProfile() {
                     return;
                 }
                 setFormData(data.data.superAdmin);
+                // FETCHING WRITE ACCESS PERMISSIONS
+                setAllowWriteAccess(data.data.superAdmin.allow_write_access);
                 setPageLoading(false);
                 // setError(false);
             } catch (error) {
