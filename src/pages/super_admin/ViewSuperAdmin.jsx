@@ -39,6 +39,7 @@ export default function ViewSuperAdmin() {
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
     const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+    const role = userState.currentUser?.data?.role;
 
     useEffect(() =>{
         const fetchSuperAdmin = async () => {
@@ -328,7 +329,7 @@ export default function ViewSuperAdmin() {
                     )}
 
                     {
-                        allowWriteAccess && (
+                        allowWriteAccess && role === 'admin' && (
                             <div className="mt-6 flex flex-row justify-evenly">
                                 <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
                                     <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
