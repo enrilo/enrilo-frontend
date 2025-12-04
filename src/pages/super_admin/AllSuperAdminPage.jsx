@@ -66,9 +66,9 @@ export default function AllSuperAdminPage() {
         var docURL = data.data.superAdmin.documents[i].url;
         const desertRef = ref(storage, docURL);
         deleteObject(desertRef).then(() => {
-            console.log(`Document with URL ${docURL} Removed Successfully`)
+          console.log(`Document with URL ${docURL} Removed Successfully`)
         }).catch((error) => {
-            console.log("Failed To Remove Image", error)
+          console.log("Failed To Remove Image", error)
         });
       }
     }
@@ -83,13 +83,13 @@ export default function AllSuperAdminPage() {
       });
       const data = await res.json();
       if (data.success === false) {
-          console.log(data.message);
-          return;
+        console.log(data.message);
+        return;
       }
       setShowConfirmDelete(false);
       setShowSuccess(true);
     } catch (error) {
-        console.log(error.message);
+      console.log(error.message);
     }
   };
 
@@ -103,9 +103,6 @@ export default function AllSuperAdminPage() {
     const fetchSuperAdmin = async () => {
       try {
         setPageLoading(true);
-        // const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-        // const userState = JSON.parse(persistedRoot.user);
-        // const token = userState.currentUser?.data?.accessToken;
         setCurrentUserEmail(userState.currentUser?.data?.company_email);
         setCurrentUserID(userState.currentUser?.data?.id);
         
@@ -138,14 +135,6 @@ export default function AllSuperAdminPage() {
       <div className="p-4 sm:p-6">
         <div className="bg-white rounded-2xl shadow p-4 sm:p-6 max-w-7xl mx-auto">
           <div className="overflow-x-auto rounded-lg">
-            {/* <div className="flex justify-end mb-5">
-              <Link to={`/add-new-superadmin`} className='flex flex-row justify-center'>
-                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
-                  Add New Super Admin
-                </button>
-              </Link>
-            </div> */}
-
             {
               allowWriteAccess && role === 'admin' && (
                 <div className="flex justify-end mb-5">
@@ -156,9 +145,7 @@ export default function AllSuperAdminPage() {
                   </Link>
                 </div>
               )
-            }
-
-            {/* === TABLE START === */}
+            }\
             <table className="min-w-full text-sm md:text-[17px] text-left border-collapse rounded-lg">
               <thead className="bg-gray-100 text-gray-700 uppercase rounded-lg">
                 <tr>
@@ -292,7 +279,6 @@ export default function AllSuperAdminPage() {
         <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
           <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
             <div className="text-xl font-semibold flex justify-center items-center gap-3">
-              {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}
               <div className="w-20 h-20">
                 <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
                   <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">

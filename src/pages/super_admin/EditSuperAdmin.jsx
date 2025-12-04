@@ -644,7 +644,6 @@ export default function EditSuperAdmin() {
         country_code: "",
         phone: "",
         company_email: "",
-        // password: "",
         email: "",
         position: "",
         role:"",
@@ -1029,11 +1028,6 @@ export default function EditSuperAdmin() {
                                 Is This Super Admin Active?
                             </div>
                             <div className="max-w-[250px]">
-                                {/* <Select id="is_active" options={isActiveUserDetailsOptions} value={isUserActive} placeholder="Select Status" menuPortalTarget={document.body} styles={selectStyles} isSearchable required
-                                    onChange={(sel) => {
-                                        setIsUserActive(sel);
-                                        setFormData((p) => ({ ...p, is_active: sel.value }));
-                                }}/> */}
                                 <Select className="cursor-pointer" id="is_active" options={isActiveUserDetailsOptions} value={isUserActive} placeholder="Select Status" menuPortalTarget={document.body} styles={selectStyles} isSearchable required onChange={(sel) => { setIsUserActive(sel); setFormData((p) => ({ ...p, is_active: sel.value })); }} />
                             </div>
                         </div>
@@ -1045,11 +1039,9 @@ export default function EditSuperAdmin() {
                     <div className={`flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 hover:bg-gray-50 transition ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer"}`}>
                         {!formData.photo_url || formData.photo_url === 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg' ? (
                             <>
-                                {/* <div className="text-gray-400 text-3xl mb-2 disabled:cursor-not-allowed">🖼️</div> */}
                                 <div className={`text-gray-400 text-3xl mb-2 ${!isUserActive?.value ? "cursor-not-allowed" : ""}`}>🖼️</div>
                                 <label className={`text-blue-600 font-medium hover:underline ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer"}`}>
                                     {uploadingProfile ? "Uploading..." : "Click Here To Add Profile Picture"}
-                                    {/* <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} /> */}
                                     <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile || !isUserActive?.value} className=" disabled:cursor-not-allowed" />
                                 </label>
                             </>
@@ -1060,7 +1052,6 @@ export default function EditSuperAdmin() {
                                 <div className="flex gap-4">
                                     <label className={`text-blue-600 ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`}>
                                         Replace
-                                        {/* <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile} /> */}
                                         <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile || !isUserActive?.value} />
                                     </label>
                                     <button type="button" className={`text-red-600 ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`} onClick={handleDeleteProfileConfirm} disabled={!isUserActive?.value}>
@@ -1075,7 +1066,6 @@ export default function EditSuperAdmin() {
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                             <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} disabled={!isUserActive?.value} />
-
                             {/* Phone */}
                             <div className="w-full flex gap-3">
                                 <div className="min-w-[140px]">
@@ -1190,9 +1180,9 @@ export default function EditSuperAdmin() {
                                 <div className="flex flex-row justify-between">
                                     <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => clearRow(i)} disabled={!isUserActive?.value}>Clear Row</button>
                                     <div className="flex">
-                                            {formData.documents.length > 1 && (
-                                                <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
-                                            )}
+                                        {formData.documents.length > 1 && (
+                                            <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

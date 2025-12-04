@@ -23,9 +23,7 @@ export default function Header() {
     "/my-profile": "Profile Page",
     "/company/gst": "GST Collection",
     "/settings": "Settings",
-  };  
-
-  // const currentTitle = titleMap[location.pathname] || "Enrilo Dashboard";
+  };
 
   let currentTitle = "Enrilo Dashboard";
 

@@ -649,7 +649,7 @@ export default function AddNewSuperAdmin() {
     docsCopy[index] = {
       ...docsCopy[index],
       file,
-      url: URL.createObjectURL(previewFile), // <--- Add this line for local preview URL
+      url: URL.createObjectURL(previewFile), // <--- Local preview URL
       uploaded_at: Date.now(),
     };
     setLocalDocuments(docsCopy);
@@ -988,7 +988,6 @@ export default function AddNewSuperAdmin() {
       <div className="p-4">
         <div className="bg-white rounded-2xl shadow p-6 max-w-6xl mx-auto">
           {/* PROFILE UPLOAD */}
-
           <div className='text-2xl underline font-semibold mb-5'>
             Personal Details:
           </div>
@@ -1181,11 +1180,6 @@ export default function AddNewSuperAdmin() {
                 </div>
               </div>
             ))}
-
-
-            {/* <button type="button" className="col-span-3 mb-4 text-blue-600 hover:underline cursor-pointer" onClick={addDocument}>
-              + Add Another Document
-            </button> */}
             {localDocuments.length < 2 && (
               <button type="button" className={`col-span-3 mb-4 text-blue-600 ${ allowWriteAccess ? "cursor-pointer hover:underline" : "cursor-not-allowed" }`} disabled={!allowWriteAccess} onClick={addDocument}>
                 + Add New Document
@@ -1274,7 +1268,6 @@ export default function AddNewSuperAdmin() {
             <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
               <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                   <div className="text-xl font-semibold flex justify-center items-center gap-3">
-                    {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}
                     <div className="w-20 h-20">
                       <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
                           <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
