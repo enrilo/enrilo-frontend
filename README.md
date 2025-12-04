@@ -1,5 +1,5 @@
 # Enrilo
-This project is a web application for Student Consultancy Management website.
+This is the frontend for Enrilo.
 
 ## To run the project, type the following commands in order:
 - npm i (or npm install)
