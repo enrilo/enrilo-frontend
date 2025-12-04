@@ -61,11 +61,11 @@ export default function MyProfile() {
                     return;
                 }
                 setFormData(data.data.superAdmin);
-                setPageLoading(true);
+                setPageLoading(false);
                 // setError(false);
             } catch (error) {
                 console.log(`error.message: ${error.message}`);
-                setPageLoading(true);
+                setPageLoading(false);
                 // setError(true);
             }
         };
