@@ -508,6 +508,7 @@ export default function AddNewSuperAdmin() {
   const [uploadingProfile, setUploadingProfile] = useState(false);
   const [selectedCode, setSelectedCode] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedWriteAccess, setSelectedWriteAccess] = useState(null);
   const [selectedEmergencyCode, setSelectedEmergencyCode] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState("");
@@ -522,6 +523,37 @@ export default function AddNewSuperAdmin() {
   const [documentFile, setDocumentFile] = useState(null);
   const [id1, setId1] = useState(null); // first dropdown
   const [id2, setId2] = useState(null); // second dropdown
+  // FORM DATA
+  const [formData, setFormData] = useState({
+    photo_url: "",
+    full_name: "",
+    country_code: "",
+    phone: "",
+    company_email: "",
+    password: hashedPassword,
+    email: "",
+    position: "",
+    role:"",
+    allow_write_access:false,
+    street_1: "",
+    street_2: "",
+    city: "",
+    state: "",
+    country: "",
+    zipcode: "",
+    bank_details: {
+      account_number: "",
+      account_holder_name: "",
+      bank_name: "",
+      branch_name: "",
+      branch_address: "",
+      ifsc_code:"",
+      uploaded_at: { type: Date, default: Date.now },
+    },
+    emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
+    documents: [],
+  });
+
   const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
   // Parse the nested user slice
   const userState = JSON.parse(persistedRoot.user);
@@ -545,9 +577,11 @@ export default function AddNewSuperAdmin() {
     { value: "pan_card", label: "Pan Card" }
   ];
 
-   const roleOptions = [
-    { value: "user", label: "User" },
-    { value: "admin", label: "Admin" }
+  const roleOptions = [ { value: "user", label: "User Role" }, { value: "admin", label: "Admin Role" } ];
+
+  const allowWriteAccessOptions = [
+      { value: false, label: "Write Access Not Allowed" },
+      { value: true, label: "Write Access Allowed" }
   ];
 
   const filteredOptionsForId1 = idOptions.filter(
@@ -592,42 +626,13 @@ export default function AddNewSuperAdmin() {
       };
 
       fetchSuperAdmin();
-    }, []);
+  }, []);
 
   // LOCAL PREVIEW STATE
   const [localProfileFile, setLocalProfileFile] = useState(null);
   const [localDocuments, setLocalDocuments] = useState([
     { name: "", file: null, number: "", uploaded_at: Date.now() },
   ]);
-
-  const [formData, setFormData] = useState({
-    photo_url: "",
-    full_name: "",
-    country_code: "",
-    phone: "",
-    company_email: "",
-    password: hashedPassword,
-    email: "",
-    position: "",
-    role:"",
-    street_1: "",
-    street_2: "",
-    city: "",
-    state: "",
-    country: "",
-    zipcode: "",
-    bank_details: {
-      account_number: "",
-      account_holder_name: "",
-      bank_name: "",
-      branch_name: "",
-      branch_address: "",
-      ifsc_code:"",
-      uploaded_at: { type: Date, default: Date.now },
-    },
-    emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
-    documents: [],
-  });
 
   // PROFILE UPLOAD (LOCAL ONLY)
   const handleProfileUpload = async (e) => {
@@ -1080,6 +1085,12 @@ export default function AddNewSuperAdmin() {
                 onChange={(sel) => {
                   setSelectedRole(sel);
                   setFormData((p) => ({ ...p, role: sel?.value || "" }));
+                }}
+              />
+              <Select id="allow_write_access" options={allowWriteAccessOptions} value={selectedWriteAccess} placeholder="Do You Want To Allow Write Access?" isSearchable menuPortalTarget={document.body} required isDisabled={!allowWriteAccess} styles={selectStyles}
+                onChange={(sel) => {
+                  setSelectedWriteAccess(sel);
+                  setFormData((p) => ({ ...p, allow_write_acccess: sel?.value || false }));
                 }}
               />
             </div>

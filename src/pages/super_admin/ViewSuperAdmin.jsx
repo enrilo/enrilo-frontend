@@ -22,6 +22,7 @@ export default function ViewSuperAdmin() {
         password: '',
         email: "",
         position: "",
+        allow_write_access:false,
         street_1: "",
         street_2: "",
         city: "",
@@ -31,7 +32,7 @@ export default function ViewSuperAdmin() {
         bank_details: { account_number: "", account_holder_name: "", bank_name: "", branch_name:"", branch_address: "", ifsc_code:"" },
         emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
         documents: [{ name: "", url: "", number: "", uploaded_at: "" }],
-        is_active:null
+        is_active:null,
     });
 
     const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
@@ -257,6 +258,9 @@ export default function ViewSuperAdmin() {
                         </div>
                         <div className='text-xl'>
                             <span className="font-semibold">Role:</span> <br /> <span className="capitalize">{formData.role}</span>
+                        </div>
+                        <div className='text-xl'>
+                            <span className="font-semibold">Write Access:</span> <br /> <span className="capitalize">{formData.allow_write_access == false ? 'Write Access Not Allowed':'Write Access Allowed'}</span>
                         </div>
                         {formData.email && (
                             <div className='text-xl'>
