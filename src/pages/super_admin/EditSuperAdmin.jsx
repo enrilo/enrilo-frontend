@@ -631,6 +631,7 @@ export default function EditSuperAdmin() {
     const [pageLoading, setPageLoading] = useState(false);
     const [isUserActive, setIsUserActive] = useState(null);
     const [selectedRole, setSelectedRole] = useState(null);
+    const [selectedWriteAccess, setSelectedWriteAccess] = useState(null);
     const [currentUserID, setCurrentUserID] = useState('');
     const [id1, setId1] = useState(null); // first dropdown
     const [id2, setId2] = useState(null); // second dropdown
@@ -647,6 +648,7 @@ export default function EditSuperAdmin() {
         email: "",
         position: "",
         role:"",
+        allow_write_access:false,
         street_1: "",
         street_2: "",
         city: "",
@@ -658,44 +660,6 @@ export default function EditSuperAdmin() {
         documents: [{ name: "", url: "", number: "", uploaded_at: Date.now() }],
         is_active:true
     });
-
-    useEffect(() => {
-        const fetchSuperAdmin = async () => {
-            const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-            const userState = JSON.parse(persistedRoot.user);
-            const token = userState.currentUser?.data?.accessToken;
-            setCurrentUserID(userState.currentUser?.data?.id);
-            const superAdminID = params.id;
-            const res = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                credentials: "include",
-            });
-
-            const data = await res.json();
-            if (data.success === false) return;
-
-            const fetchedAdmin = data.data.superAdmin;
-            setFormData(prev => ({ ...prev, ...fetchedAdmin }));
-
-            const codeOption = countryCodeOptions.find(opt => opt.value === fetchedAdmin.country_code);
-            setSelectedCountryCode(codeOption || null);
-
-            const roleOption = roleOptions.find(opt => opt.value === fetchedAdmin.role);
-            setSelectedRole(roleOption || null);
-
-            const userActiveStatus = isActiveUserDetailsOptions.find(opt => opt.value === fetchedAdmin.is_active);
-            setIsUserActive(userActiveStatus || null);
-
-            const emergencyCodeOption = emergencyCountryCodeOptions.find(opt => opt.value === fetchedAdmin.emergency_contact?.country_code);
-            setSelectedEmergencyCode(emergencyCodeOption || null);
-        };
-
-        fetchSuperAdmin();
-    }, []);
 
     // EMERGENCY PHONE NUMBER COUNTRY CODE DROPDOWN OPTIONS
     const emergencyCountryCodeOptions = countryCodes.map((country) => ({value: country.code, label: `${country.code} - ${country.name}`, }));
@@ -720,7 +684,12 @@ export default function EditSuperAdmin() {
     const filteredOptionsForId2 = idOptions.filter( (opt) => opt.value !== id1?.value );
 
     // USER'S ROLE OPTIONS
-   const roleOptions = [ { value: "user", label: "User" }, { value: "admin", label: "Admin" } ];
+   const roleOptions = [ { value: "user", label: "User Role" }, { value: "admin", label: "Admin Role" } ];
+
+    const allowWriteAccessOptions = [
+        { value: false, label: "Write Access Not Allowed" },
+        { value: true, label: "Write Access Allowed" }
+    ];
 
     // UPLOAD PROFILE PIC LOGIC (ADD/UPDATE/DELETE)
     const handleProfileUpload = async (e) => {
@@ -1023,6 +992,48 @@ export default function EditSuperAdmin() {
         }
     };
 
+    // USE EFFECT
+    useEffect(() => {
+        const fetchSuperAdmin = async () => {
+            const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+            const userState = JSON.parse(persistedRoot.user);
+            const token = userState.currentUser?.data?.accessToken;
+            setCurrentUserID(userState.currentUser?.data?.id);
+            const superAdminID = params.id;
+            const res = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                credentials: "include",
+            });
+
+            const data = await res.json();
+            if (data.success === false) return;
+
+            const fetchedAdmin = data.data.superAdmin;
+            setFormData(prev => ({ ...prev, ...fetchedAdmin }));
+
+            const codeOption = countryCodeOptions.find(opt => opt.value === fetchedAdmin.country_code);
+            setSelectedCountryCode(codeOption || null);
+
+            const roleOption = roleOptions.find(opt => opt.value === fetchedAdmin.role);
+            setSelectedRole(roleOption || null);
+
+            const allowWriteAccessOption = allowWriteAccessOptions.find(opt => opt.value === fetchedAdmin.allow_write_access);
+            setSelectedWriteAccess(allowWriteAccessOption || null);
+
+            const userActiveStatus = isActiveUserDetailsOptions.find(opt => opt.value === fetchedAdmin.is_active);
+            setIsUserActive(userActiveStatus || null);
+
+            const emergencyCodeOption = emergencyCountryCodeOptions.find(opt => opt.value === fetchedAdmin.emergency_contact?.country_code);
+            setSelectedEmergencyCode(emergencyCodeOption || null);
+        };
+
+        fetchSuperAdmin();
+    }, []);
+
     return (
         <main className="flex-1 overflow-y-auto p-6">
             <div className="p-4">
@@ -1088,12 +1099,22 @@ export default function EditSuperAdmin() {
                             <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" }}} disabled={!isUserActive?.value} />
                             <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth disabled={!isUserActive?.value} />
                             <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth disabled={!isUserActive?.value} />
-                            <Select id="role" options={roleOptions} value={selectedRole} placeholder="Role" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
-                                onChange={(sel) => {
-                                    setSelectedRole(sel);
-                                    setFormData((p) => ({ ...p, role: sel?.value || "" }));
-                                }}
-                            />
+                            {formData._id !== currentUserID && (
+                                <>
+                                    <Select id="role" options={roleOptions} value={selectedRole} placeholder="Role" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                                        onChange={(sel) => {
+                                            setSelectedRole(sel);
+                                            setFormData((p) => ({ ...p, role: sel?.value || "" }));
+                                        }}
+                                    />
+                                    <Select id="allow_write_access" options={allowWriteAccessOptions} value={selectedWriteAccess} placeholder="Do You Want To Allow Write Access?" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                                        onChange={(sel) => {
+                                            setSelectedWriteAccess(sel);
+                                            setFormData((p) => ({ ...p, allow_write_acccess: sel?.value || false }));
+                                        }}
+                                    />
+                                </>
+                            )}
                         </div>
 
                         <div className='text-2xl underline font-semibold mb-5'>
@@ -1146,7 +1167,7 @@ export default function EditSuperAdmin() {
                         {
                             formData.documents.length === 0 && (
                                 <div className='text-lg font-semibold mb-5'>
-                                    This Super Admin Has No Associated Documents
+                                    {formData._id !== currentUserID ? "This Super Admin Has No Associated Documents" : "You Have No Associated Documents"}
                                 </div>
                             )
                         }
@@ -1212,7 +1233,7 @@ export default function EditSuperAdmin() {
                         {/* Submit */}
                         <div className="col-span-3 mt-6 flex justify-center">
                             <button type="submit" disabled={loading} className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                                {loading ? "Updating..." : "Update Super Admin"}
+                                {loading ? "Updating..." : (formData._id !== currentUserID ? 'Update Super Admin' : 'Update My Profile')}
                             </button>
                         </div>
                     </form>
