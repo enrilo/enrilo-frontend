@@ -504,6 +504,7 @@ export default function AddNewSuperAdmin() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [uploadingIndex, setUploadingIndex] = useState(null);
   const [uploadingProgress, setUploadingProgress] = useState(0);
+  const [allowWriteAccess, setAllowWriteAccess] = useState(false);
   const [uploadingProfile, setUploadingProfile] = useState(false);
   const [selectedCode, setSelectedCode] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
@@ -525,7 +526,9 @@ export default function AddNewSuperAdmin() {
   // Parse the nested user slice
   const userState = JSON.parse(persistedRoot.user);
   // Extract token
-  const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+  const token = userState.currentUser?.data?.accessToken;
+  const loggedInUserID = userState.currentUser?.data?.id;
+  // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
 
   // EMERGENCY PHONE NUMBER COUNTRY CODE DROPDOWN OPTIONS
   const emergencyCountryCodeOptions = countryCodes.map((country) => ({
@@ -555,6 +558,41 @@ export default function AddNewSuperAdmin() {
     (opt) => opt.value !== id1?.value
   );
 
+  // USING useEffect FOR FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
+  useEffect(() =>{
+      const fetchSuperAdmin = async () => {
+        try {
+          // setPageLoading(true);
+
+          const res = await fetch(`http://localhost:3000/api/super-admins/${loggedInUserID}`, {
+              method: "GET",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+              },
+              credentials: "include",
+          });
+          const data = await res.json();
+          
+          if(data.success === false){
+              // setPageLoading(false);
+              console.log("data.success === false");
+              return;
+          }
+          setAllowWriteAccess(data.data.superAdmin.allow_write_access);
+          
+          // setFormData(data.data.superAdmin);
+          // setPageLoading(false);
+          // setError(false);
+        } catch (error) {
+          console.log(`error.message: ${error.message}`);
+          // setPageLoading(false);
+          // setError(true);
+        }
+      };
+
+      fetchSuperAdmin();
+    }, []);
 
   // LOCAL PREVIEW STATE
   const [localProfileFile, setLocalProfileFile] = useState(null);

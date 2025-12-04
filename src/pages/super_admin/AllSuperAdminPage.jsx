@@ -15,14 +15,16 @@ export default function AllSuperAdminPage() {
   const [currentUserID, setCurrentUserID] = useState('');
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [pageLoading, setPageLoading] = useState(false);  
+  const [pageLoading, setPageLoading] = useState(false);
+  const [allowWriteAccess, setAllowWriteAccess] = useState(false);
 
   const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
   // Parse the nested user slice
   const userState = JSON.parse(persistedRoot.user);
   // Extract token
   const token = userState.currentUser?.data?.accessToken;
-  const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+  const loggedInUserID = userState.currentUser?.data?.id;
+  // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
   const role = userState.currentUser?.data?.role;
 
   const confirmDelete = (id) => {
@@ -100,7 +102,7 @@ export default function AllSuperAdminPage() {
   // const handleChangeRowsPerPage = (event) => { setRowsPerPage(parseInt(event.target.value, 10)); setPage(0); };
 
   useEffect(() => {
-    const fetchSuperAdmin = async () => {
+    const fetchAllSuperAdmin = async () => {
       try {
         setPageLoading(true);
         setCurrentUserEmail(userState.currentUser?.data?.company_email);
@@ -127,7 +129,32 @@ export default function AllSuperAdminPage() {
         console.error("Error fetching superadmin data:", error);
       }
     };
-    fetchSuperAdmin();
+    fetchAllSuperAdmin();
+
+    // FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
+    const fetchOneSuperAdmin = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/super-admins/${loggedInUserID}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+        const data = await res.json();
+        
+        if(data.success === false){
+          console.log("data.success === false");
+          return;
+        }
+        setAllowWriteAccess(data.data.superAdmin.allow_write_access);
+      } catch (error) {
+        console.log(`error.message: ${error.message}`);
+      }
+    };
+
+    fetchOneSuperAdmin();
   }, []);
 
   return (
@@ -145,7 +172,7 @@ export default function AllSuperAdminPage() {
                   </Link>
                 </div>
               )
-            }\
+            }
             <table className="min-w-full text-sm md:text-[17px] text-left border-collapse rounded-lg">
               <thead className="bg-gray-100 text-gray-700 uppercase rounded-lg">
                 <tr>
