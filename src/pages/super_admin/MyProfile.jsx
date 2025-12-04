@@ -13,6 +13,7 @@ export default function MyProfile() {
     const [previewUrl, setPreviewUrl] = useState("");
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [pageLoading, setPageLoading] = useState(false);
     const [formData, setFormData] = useState({
         photo_url: "",
         full_name: "",
@@ -42,7 +43,7 @@ export default function MyProfile() {
     useEffect(() =>{
         const fetchSuperAdmin = async () => {
             try {
-                // setLoading(true);
+                setPageLoading(true);
                 // const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
                 // const userState = JSON.parse(persistedRoot.user);
                 // const token = userState.currentUser?.data?.accessToken;
@@ -61,16 +62,16 @@ export default function MyProfile() {
                 // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
                 
                 if(data.success === false){
-                    // setLoading(false);
+                    setPageLoading(true);
                     console.log("data.success === false");
                     return;
                 }
                 setFormData(data.data.superAdmin);
-                // setLoading(false);
+                setPageLoading(true);
                 // setError(false);
             } catch (error) {
                 console.log(`error.message: ${error.message}`);
-                // setLoading(false);
+                setPageLoading(true);
                 // setError(true);
             }
         };
@@ -237,6 +238,28 @@ export default function MyProfile() {
                     </div> */}
                 </div>
             </div>
+
+            {pageLoading && (
+                <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+                    <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                        <div className="text-xl font-semibold flex justify-center items-center gap-3">
+                            {/* <span className="animate-spin h-6 w-6 border-4 border-yellow-300 border-t-transparent rounded-full"></span> */}
+                            <div className="w-20 h-20">
+                                <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                                    <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
+                                    e
+                                    </text>
+                                </svg>
+                            </div>
+                            {/* Loading All Super Admin Details... */}
+                            <div className="flex flex-col">
+                                <p className="text-xl font-semibold mb-2">Loading...</p>
+                                <p className="text-[#334155]">Please wait while we load the details of all superadmin.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             
             {previewOpen && (
                 <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
