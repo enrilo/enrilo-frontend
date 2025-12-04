@@ -24,12 +24,15 @@ export default function MyProfile() {
         password: '',
         email: "",
         position: "",
+        role:"",
+        allow_write_access:"",
         street_1: "",
         street_2: "",
         city: "",
         state: "",
         country: "",
         zipcode: "",
+        bank_details: { account_number: "", account_holder_name: "", bank_name: "", branch_name:"", branch_address: "", ifsc_code:"" },
         emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
         documents: [{ name: "", url: "", number: "", uploaded_at: "" }],
     });
@@ -98,6 +101,9 @@ export default function MyProfile() {
                             <span className="font-semibold">Position:</span> <br /> {formData.position}
                         </div>
                         <div className='text-xl'>
+                            <span className="font-semibold">Role:</span> <br /> <span className="capitalize">{formData.role}</span>
+                        </div>
+                        <div className='text-xl'>
                             <span className="font-semibold">Phone Number:</span> <br /> {formData.country_code} {formData.phone}
                         </div>
                         <div className='text-xl'>
@@ -119,6 +125,9 @@ export default function MyProfile() {
                                 ].filter(Boolean).join(', ')} - {formData.zipcode}
                             </div>
                         )}
+                        <div className='text-xl'>
+                            <span className="font-semibold">Write Access:</span> <br /> <span className="capitalize">{formData.allow_write_access == false ? 'Write Access Not Allowed':'Write Access Allowed'}</span>
+                        </div>
                     </div>
 
                     {/* EMERGENCY CONTACT INFO */}
@@ -136,6 +145,37 @@ export default function MyProfile() {
                             <span className="font-semibold">Relation with Super Admin:</span> <br /> {formData.emergency_contact.relation}
                         </div>
                     </div>
+                    
+                    {/* BANK ACCOUNT INFO */}
+                    {
+                        (formData.bank_details.isEmpty) && (
+                            <>
+                                <div className='text-2xl font-semibold underline mb-2'>
+                                Bank Details:
+                                </div>
+                                <div className={`grid grid-cols-1 md:grid-cols-3 gap-5 ${formData.documents && formData.documents.some(doc => doc.name || doc.number) ? "mb-8" : "mb-15"}`}>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Account Holder Name:</span> <br /> {formData.bank_details.account_holder_name}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Account Number:</span> <br /> {formData.bank_details.account_number}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Bank Name:</span> <br /> {formData.bank_details.bank_name}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Branch Name:</span> <br /> {formData.bank_details.branch_name}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Branch Address:</span> <br /> {formData.bank_details.branch_address}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">IFSC Code:</span> <br /> {formData.bank_details.ifsc_code}
+                                    </div>
+                                </div>
+                            </>
+                        )
+                    }
                     {formData.documents && formData.documents.some(doc => doc.name || doc.number) && (
                         <>
                             <div className='text-2xl font-semibold underline mb-2'>
