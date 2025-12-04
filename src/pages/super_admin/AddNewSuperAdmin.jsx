@@ -684,6 +684,11 @@ export default function AddNewSuperAdmin() {
       const docsCopy = [...localDocuments];
       docsCopy[i][field] = value;
       setLocalDocuments(docsCopy);
+    } else if (["account_holder_name","account_number","ifsc_code","bank_name","branch_name","branch_address"].includes(id)) {
+      setFormData((p) => ({
+        ...p,
+        bank_details: { ...p.bank_details, [id]: value },
+      }));
     } else setFormData((p) => ({ ...p, [id]: value }));
   };
 
@@ -1015,7 +1020,7 @@ export default function AddNewSuperAdmin() {
 
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-              <TextField label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} />
+              <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} />
 
               <div className="w-full flex gap-3">
                 <div className="min-w-[140px]">
@@ -1035,7 +1040,7 @@ export default function AddNewSuperAdmin() {
               <Select id="role" options={roleOptions} value={selectedRole} placeholder="Role" isSearchable menuPortalTarget={document.body} required isDisabled={!allowWriteAccess} styles={selectStyles}
                 onChange={(sel) => {
                   setSelectedRole(sel);
-                  setFormData((p) => ({ ...p, country_code: sel?.value || "" }));
+                  setFormData((p) => ({ ...p, role: sel?.value || "" }));
                 }}
               />
             </div>

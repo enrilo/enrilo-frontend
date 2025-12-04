@@ -27,6 +27,7 @@ export default function ViewSuperAdmin() {
         state: "",
         country: "",
         zipcode: "",
+        bank_details: { account_number: "", account_holder_name: "", bank_name: "", branch_name:"", branch_address: "", ifsc_code:"" },
         emergency_contact: { name: "", relation: "", country_code: "", phone: "" },
         documents: [{ name: "", url: "", number: "", uploaded_at: "" }],
         is_active:null
@@ -146,7 +147,7 @@ export default function ViewSuperAdmin() {
             setShowSuccess(true);
             setTimeout(() => {
                 window.location.reload(true);
-                // navigate("/all-todos");
+                navigate("/all-super-admin");
             }, 1500);
         } catch (error) {
             console.log(error.message);
@@ -187,6 +188,9 @@ export default function ViewSuperAdmin() {
                         <div className='text-xl'>
                             <span className="font-semibold">Company Email ID:</span> <br /> {formData.company_email}
                         </div>
+                        <div className='text-xl'>
+                            <span className="font-semibold">Role:</span> <br /> <span className="capitalize">{formData.role}</span>
+                        </div>
                         {/* <div className='text-xl'>
                             Personal Email ID: {formData.email}
                         </div> */}
@@ -210,7 +214,7 @@ export default function ViewSuperAdmin() {
                     <div className='text-2xl font-semibold underline mb-2'>
                         Emergency Contact:
                     </div>
-                    <div className={`grid grid-cols-1 md:grid-cols-3 gap-5 ${formData.documents && formData.documents.some(doc => doc.name || doc.number) ? "mb-8" : "mb-15"}`}>
+                    <div className={"grid grid-cols-1 md:grid-cols-3 gap-5 mb-8"}>
                         <div className='text-xl'>
                             <span className="font-semibold">Name:</span> <br /> {formData.emergency_contact.name}
                         </div>
@@ -221,6 +225,37 @@ export default function ViewSuperAdmin() {
                             <span className="font-semibold">Relation with Super Admin:</span> <br /> {formData.emergency_contact.relation}
                         </div>
                     </div>
+                    
+                    {/* BANK ACCOUNT INFO */}
+                    {
+                        (formData.bank_details.account_holder_name!="" && formData.bank_details.account_number!="" && formData.bank_details.bank_name!="" && formData.bank_details.branch_name!="" && formData.bank_details.branch_address!="" && formData.bank_details.branch_address!="") && (
+                            <>
+                                <div className='text-2xl font-semibold underline mb-2'>
+                                Bank Details:
+                                </div>
+                                <div className={`grid grid-cols-1 md:grid-cols-3 gap-5 ${formData.documents && formData.documents.some(doc => doc.name || doc.number) ? "mb-8" : "mb-15"}`}>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Account Holder Name:</span> <br /> {formData.bank_details.account_holder_name}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Account Number:</span> <br /> {formData.bank_details.account_number}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Bank Name:</span> <br /> {formData.bank_details.bank_name}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Branch Name:</span> <br /> {formData.bank_details.branch_name}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">Branch Address:</span> <br /> {formData.bank_details.branch_address}
+                                    </div>
+                                    <div className='text-xl'>
+                                        <span className="font-semibold">IFSC Code:</span> <br /> {formData.bank_details.ifsc_code}
+                                    </div>
+                                </div>
+                            </>
+                        )
+                    }
                     
                     {/* DOCUMENTS INFO */}
                     {/* <div className='text-2xl font-semibold underline mb-2'>
