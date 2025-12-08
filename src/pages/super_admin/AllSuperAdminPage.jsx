@@ -108,7 +108,7 @@ export default function AllSuperAdminPage() {
         setCurrentUserEmail(userState.currentUser?.data?.company_email);
         setCurrentUserID(userState.currentUser?.data?.id);
         
-        const res = await fetch("http://localhost:3000/api/super-admins/", {
+        const allSuperAdminResData = await fetch("http://localhost:3000/api/super-admins/", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -117,12 +117,29 @@ export default function AllSuperAdminPage() {
           credentials: "include",
         });
 
-        const data = await res.json();
-        if (data.success === false) {
+        const allSuperAdminData = await allSuperAdminResData.json();
+        if (allSuperAdminData.success === false) {
           setPageLoading(false);
           return;
         };
-        setAllSuperAdmin(data.data.superAdmins);
+        setAllSuperAdmin(allSuperAdminData.data.superAdmins);
+
+        // FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
+        const accessTokenResData = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${loggedInUserID}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        const accessTokenData = await accessTokenResData.json();
+        
+        if(accessTokenData.success === false){
+          setPageLoading(false);
+          console.log("accessTokenData.success === false");
+          return;
+        }
+        
+        console.log(`accessTokenData.data.accessToken.allow_write_access: ${JSON.stringify(accessTokenData.data.accessToken.allow_write_access)}`);
+        setAllowWriteAccess(accessTokenData.data.accessToken.allow_write_access);
+
         setPageLoading(false);
       } catch (error) {
         setPageLoading(false);
@@ -130,31 +147,6 @@ export default function AllSuperAdminPage() {
       }
     };
     fetchAllSuperAdmin();
-
-    // FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
-    const fetchOneSuperAdmin = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/api/super-admins/${loggedInUserID}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-        });
-        const data = await res.json();
-        
-        if(data.success === false){
-          console.log("data.success === false");
-          return;
-        }
-        setAllowWriteAccess(data.data.superAdmin.allow_write_access);
-      } catch (error) {
-        console.log(`error.message: ${error.message}`);
-      }
-    };
-
-    fetchOneSuperAdmin();
   }, []);
 
   return (

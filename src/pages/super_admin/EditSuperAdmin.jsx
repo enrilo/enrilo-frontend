@@ -637,6 +637,10 @@ export default function EditSuperAdmin() {
     const [id2, setId2] = useState(null); // second dropdown
     const [tempClearedRows, setTempClearedRows] = useState({}); // { index: true }
     const [tempOriginalRows, setTempOriginalRows] = useState({}); // store original rows for potential restore
+    const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+    const userState = JSON.parse(persistedRoot.user);
+    const token = userState.currentUser?.data?.accessToken;
+    setCurrentUserID(userState.currentUser?.data?.id);
 
     const [formData, setFormData] = useState({
         photo_url: "",
@@ -995,10 +999,6 @@ export default function EditSuperAdmin() {
     // USE EFFECT
     useEffect(() => {
         const fetchSuperAdmin = async () => {
-            const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-            const userState = JSON.parse(persistedRoot.user);
-            const token = userState.currentUser?.data?.accessToken;
-            setCurrentUserID(userState.currentUser?.data?.id);
             const superAdminID = params.id;
             const res = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
                 method: "GET",

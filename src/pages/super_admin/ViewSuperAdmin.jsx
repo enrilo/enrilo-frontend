@@ -86,7 +86,7 @@ export default function ViewSuperAdmin() {
                 try {
                     setPageLoading(true);
 
-                    const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
+                    const superAdminResData = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -94,17 +94,31 @@ export default function ViewSuperAdmin() {
                         },
                         credentials: "include",
                     });
-                    const data = await res.json();
-                    // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
+                    const superAdminData = await superAdminResData.json();
                     
-                    if(data.success === false){
+                    if(superAdminData.success === false){
                         setPageLoading(false);
-                        console.log("data.success === false");
+                        console.log("superAdminData.success === false");
                         return;
-                    }
-                    console.log(`data.data.superAdmin:${JSON.stringify(data.data.superAdmin)}`);
+                    }                    
+                    setFormData(superAdminData.data.superAdmin);
+
+                    // FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
+                    const accessTokenResData = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${loggedInUserID}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                    });
+                    const accessTokenData = await accessTokenResData.json();
                     
-                    setFormData(data.data.superAdmin);
+                    if(accessTokenData.success === false){
+                    setPageLoading(false);
+                    console.log("accessTokenData.success === false");
+                    return;
+                    }
+                    
+                    console.log(`accessTokenData.data.accessToken.allow_write_access: ${JSON.stringify(accessTokenData.data.accessToken.allow_write_access)}`);
+                    setAllowWriteAccess(accessTokenData.data.accessToken.allow_write_access);
+
                     setPageLoading(false);
                     // setError(false);
                 } catch (error) {
@@ -115,31 +129,6 @@ export default function ViewSuperAdmin() {
             };
 
             fetchASuperAdmin();
-
-            // FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
-            const fetchLoggedInSuperAdmin = async () => {
-                try {
-                    const res = await fetch(`http://localhost:3000/api/super-admins/${loggedInUserID}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    credentials: "include",
-                    });
-                    const data = await res.json();
-                    
-                    if(data.success === false){
-                    console.log("data.success === false");
-                    return;
-                    }
-                    setAllowWriteAccess(data.data.superAdmin.allow_write_access);
-                } catch (error) {
-                    console.log(`error.message: ${error.message}`);
-                }
-            };
-
-            fetchLoggedInSuperAdmin();
         }
         
     }, [params.id]);
