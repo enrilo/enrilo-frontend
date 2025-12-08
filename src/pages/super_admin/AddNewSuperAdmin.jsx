@@ -560,7 +560,38 @@ export default function AddNewSuperAdmin() {
   // Extract token
   const token = userState.currentUser?.data?.accessToken;
   const loggedInUserID = userState.currentUser?.data?.id;
-  // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
+
+  // USING useEffect FOR FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
+  useEffect(() =>{
+    const fetchSuperAdminAccessToken = async () => {
+      try {
+        setPageLoading(true);
+
+        const res = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${loggedInUserID}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        const data = await res.json();
+        
+        if(data.success === false){
+          setPageLoading(false);
+          console.log("data.success === false");
+          return;
+        }
+        
+        console.log(`Data.data.accessToken.allow_write_access: ${JSON.stringify(data.data.accessToken.allow_write_access)}`);
+        setAllowWriteAccess(data.data.accessToken.allow_write_access);
+        setPageLoading(false);
+        // setError(false);
+      } catch (error) {
+        console.log(`error.message: ${error.message}`);
+        setPageLoading(false);
+        // setError(true);
+      }
+    };
+
+    fetchSuperAdminAccessToken();
+  }, []);
 
   // EMERGENCY PHONE NUMBER COUNTRY CODE DROPDOWN OPTIONS
   const emergencyCountryCodeOptions = countryCodes.map((country) => ({
@@ -591,42 +622,6 @@ export default function AddNewSuperAdmin() {
   const filteredOptionsForId2 = idOptions.filter(
     (opt) => opt.value !== id1?.value
   );
-
-  // USING useEffect FOR FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
-  useEffect(() =>{
-      const fetchSuperAdmin = async () => {
-        try {
-          // setPageLoading(true);
-
-          const res = await fetch(`http://localhost:3000/api/super-admins/${loggedInUserID}`, {
-              method: "GET",
-              headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-              },
-              credentials: "include",
-          });
-          const data = await res.json();
-          
-          if(data.success === false){
-              // setPageLoading(false);
-              console.log("data.success === false");
-              return;
-          }
-          setAllowWriteAccess(data.data.superAdmin.allow_write_access);
-          
-          // setFormData(data.data.superAdmin);
-          // setPageLoading(false);
-          // setError(false);
-        } catch (error) {
-          console.log(`error.message: ${error.message}`);
-          // setPageLoading(false);
-          // setError(true);
-        }
-      };
-
-      fetchSuperAdmin();
-  }, []);
 
   // LOCAL PREVIEW STATE
   const [localProfileFile, setLocalProfileFile] = useState(null);
