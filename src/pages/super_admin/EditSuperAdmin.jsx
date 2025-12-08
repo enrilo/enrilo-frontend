@@ -640,7 +640,7 @@ export default function EditSuperAdmin() {
     const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
     const userState = JSON.parse(persistedRoot.user);
     const token = userState.currentUser?.data?.accessToken;
-    setCurrentUserID(userState.currentUser?.data?.id);
+    const superAdminID = params.id;
 
     const [formData, setFormData] = useState({
         photo_url: "",
@@ -664,6 +664,70 @@ export default function EditSuperAdmin() {
         documents: [{ name: "", url: "", number: "", uploaded_at: Date.now() }],
         is_active:true
     });
+
+    const [accessTokenFormData, setAccessTokenFormData] = useState({
+        token:"",
+        allow_write_access:false,
+        expires_at:Date.now,
+        is_revoked:false,
+        is_expired:false,
+    });
+
+    // USE EFFECT TO FETCH DATA
+    useEffect(() => {
+        setCurrentUserID(userState.currentUser?.data?.id);
+        const fetchSuperAdmin = async () => {
+            // const superAdminID = params.id;
+            const superAdminData = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                credentials: "include",
+            });
+
+            const superAdminJsonData = await superAdminData.json();
+            if (superAdminJsonData.success === false) {
+                return;
+            }
+
+            const fetchedAdmin = superAdminJsonData.data.superAdmin;
+            setFormData(prev => ({ ...prev, ...fetchedAdmin }));
+
+            const codeOption = countryCodeOptions.find(opt => opt.value === fetchedAdmin.country_code);
+            setSelectedCountryCode(codeOption || null);
+
+            const roleOption = roleOptions.find(opt => opt.value === fetchedAdmin.role);
+            setSelectedRole(roleOption || null);
+
+            const allowWriteAccessOption = allowWriteAccessOptions.find(opt => opt.value === fetchedAdmin.allow_write_access);
+            setSelectedWriteAccess(allowWriteAccessOption || null);
+
+            const userActiveStatus = isActiveUserDetailsOptions.find(opt => opt.value === fetchedAdmin.is_active);
+            setIsUserActive(userActiveStatus || null);
+
+            const emergencyCodeOption = emergencyCountryCodeOptions.find(opt => opt.value === fetchedAdmin.emergency_contact?.country_code);
+            setSelectedEmergencyCode(emergencyCodeOption || null);
+
+            if(formData._id !== currentUserID) {
+                // FETCH ACCESS TOKEN DATA (IF THE ID DATA FETCHED DOES NOT MATCH ID OF CURRENTLY LOGGED IN USER)
+                const accessTokenResData = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${superAdminID}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+                const accessTokenData = await accessTokenResData.json();
+                
+                if(accessTokenData.success === false){
+                    return;
+                }
+                
+                setAccessTokenFormData(accessTokenData.data.accessToken);
+            }
+        };
+
+        fetchSuperAdmin();
+    }, []);
 
     // EMERGENCY PHONE NUMBER COUNTRY CODE DROPDOWN OPTIONS
     const emergencyCountryCodeOptions = countryCodes.map((country) => ({value: country.code, label: `${country.code} - ${country.name}`, }));
@@ -896,7 +960,16 @@ export default function EditSuperAdmin() {
                 ...p,
                 bank_details: { ...p.bank_details, [id]: value },
             }));
-        } else setFormData((p) => ({ ...p, [id]: value }));
+        } else if (id.includes("allow_write_access")) {
+            setFormData((p) => ({ ...p, allow_write_access: value }));
+            //setting access token form data
+            setAccessTokenFormData((q) => ({ ...q, allow_write_access: value }));
+        } else {
+            //setting entire form data
+            setFormData((p) => ({ ...p, [id]: value }));
+            //setting access token form data
+            setAccessTokenFormData((p) => ({ ...p, [id]: value }));
+        };
     };
 
     const handleSubmit = async (e) => {
@@ -927,18 +1000,12 @@ export default function EditSuperAdmin() {
             );
 
             if (invalidDocs.length > 0) {
-                setModalMessage(
-                    "Some documents have no uploaded file. Please either upload a new file or clear the document name and number."
-                );
+                setModalMessage("Some documents have no uploaded file. Please either upload a new file or clear the document name and number.");
                 setMessageOpen(true);
                 setPageLoading(false);
                 return;
             }
 
-            const superAdminID = params.id;
-            const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-            const userState = JSON.parse(persistedRoot.user);
-            const token = userState.currentUser?.data?.accessToken;
             if (deletedProfile && formData.photo_firebase_path) {
                 try {
                     const oldRef = ref(storage, formData.photo_firebase_path);
@@ -973,12 +1040,28 @@ export default function EditSuperAdmin() {
                 body: JSON.stringify(updatedFormData),
                 credentials: "include",
             });
-
             const data = await res.json();
+
             if (data.success === false) {
                 setFailedToSaveMsgOpen(true);
                 setFailedToSaveMessage(`Failed to update super admin because ${data.message.toLowerCase()}`);
             } else {
+                if(formData._id !== currentUserID) {
+                    // UPDATE ACCESS TOKEN DATA CODE START (IF THE ID DATA FETCHED DOES NOT MATCH ID OF CURRENTLY LOGGED IN USER)
+                    const updateAccessTokenInfo = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${superAdminID}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(accessTokenFormData),
+                        credentials: "include",
+                    });
+                    const updateAccessTokenData = await updateAccessTokenInfo.json();
+                    if (updateAccessTokenData.success === false) {
+                        return;
+                    }
+                    // UPDATE ACCESS TOKEN DATA CODE END
+                }
+               
+
                 setSaveSuccessfulMessage("Super admin updated successfully! You will now be redirected to All Super Admin Page.");
                 setSaveSuccessfulMsgOpen(true);
                 setNewProfileFile(null);
@@ -995,44 +1078,6 @@ export default function EditSuperAdmin() {
             setPageLoading(false);
         }
     };
-
-    // USE EFFECT
-    useEffect(() => {
-        const fetchSuperAdmin = async () => {
-            const superAdminID = params.id;
-            const res = await fetch(`http://localhost:3000/api/super-admins/${superAdminID}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                credentials: "include",
-            });
-
-            const data = await res.json();
-            if (data.success === false) return;
-
-            const fetchedAdmin = data.data.superAdmin;
-            setFormData(prev => ({ ...prev, ...fetchedAdmin }));
-
-            const codeOption = countryCodeOptions.find(opt => opt.value === fetchedAdmin.country_code);
-            setSelectedCountryCode(codeOption || null);
-
-            const roleOption = roleOptions.find(opt => opt.value === fetchedAdmin.role);
-            setSelectedRole(roleOption || null);
-
-            const allowWriteAccessOption = allowWriteAccessOptions.find(opt => opt.value === fetchedAdmin.allow_write_access);
-            setSelectedWriteAccess(allowWriteAccessOption || null);
-
-            const userActiveStatus = isActiveUserDetailsOptions.find(opt => opt.value === fetchedAdmin.is_active);
-            setIsUserActive(userActiveStatus || null);
-
-            const emergencyCodeOption = emergencyCountryCodeOptions.find(opt => opt.value === fetchedAdmin.emergency_contact?.country_code);
-            setSelectedEmergencyCode(emergencyCodeOption || null);
-        };
-
-        fetchSuperAdmin();
-    }, []);
 
     return (
         <main className="flex-1 overflow-y-auto p-6">
@@ -1111,6 +1156,7 @@ export default function EditSuperAdmin() {
                                         onChange={(sel) => {
                                             setSelectedWriteAccess(sel);
                                             setFormData((p) => ({ ...p, allow_write_access: sel?.value || false }));
+                                            setAccessTokenFormData((q) => ({ ...q, allow_write_access: sel?.value || false }));
                                         }}
                                     />
                                 </>

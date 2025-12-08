@@ -105,15 +105,15 @@ export default function ViewSuperAdmin() {
 
                     // FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
                     const accessTokenResData = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${loggedInUserID}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
                     });
                     const accessTokenData = await accessTokenResData.json();
                     
                     if(accessTokenData.success === false){
-                    setPageLoading(false);
-                    console.log("accessTokenData.success === false");
-                    return;
+                        setPageLoading(false);
+                        console.log("accessTokenData.success === false");
+                        return;
                     }
                     
                     console.log(`accessTokenData.data.accessToken.allow_write_access: ${JSON.stringify(accessTokenData.data.accessToken.allow_write_access)}`);
