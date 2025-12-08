@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { signInStart, signInSuccess, signInFailure } from '../../redux/user/userSlice';
@@ -12,6 +12,20 @@ export default function SuperAdminLogin() {
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+  // Parse the nested user slice
+  const userState = JSON.parse(persistedRoot.user);
+  console.log(`userState:${JSON.stringify(userState)}`)
+
+  useEffect(() =>{
+      const redirectToDashboard = () => {
+       if(userState.currentUser !== null) {
+        navigate("/dashboard");
+       }
+      };
+  
+      redirectToDashboard();
+    }, []);
 
   const handleChange = (e) => {
     setFormData({
