@@ -1110,7 +1110,7 @@ export default function EditSuperAdmin() {
                                     <Select id="allow_write_access" options={allowWriteAccessOptions} value={selectedWriteAccess} placeholder="Do You Want To Allow Write Access?" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
                                         onChange={(sel) => {
                                             setSelectedWriteAccess(sel);
-                                            setFormData((p) => ({ ...p, allow_write_acccess: sel?.value || false }));
+                                            setFormData((p) => ({ ...p, allow_write_access: sel?.value || false }));
                                         }}
                                     />
                                 </>
