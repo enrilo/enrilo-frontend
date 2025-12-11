@@ -575,11 +575,9 @@ export default function AddNewSuperAdmin() {
         
         if(data.success === false){
           setPageLoading(false);
-          console.log("data.success === false");
           return;
         }
         
-        console.log(`Data.data.accessToken.allow_write_access: ${JSON.stringify(data.data.accessToken.allow_write_access)}`);
         setAllowWriteAccess(data.data.accessToken.allow_write_access);
         setPageLoading(false);
         // setError(false);

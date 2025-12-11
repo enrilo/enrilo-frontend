@@ -15,7 +15,6 @@ export default function SuperAdminLogin() {
   const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
   // Parse the nested user slice
   const userState = JSON.parse(persistedRoot.user);
-  console.log(`userState:${JSON.stringify(userState)}`)
 
   useEffect(() =>{
       const redirectToDashboard = () => {

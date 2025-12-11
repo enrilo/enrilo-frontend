@@ -61,7 +61,6 @@ export default function MyProfile() {
                 
                 if(data.success === false){
                     setPageLoading(true);
-                    console.log("data.success === false");
                     return;
                 }
                 setFormData(data.data.superAdmin);
@@ -148,7 +147,7 @@ export default function MyProfile() {
                     
                     {/* BANK ACCOUNT INFO */}
                     {
-                        (formData.bank_details.isEmpty) && (
+                        (formData.bank_details) && (
                             <>
                                 <div className='text-2xl font-semibold underline mb-2'>
                                 Bank Details:
