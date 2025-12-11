@@ -28,7 +28,6 @@ export default function AllSuperAdminPage() {
   const role = userState.currentUser?.data?.role;
 
   const confirmDelete = (id) => {
-    console.log(`confirmDelete id:${id}`);
     setDeleteId(id);
     setShowConfirmDelete(true);
   };
@@ -49,7 +48,6 @@ export default function AllSuperAdminPage() {
     const data = await res.json();
     
     if(data.success === false){
-      console.log("data.success === false");
       return;
     }
 

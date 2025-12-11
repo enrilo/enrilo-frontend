@@ -46,7 +46,6 @@ export default function ViewSuperAdmin() {
 
     useEffect(() =>{
         if(params.id === loggedInUserID) {
-            console.log('You are viewing your own profile');
             const fetchSuperAdmin = async () => {
                 try {
                     setPageLoading(true);
@@ -60,14 +59,11 @@ export default function ViewSuperAdmin() {
                         credentials: "include",
                     });
                     const data = await res.json();
-                    // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
                     
                     if(data.success === false){
                         setPageLoading(false);
-                        console.log("data.success === false");
                         return;
                     }
-                    console.log(`data.data.superAdmin:${JSON.stringify(data.data.superAdmin)}`);
                     
                     setFormData(data.data.superAdmin);
                     setAllowWriteAccess(data.data.superAdmin.allow_write_access);
@@ -98,7 +94,6 @@ export default function ViewSuperAdmin() {
                     
                     if(superAdminData.success === false){
                         setPageLoading(false);
-                        console.log("superAdminData.success === false");
                         return;
                     }                    
                     setFormData(superAdminData.data.superAdmin);
@@ -112,11 +107,9 @@ export default function ViewSuperAdmin() {
                     
                     if(accessTokenData.success === false){
                         setPageLoading(false);
-                        console.log("accessTokenData.success === false");
                         return;
                     }
                     
-                    console.log(`accessTokenData.data.accessToken.allow_write_access: ${JSON.stringify(accessTokenData.data.accessToken.allow_write_access)}`);
                     setAllowWriteAccess(accessTokenData.data.accessToken.allow_write_access);
 
                     setPageLoading(false);
@@ -158,7 +151,6 @@ export default function ViewSuperAdmin() {
         
         if(data.success === false){
             setPageLoading(false);
-            console.log("data.success === false");
             return;
         }
 
@@ -180,7 +172,6 @@ export default function ViewSuperAdmin() {
                 deleteObject(desertRef).then(() => {
                     console.log(`Document with URL ${docURL} Removed Successfully`)
                 }).catch((error) => {
-                console.log("Failed To Remove Image");
                     console.log(error)
                 });
             }
