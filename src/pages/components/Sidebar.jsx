@@ -2,18 +2,20 @@ import { useState, useEffect } from "react";
 import { persistor } from "../../redux/store";
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Users, User, BriefcaseBusiness, UserPlus, IdCard, IndianRupeeIcon, LayoutDashboard, Building, Settings as SettingsIcon, LogOut, Menu, X, BriefcaseMedical, GraduationCap } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import enriloFullLogoSrc from "../../assets/images/transparent-background/enrilo-with-tagline-300x300.png";
 import enriloLetterESrc from "../../assets/images/transparent-background/enrilo-e-100x100.png";
+import { signoutUserSuccess } from "../../redux/user/userSlice";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
+  const [showLogoutSuccess, setShowLogoutSuccess] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // ✅ SAFE Redux access (NO localStorage usage)
   const role = useSelector((state) => state.user?.currentUser?.data?.role);
@@ -100,8 +102,34 @@ export default function Sidebar() {
     setActiveMenu(matched?.subMenu ? matched.name : null);
   }, [location.pathname]);
 
-  const toggleSubMenu = (menuName) =>
-    setActiveMenu(activeMenu === menuName ? null : menuName);
+  const toggleSubMenu = (menuName) => setActiveMenu(activeMenu === menuName ? null : menuName);
+
+  // const handleLogout = async () => {
+  //   try {
+  //     const res = await fetch(
+  //       "http://localhost:3000/api/super-admins/logout",
+  //       {
+  //         method: "POST",
+  //         credentials: "include",
+  //       }
+  //     );
+
+  //     const data = await res.json();
+
+  //     if (data.success) {
+  //       dispatch(signoutUserSuccess()); 
+  //       await persistor.purge();
+  //       localStorage.clear();
+  //       alert("You have been logged out successfully.");
+  //       navigate("/super-admin-login");
+  //     } else {
+  //       alert("Logout failed. Try Again.");
+  //     }
+  //   } catch (err) {
+  //     console.error("Logout error:", err);
+  //     alert("⚠️ Server error during logout");
+  //   }
+  // };
 
   const handleLogout = async () => {
     try {
@@ -116,11 +144,13 @@ export default function Sidebar() {
       const data = await res.json();
 
       if (data.success) {
+        // Clear user data
+        // dispatch(signoutUserSuccess());
         await persistor.purge();
         localStorage.clear();
 
-        alert("You have been logged out successfully.");
-        navigate("/");
+        // Show modal and wait for user action
+        setShowLogoutSuccess(true);
       } else {
         alert("Logout failed. Try Again.");
       }
@@ -129,6 +159,8 @@ export default function Sidebar() {
       alert("⚠️ Server error during logout");
     }
   };
+
+
 
   return (
     <>
@@ -266,6 +298,22 @@ export default function Sidebar() {
               </button>
               <button onClick={() => setShowLogoutConfirm(false)} className="bg-gray-300 border-2 px-4 py-2 rounded-md hover:bg-gray-400 transition cursor-pointer" >
                 Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Logout success modal */}
+      {showLogoutSuccess && (
+        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+          <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+            <p className="mb-6 text-xl font-medium">
+              You have logged out successfully! You will be redirected to login page now.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => dispatch(signoutUserSuccess())} className="w-full cursor-pointer sm:w-auto bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition disabled:opacity-60">
+                OK
               </button>
             </div>
           </div>
