@@ -1,42 +1,107 @@
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
+// // import { BrowserRouter, Routes, Route } from "react-router-dom";
+// // import Home from "./pages/Home.jsx";
+// // import AddNewConsultancy from "./pages/AddNewConsultancy.jsx";
+// // import Header from "./pages/components/Header.jsx";
+// // import Footer from "./pages/components/Footer.jsx";
+// // import Sidebar from "./pages/components/Sidebar.jsx";
+// // import "./App.css";
+// // import MasterAdminLogin from "./pages/MasterAdminLogin.jsx";
+// // import Dashboard from "./pages/Dashboard.jsx";
+// // import Login from "./pages/Login.jsx";
+// // import AllConsultanciesPage from "./pages/AllConsultanciesPage.jsx";
+
+// // function App() {
+// //   return (
+// //     <BrowserRouter>
+// //       <div className="flex h-screen bg-[#F8FAFC]">
+// //         <Sidebar />
+// //         <div className="flex flex-col flex-1 overflow-hidden">
+// //           <Header />
+// //           <main className="flex-1 overflow-y-auto p-6">
+// //             <Routes>
+// //               <Route path="/login" element={<Login/>}/>
+// //               <Route path="/master-admin-login" element={<MasterAdminLogin/>}/>
+// //               <Route path="/all-consultancies" element={<AllConsultanciesPage/>}/>
+// //               <Route path="/" element={<Home />} />
+// //               <Route path="/dashboard" element={<Dashboard />} />
+// //               <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
+// //             </Routes>
+// //           </main>
+// //           <Footer />
+// //         </div>
+// //       </div>
+// //     </BrowserRouter>
+// //   );
+// // }
+
+// // export default App;
+
+// import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 // import Home from "./pages/Home.jsx";
 // import AddNewConsultancy from "./pages/AddNewConsultancy.jsx";
 // import Header from "./pages/components/Header.jsx";
 // import Footer from "./pages/components/Footer.jsx";
 // import Sidebar from "./pages/components/Sidebar.jsx";
-// import "./App.css";
-// import MasterAdminLogin from "./pages/MasterAdminLogin.jsx";
-// import Dashboard from "./pages/Dashboard.jsx";
+// import SuperAdminLogin from "./pages/super_admin/SuperAdminLogin.jsx";
+// import Dashboard from "./pages/super_admin/Dashboard.jsx";
 // import Login from "./pages/Login.jsx";
 // import AllConsultanciesPage from "./pages/AllConsultanciesPage.jsx";
+// import PrivateRoute from "./pages/components/PrivateRoute.jsx";
+// import AddNewSuperAdmin from "./pages/super_admin/AddNewSuperAdmin.jsx";
+// import AllSuperAdminPage from "./pages/super_admin/AllSuperAdminPage.jsx";
+// import ViewSuperAdmin from "./pages/super_admin/ViewSuperAdmin.jsx";
+// import EditSuperAdmin from "./pages/super_admin/EditSuperAdmin.jsx";
+// import MyProfile from "./pages/super_admin/MyProfile.jsx";
+
+// function AppContent() {
+//   const location = useLocation();
+
+//   // Routes where the sidebar should be hidden
+//   const hideSidebarRoutes = ["/login", "/super-admin-login", "/"];
+//   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
+
+//   // Routes where the header should be hidden
+//   const hideHeaderRoutes = ["/login", "/super-admin-login"];
+//   const shouldHideHeader = hideHeaderRoutes.includes(location.pathname);
+
+//   return (
+//     <div className="flex h-screen bg-[#F8FAFC]">
+//       {!shouldHideSidebar && <Sidebar />}
+
+//       <div className="flex flex-col flex-1 overflow-hidden">
+//         {!shouldHideHeader && <Header />}
+//           <Routes>
+//             <Route path="/login" element={<Login />} />
+//             <Route path="/super-admin-login" element={<SuperAdminLogin />} />
+//             <Route path="/" element={<Home />} />
+//             <Route element={<PrivateRoute />}>
+//               <Route path="/dashboard" element={<Dashboard />} />
+//               <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
+//               <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
+//               <Route path="/add-new-superadmin" element={<AddNewSuperAdmin />} />
+//               <Route path="/all-super-admin" element={<AllSuperAdminPage />} />
+//               <Route path="/view-super-admin/:id" element={<ViewSuperAdmin />} />
+//               <Route path="/edit-super-admin/:id" element={<EditSuperAdmin />} />
+//               <Route path="/my-profile" element={<MyProfile />} />
+//             </Route>
+//           </Routes>
+//         <Footer />
+//       </div>
+//     </div>
+//   );
+// }
 
 // function App() {
 //   return (
 //     <BrowserRouter>
-//       <div className="flex h-screen bg-[#F8FAFC]">
-//         <Sidebar />
-//         <div className="flex flex-col flex-1 overflow-hidden">
-//           <Header />
-//           <main className="flex-1 overflow-y-auto p-6">
-//             <Routes>
-//               <Route path="/login" element={<Login/>}/>
-//               <Route path="/master-admin-login" element={<MasterAdminLogin/>}/>
-//               <Route path="/all-consultancies" element={<AllConsultanciesPage/>}/>
-//               <Route path="/" element={<Home />} />
-//               <Route path="/dashboard" element={<Dashboard />} />
-//               <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
-//             </Routes>
-//           </main>
-//           <Footer />
-//         </div>
-//       </div>
+//       <AppContent />
 //     </BrowserRouter>
 //   );
 // }
 
 // export default App;
 
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import AddNewConsultancy from "./pages/AddNewConsultancy.jsx";
 import Header from "./pages/components/Header.jsx";
@@ -56,11 +121,9 @@ import MyProfile from "./pages/super_admin/MyProfile.jsx";
 function AppContent() {
   const location = useLocation();
 
-  // Routes where the sidebar should be hidden
-  const hideSidebarRoutes = ["/login", "/super-admin-login", "/"];
+  const hideSidebarRoutes = ["/", "/login", "/super-admin-login"];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
 
-  // Routes where the header should be hidden
   const hideHeaderRoutes = ["/login", "/super-admin-login"];
   const shouldHideHeader = hideHeaderRoutes.includes(location.pathname);
 
@@ -70,21 +133,29 @@ function AppContent() {
 
       <div className="flex flex-col flex-1 overflow-hidden">
         {!shouldHideHeader && <Header />}
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/super-admin-login" element={<SuperAdminLogin />} />
-            <Route path="/" element={<Home />} />
-            <Route element={<PrivateRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
-              <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
-              <Route path="/add-new-superadmin" element={<AddNewSuperAdmin />} />
-              <Route path="/all-super-admin" element={<AllSuperAdminPage />} />
-              <Route path="/view-super-admin/:id" element={<ViewSuperAdmin />} />
-              <Route path="/edit-super-admin/:id" element={<EditSuperAdmin />} />
-              <Route path="/my-profile" element={<MyProfile />} />
-            </Route>
-          </Routes>
+
+        <Routes>
+          {/* ✅ PUBLIC ROUTES */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/super-admin-login" element={<SuperAdminLogin />} />
+
+          {/* 🔒 PRIVATE ROUTES */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
+            <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
+            <Route path="/add-new-superadmin" element={<AddNewSuperAdmin />} />
+            <Route path="/all-super-admin" element={<AllSuperAdminPage />} />
+            <Route path="/view-super-admin/:id" element={<ViewSuperAdmin />} />
+            <Route path="/edit-super-admin/:id" element={<EditSuperAdmin />} />
+            <Route path="/my-profile" element={<MyProfile />} />
+
+            {/* 🚨 CATCH-ALL PROTECTED ROUTE */}
+            <Route path="*" element={<Navigate to="/super-admin-login" replace />} />
+          </Route>
+        </Routes>
+
         <Footer />
       </div>
     </div>
