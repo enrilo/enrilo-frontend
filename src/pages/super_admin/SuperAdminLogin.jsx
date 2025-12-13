@@ -179,10 +179,10 @@ export default function SuperAdminLogin() {
       }
 
       dispatch(signInSuccess(data));
-      setModalMessage(
-        "Congratulations, you have signed in successfully. You will now be redirected to home page."
-      );
-      setMessageOpen(true);
+      // setModalMessage(
+      //   "Congratulations, you have signed in successfully. You will now be redirected to home page."
+      // );
+      // setMessageOpen(true);
     } catch (error) {
       dispatch(signInFailure(error.message));
       setModalMessage(error.message);

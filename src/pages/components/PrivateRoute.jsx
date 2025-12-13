@@ -15,7 +15,7 @@ export default function PrivateRoute() {
 
   if (!currentUser) {
     return (
-      <Navigate to="/" replace state={{ from: location.pathname }} />
+      <Navigate to="/super-admin-login" replace state={{ from: location.pathname }} />
     );
   }
 
