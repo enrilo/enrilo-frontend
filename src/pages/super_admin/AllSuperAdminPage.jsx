@@ -131,17 +131,12 @@ export default function AllSuperAdminPage() {
         
         if(accessTokenData.success === false){
           setPageLoading(false);
-          console.log("accessTokenData.success === false");
           return;
         }
-        
-        console.log(`accessTokenData.data.accessToken.allow_write_access: ${JSON.stringify(accessTokenData.data.accessToken.allow_write_access)}`);
         setAllowWriteAccess(accessTokenData.data.accessToken.allow_write_access);
-
         setPageLoading(false);
       } catch (error) {
         setPageLoading(false);
-        console.error("Error fetching superadmin data:", error);
       }
     };
     fetchAllSuperAdmin();
