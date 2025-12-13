@@ -147,7 +147,7 @@ export default function MyProfile() {
                     
                     {/* BANK ACCOUNT INFO */}
                     {
-                        (formData.bank_details) && (
+                        (!formData.bank_details) && (
                             <>
                                 <div className='text-2xl font-semibold underline mb-2'>
                                 Bank Details:
