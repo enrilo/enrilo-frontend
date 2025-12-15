@@ -40,7 +40,6 @@ export default function ViewSuperAdmin() {
     const userState = JSON.parse(persistedRoot.user);
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
-    // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
     const role = userState.currentUser?.data?.role;
     const loggedInUserID = userState.currentUser?.data?.id;
 
@@ -113,11 +112,9 @@ export default function ViewSuperAdmin() {
                     setAllowWriteAccess(accessTokenData.data.accessToken.allow_write_access);
 
                     setPageLoading(false);
-                    // setError(false);
                 } catch (error) {
                     console.log(`error.message: ${error.message}`);
                     setPageLoading(false);
-                    // setError(true);
                 }
             };
 
@@ -132,11 +129,11 @@ export default function ViewSuperAdmin() {
 
     const handleDeleteConfirmed = async () => {
         setPageLoading(true);
-        const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-        // Parse the nested user slice
-        const userState = JSON.parse(persistedRoot.user);
-        // Extract token
-        const token = userState.currentUser?.data?.accessToken;
+        // const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
+        // // Parse the nested user slice
+        // const userState = JSON.parse(persistedRoot.user);
+        // // Extract token
+        // const token = userState.currentUser?.data?.accessToken;
 
         const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
             method: "GET",
@@ -147,7 +144,6 @@ export default function ViewSuperAdmin() {
             credentials: "include",
         });
         const data = await res.json();
-        // console.log(`data:${JSON.stringify(data.data.superAdmin)}`);
         
         if(data.success === false){
             setPageLoading(false);
@@ -275,7 +271,7 @@ export default function ViewSuperAdmin() {
                         (formData.bank_details.account_holder_name!="" && formData.bank_details.account_number!="" && formData.bank_details.bank_name!="" && formData.bank_details.branch_name!="" && formData.bank_details.branch_address!="" && formData.bank_details.branch_address!="") && (
                             <>
                                 <div className='text-2xl font-semibold underline mb-2'>
-                                Bank Details:
+                                    Bank Details:
                                 </div>
                                 <div className={`grid grid-cols-1 md:grid-cols-3 gap-5 ${formData.documents && formData.documents.some(doc => doc.name || doc.number) ? "mb-8" : "mb-15"}`}>
                                     <div className='text-xl'>
