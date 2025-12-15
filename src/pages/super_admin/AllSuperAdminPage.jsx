@@ -24,7 +24,6 @@ export default function AllSuperAdminPage() {
   // Extract token
   const token = userState.currentUser?.data?.accessToken;
   const loggedInUserID = userState.currentUser?.data?.id;
-  // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
   const role = userState.currentUser?.data?.role;
 
   const confirmDelete = (id) => {
@@ -38,12 +37,12 @@ export default function AllSuperAdminPage() {
     const token = userState.currentUser?.data?.accessToken;
     
     const res = await fetch(`http://localhost:3000/api/super-admins/${deleteId}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
     });
     const data = await res.json();
     
@@ -55,9 +54,9 @@ export default function AllSuperAdminPage() {
       const storage = getStorage();
       const desertRef = ref(storage, data.data.superAdmin.photo_url);
       deleteObject(desertRef).then(() => {
-          console.log("Profile Pic Removed Successfully")
+        console.log("Profile Pic Removed Successfully")
       }).catch((error) => {
-          console.log("Failed To Remove Image", error)
+        console.log("Failed To Remove Image", error)
       });
     }
     for(var i=0; i < data.data.superAdmin.documents.length;i++) {
@@ -75,11 +74,11 @@ export default function AllSuperAdminPage() {
     try {
       const res = await fetch(`http://localhost:3000/api/super-admins/${deleteId}`, {
           method: "DELETE",
-          headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
       });
       const data = await res.json();
       if (data.success === false) {
@@ -94,10 +93,6 @@ export default function AllSuperAdminPage() {
   };
 
   const paginatedData = rowsPerPage > 0 ? allSuperAdmin.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : allSuperAdmin;
-
-  // const handleChangePage = (event, newPage) => setPage(newPage);
-
-  // const handleChangeRowsPerPage = (event) => { setRowsPerPage(parseInt(event.target.value, 10)); setPage(0); };
 
   useEffect(() => {
     const fetchAllSuperAdmin = async () => {

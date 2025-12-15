@@ -11,8 +11,6 @@ export default function MyProfile() {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewName, setPreviewName] = useState("");
     const [previewUrl, setPreviewUrl] = useState("");
-    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
     const [pageLoading, setPageLoading] = useState(false);
     const [allowWriteAccess, setAllowWriteAccess] = useState(false);
     const [formData, setFormData] = useState({
@@ -67,11 +65,9 @@ export default function MyProfile() {
                 // FETCHING WRITE ACCESS PERMISSIONS
                 setAllowWriteAccess(data.data.superAdmin.allow_write_access);
                 setPageLoading(false);
-                // setError(false);
             } catch (error) {
                 console.log(`error.message: ${error.message}`);
                 setPageLoading(false);
-                // setError(true);
             }
         };
 
