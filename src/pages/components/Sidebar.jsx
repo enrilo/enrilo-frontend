@@ -77,15 +77,16 @@ export default function Sidebar() {
     {
       name: "Company Details",
       icon: <IdCard size={18} />,
+      matchPrefixes: ["/our-company", "/company-gst-collection"],
       subMenu: [
         {
           name: "Company Profile",
           icon: <Building size={18} />,
-          path: "/company/profile",
+          path: "/our-company",
         }, {
           name: "GST Collection",
           icon: <IndianRupeeIcon size={18} />,
-          path: "/company/gst",
+          path: "/company-gst-collection",
         },
       ],
     },

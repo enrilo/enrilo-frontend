@@ -117,6 +117,7 @@ import AllSuperAdminPage from "./pages/super_admin/AllSuperAdminPage.jsx";
 import ViewSuperAdmin from "./pages/super_admin/ViewSuperAdmin.jsx";
 import EditSuperAdmin from "./pages/super_admin/EditSuperAdmin.jsx";
 import MyProfile from "./pages/super_admin/MyProfile.jsx";
+import CompanyProfile from "./pages/super_admin/CompanyProfile.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -150,6 +151,7 @@ function AppContent() {
             <Route path="/view-super-admin/:id" element={<ViewSuperAdmin />} />
             <Route path="/edit-super-admin/:id" element={<EditSuperAdmin />} />
             <Route path="/my-profile" element={<MyProfile />} />
+            <Route path="/our-company" element={<CompanyProfile />} />
 
             {/* 🚨 CATCH-ALL PROTECTED ROUTE */}
             <Route path="*" element={<Navigate to="/super-admin-login" replace />} />
