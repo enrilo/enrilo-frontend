@@ -19,7 +19,7 @@ export default function Header() {
     "/view-super-admin": "View Super Admin",
     "/masteradmin/add": "Add Master Admin",
     "/masteradmin/all": "All Master Admin",
-    "/company/profile": "Company Profile",
+    "/our-company": "Our Company",
     "/my-profile": "Profile Page",
     "/company/gst": "GST Collection",
     "/settings": "Settings",
