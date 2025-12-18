@@ -1,18 +1,26 @@
 import { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { useSelector } from "react-redux";
-import { Button } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { Link } from 'react-router-dom';
-import { getStorage, ref, deleteObject} from 'firebase/storage';
+import { useNavigate } from "react-router-dom";
 
 export default function MyProfile() {
     const { loading } = useSelector((state) => state.user);
     const params = useParams();
+    const navigate = useNavigate();
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewName, setPreviewName] = useState("");
     const [previewUrl, setPreviewUrl] = useState("");
     const [pageLoading, setPageLoading] = useState(false);
     const [allowWriteAccess, setAllowWriteAccess] = useState(false);
+    const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [failedToSaveMessage, setFailedToSaveMessage] = useState("");
+    const [failedToSaveMsgOpen, setFailedToSaveMsgOpen] = useState(false);
+    const [saveSuccessfulMessage, setSaveSuccessfulMessage] = useState("");
+    const [saveSuccessfulMsgOpen, setSaveSuccessfulMsgOpen] = useState(false);
+
     const [formData, setFormData] = useState({
         photo_url: "",
         full_name: "",
@@ -35,11 +43,16 @@ export default function MyProfile() {
         documents: [{ name: "", url: "", number: "", uploaded_at: "" }],
     });
 
+    const [updatePwdForm, setUpdatePwdForm] = useState({
+        oldPassword:'',
+        newPassword:''
+    });
     const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
     // Parse the nested user slice
     const userState = JSON.parse(persistedRoot.user);
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
+    const loggedInUserID = userState.currentUser?.data?.id;
     // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
 
     useEffect(() =>{
@@ -73,6 +86,60 @@ export default function MyProfile() {
 
         fetchSuperAdmin();
     }, [params.id]);
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setUpdatePwdForm((p) => ({ ...p, [id]: value }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setPageLoading(true);
+        setFailedToSaveMsgOpen(false); 
+
+        try {
+            // const payload = {
+            //     ...updatePwdForm,
+            //     password: updatePwdForm.newPassword,
+            // };
+            const res = await fetch(`http://localhost:3000/api/super-admins/change-password/${loggedInUserID}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                // body: JSON.stringify(payload),
+                body: JSON.stringify(updatePwdForm),
+                credentials: "include",
+            });
+
+            const data = await res.json();
+            if (!data.success) {
+                setFailedToSaveMessage(`Failed to update super admin because ${data.message.toLowerCase()}`);
+                setFailedToSaveMsgOpen(true);
+                setPageLoading(false);
+                return;
+            }
+
+            if(failedToSaveMsgOpen){
+                setFailedToSaveMsgOpen(false);
+            }
+            setShowResetPasswordModal(false);
+            setUpdatePwdForm({
+                oldPassword: '',
+                newPassword: ''
+            });
+            
+            setTimeout(() => {
+                setSaveSuccessfulMsgOpen(true);
+                setSaveSuccessfulMessage("Super admin updated successfully!");
+            }, 300);
+        } catch (err) {
+            console.error(err);
+            setFailedToSaveMessage(`Failed to update super admin: ${err.message}`);
+            setFailedToSaveMsgOpen(true);
+        } 
+        finally {
+            setPageLoading(false);
+        }
+    };
 
     return (
         <main className="flex-1 overflow-y-auto p-6">
@@ -186,12 +253,12 @@ export default function MyProfile() {
                                     <div>
                                     {doc.name && (
                                         <div>
-                                        <span className="font-semibold">Name:</span> {doc.name}
+                                            <span className="font-semibold">Name:</span> {doc.name}
                                         </div>
                                     )}
                                     {doc.number && (
                                         <div>
-                                        <span className="font-semibold">Number:</span> {doc.number}
+                                            <span className="font-semibold">Number:</span> {doc.number}
                                         </div>
                                     )}
                                     </div>
@@ -207,11 +274,17 @@ export default function MyProfile() {
                         </>
                     )}
 
+                    <div className="mt-6 flex flex-row justify-center">
+                        <button type="button" onClick={() => setShowResetPasswordModal(true)} className="bg-slate-500 hover:bg-slate-600 text-white font-semibold px-8 py-2 rounded-md transition cursor-pointer">
+                           Click Here To Update Password
+                        </button>
+                    </div>
+
                     {
                         (allowWriteAccess == true) && (
                             <div className="mt-6 flex flex-row justify-center">
                                 <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
-                                    <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
+                                    <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                                         Edit Profile
                                     </button>
                                 </Link>
@@ -241,6 +314,19 @@ export default function MyProfile() {
                     </div>
                 </div>
             )}
+
+
+
+            {/* {failedToSaveMsgOpen && (
+                <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+                <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                    <p className="mb-4 text-xl">{failedToSaveMessage}</p>
+                    <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
+                    OK
+                    </button>
+                </div>
+                </div>
+            )} */}
             
             {previewOpen && (
                 <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
@@ -258,6 +344,57 @@ export default function MyProfile() {
                         ) : (
                             <img src={previewUrl} alt="Document Preview" className="w-full max-h-[500px] object-contain rounded" />
                         )}
+                    </div>
+                </div>
+            )}
+
+
+          {saveSuccessfulMsgOpen && (
+            <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                <p className="mb-4 text-xl">{(saveSuccessfulMessage === "Super admin updated successfully!") && "Password Updated Successfully!"}</p>
+                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer"  onClick={() => setSaveSuccessfulMsgOpen(false)}>
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
+
+            {showResetPasswordModal && (
+                <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-48">
+                    <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl max-h-2xl w-full">
+                        <div className="flex justify-between items-center mb-2">
+                            <div className='text-xl font-semibold p-1'>
+                                Update Your Password
+                            </div>
+                            <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer" onClick={() => setShowResetPasswordModal(false)} >
+                                Close
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 mb-10 mt-10 max-w-xl mx-auto place-items-center">
+                            <TextField id="oldPassword" type={showPassword ? "text" : "password"} value={updatePwdForm.oldPassword} onChange={handleChange} label="Enter Your Current Password" variant="outlined" fullWidth  />
+                            <TextField id="newPassword" type={showPassword ? "text" : "password"} value={updatePwdForm.newPassword} onChange={handleChange} label="Enter New Password" variant="outlined" fullWidth  />
+                            <TextField id="confirmPassword" type={showPassword ? "text" : "password"} onChange={handleChange} label="Confirm New Password" variant="outlined" fullWidth  />
+
+                            {
+                                failedToSaveMsgOpen && (
+                                    <span className="text-red-500 font-semibold">
+                                        {/* {failedToSaveMessage} */}
+                                        {failedToSaveMessage?.replace(/super admin/i, "your password")}
+                                    </span>
+                                )
+                            }
+                            <div className="flex items-center gap-2 mb-5">
+                                <input type="checkbox" id="showPassword" checked={showPassword} onChange={() => setShowPassword(!showPassword)} className="cursor-pointer" />
+                                <label htmlFor="showPassword" className="text-gray-700">
+                                Show Password
+                                </label>
+                            </div>
+
+                            <button type="submit" className='bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer'>
+                                {loading ? "Updating..." : "Update Password"}
+                            </button>
+                        </form>
                     </div>
                 </div>
             )}
