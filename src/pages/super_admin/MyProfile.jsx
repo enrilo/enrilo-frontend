@@ -154,7 +154,7 @@ export default function MyProfile() {
                 oldPassword: '',
                 newPassword: ''
             });
-            
+            setConfirmPassword('');
             setTimeout(() => {
                 setSaveSuccessfulMsgOpen(true);
                 setSaveSuccessfulMessage("Super admin updated successfully!");
@@ -438,7 +438,7 @@ export default function MyProfile() {
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 mt-10 max-w-xl mx-auto place-items-center">
+                        <form autoComplete="off" onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 mt-10 max-w-xl mx-auto place-items-center">
                             <TextField id="oldPassword" type={showPassword ? "text" : "password"} value={updatePwdForm.oldPassword} onChange={handleChange} label="Enter Your Current Password" fullWidth />
                             <TextField id="newPassword" type={showPassword ? "text" : "password"}  value={updatePwdForm.newPassword} onChange={handleChange} label="Enter New Password" fullWidth />
                             <TextField id="confirmPassword" type={showPassword ? "text" : "password"} value={confirmPassword} onChange={handleChange} label="Confirm New Password" fullWidth />
@@ -474,7 +474,7 @@ export default function MyProfile() {
                             </div>
 
                             {/* <button type="submit" disabled={!isPasswordValid || loading} className={`bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition ${(!isPasswordValid || loading) && "cursor-not-allowed text-white bg-slate-500 hover:bg-slate-600"} `}> */}
-                            <button type="submit" disabled={!isPasswordValid || loading} className={`font-semibold px-8 py-2 rounded-md transition ${ !isPasswordValid || loading ? "bg-slate-500 hover:bg-slate-600 text-white cursor-not-allowed" : "bg-[#334155] hover:bg-[#1E293B] text-yellow-300" }`}>
+                            <button type="submit" disabled={!isPasswordValid || loading} className={`font-semibold px-8 py-2 rounded-md transition ${ !isPasswordValid || loading ? "bg-slate-500 hover:bg-slate-600 text-white cursor-not-allowed" : "bg-[#334155] hover:bg-[#1E293B] text-yellow-300 cursor-pointer" }`}>
                                 {loading ? "Updating..." : "Update Password"}
                             </button>
                         </form>
