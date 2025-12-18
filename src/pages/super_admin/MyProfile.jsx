@@ -154,6 +154,7 @@ export default function MyProfile() {
                 oldPassword: '',
                 newPassword: ''
             });
+            setShowPassword(false);
             setConfirmPassword('');
             setTimeout(() => {
                 setSaveSuccessfulMsgOpen(true);
@@ -433,6 +434,7 @@ export default function MyProfile() {
                                         newPassword: ''
                                     });
                                     setConfirmPassword('');
+                                    setShowPassword(false);
                                 }}>
                             Close
                             </button>
