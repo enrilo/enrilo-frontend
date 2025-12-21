@@ -302,15 +302,6 @@ export default function CompanyProfile() {
                                         </div>
                                     )
                                 }
-                                {/* <div className="flex gap-4">
-                                    <label className={`text-blue-600 ${(!allowWriteAccess || currentUserRole == 'user') ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`}>
-                                        Replace
-                                        <input type="file" accept=".jpg,.jpeg,.png,.heic" hidden onChange={handleProfileUpload} disabled={uploadingProfile || !allowWriteAccess} />
-                                    </label>
-                                    <button type="button" className={`text-red-600 ${(!allowWriteAccess || currentUserRole == 'user') ? "cursor-not-allowed" : "cursor-pointer hover:underline"}`} onClick={handleDeleteProfileConfirm} disabled={!allowWriteAccess || currentUserRole == 'user'}>
-                                        Delete
-                                    </button>
-                                </div> */}
                             </div>
                         )}
                     </div>
@@ -339,12 +330,6 @@ export default function CompanyProfile() {
                                 </div>
                             ) 
                         }
-                        {/* Submit */}
-                        {/* <div className="col-span-3 mt-6 flex justify-center">
-                            <button type="submit" disabled={loading} className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                                {loading ? "Updating..." : 'Update Company Profile'}
-                            </button>
-                        </div> */}
                     </form>
 
                     {/* Modals (Preview, Confirm, Message, Failed, Success) */}

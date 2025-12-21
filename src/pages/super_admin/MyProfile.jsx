@@ -126,14 +126,9 @@ export default function MyProfile() {
         }
 
         try {
-            // const payload = {
-            //     ...updatePwdForm,
-            //     password: updatePwdForm.newPassword,
-            // };
             const res = await fetch(`http://localhost:3000/api/super-admins/change-password/${loggedInUserID}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                // body: JSON.stringify(payload),
                 body: JSON.stringify(updatePwdForm),
                 credentials: "include",
             });
@@ -337,17 +332,6 @@ export default function MyProfile() {
                     </div>
                 </div>
             )}
-
-            {/* {failedToSaveMsgOpen && (
-                <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
-                <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                    <p className="mb-4 text-xl">{failedToSaveMessage}</p>
-                    <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => setFailedToSaveMsgOpen(false)} >
-                    OK
-                    </button>
-                </div>
-                </div>
-            )} */}
             
             {previewOpen && (
                 <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
@@ -381,43 +365,6 @@ export default function MyProfile() {
                 </div>
             )}
 
-            {/* {showResetPasswordModal && (
-                <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-48">
-                    <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl max-h-2xl w-full">
-                        <div className="flex justify-between items-center mb-2">
-                            <div className='text-xl font-semibold p-1'>
-                                Update Your Password
-                            </div>
-                            <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer" onClick={() => setShowResetPasswordModal(false)} >
-                                Close
-                            </button>
-                        </div>
-                        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 mb-10 mt-10 max-w-xl mx-auto place-items-center">
-                            <TextField id="oldPassword" type={showPassword ? "text" : "password"} value={updatePwdForm.oldPassword} onChange={handleChange} label="Enter Your Current Password" variant="outlined" fullWidth  />
-                            <TextField id="newPassword" type={showPassword ? "text" : "password"} value={updatePwdForm.newPassword} onChange={handleChange} label="Enter New Password" variant="outlined" fullWidth  />
-                            <TextField id="confirmPassword" type={showPassword ? "text" : "password"} onChange={handleChange} label="Confirm New Password" variant="outlined" fullWidth  />
-
-                            {
-                                failedToSaveMsgOpen && (
-                                    <span className="text-red-500 font-semibold">
-                                        {failedToSaveMessage?.replace(/super admin/i, "your password")}
-                                    </span>
-                                )
-                            }
-                            <div className="flex items-center gap-2 mb-5">
-                                <input type="checkbox" id="showPassword" checked={showPassword} onChange={() => setShowPassword(!showPassword)} className="cursor-pointer" />
-                                <label htmlFor="showPassword" className="text-gray-700">
-                                Show Password
-                                </label>
-                            </div>
-
-                            <button type="submit" className='bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer'>
-                                {loading ? "Updating..." : "Update Password"}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            )} */}
 
             {showResetPasswordModal && (
                 <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-48">

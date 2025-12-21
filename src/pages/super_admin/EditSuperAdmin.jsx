@@ -450,8 +450,6 @@ export default function EditSuperAdmin() {
                 setFailedToSaveMessage(`Failed to update super admin because ${data.message.toLowerCase()}`);
             } else {
                 if(formData._id !== currentUserID) {
-                    console.log('Saved data of other user');
-                    
                     // UPDATE ACCESS TOKEN DATA CODE START (IF THE ID DATA FETCHED DOES NOT MATCH ID OF CURRENTLY LOGGED IN USER)
                     const updateAccessTokenInfo = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${superAdminID}`, {
                         method: "PUT",
@@ -471,8 +469,6 @@ export default function EditSuperAdmin() {
                     setTempClearedRows({});
                     setTempOriginalRows({});
                 } else {
-                    console.log('Saved data of yourself');
-
                     setSaveSuccessfulMessage("Your profile has been updated successfully! You will now be redirected to your profile page.");
                     setSaveSuccessfulMsgOpen(true);
                     setNewProfileFile(null);

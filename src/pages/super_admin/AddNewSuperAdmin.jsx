@@ -257,60 +257,6 @@ export default function AddNewSuperAdmin() {
       }));
     } else setFormData((p) => ({ ...p, [id]: value }));
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-  //     const userState = JSON.parse(persistedRoot.user);
-  //     const token = userState.currentUser?.data?.accessToken;
-
-  //     // --- UPLOAD PROFILE IMAGE ---
-  //     let profile_url = formData.photo_url;
-  //     if (localProfileFile) {
-  //       const { url } = await uploadFile(localProfileFile, "profile_pictures");
-  //       profile_url = url;
-  //     }
-
-  //     // --- UPLOAD DOCUMENTS ---
-  //     const uploadedDocs = [];
-  //     for (let doc of localDocuments) {
-  //       if (doc.file) {
-  //         const { url } = await uploadFile(doc.file, "documents");
-  //         uploadedDocs.push({ ...doc, url });
-  //       }
-  //     }
-
-  //     const payload = {
-  //       ...formData,
-  //       photo_url: profile_url,
-  //       documents: uploadedDocs,
-  //     };
-
-  //     const res = await fetch("http://localhost:3000/api/super-admins/", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-  //       body: JSON.stringify(payload),
-  //       credentials: "include",
-  //     });
-
-  //     const data = await res.json();
-  //     if (!data.success) {
-  //       setFailedToSaveMessage(`Failed to add super admin because ${data.message.toLowerCase()}`);
-  //       setFailedToSaveMsgOpen(true);
-  //       return;
-  //     }
-
-  //     setSaveSuccessfulMessage(
-  //       "Super admin added successfully! You will now be redirected to All Super Admin Page."
-  //     );
-  //     setSaveSuccessfulMsgOpen(true);
-  //   } catch (err) {
-  //     console.error(err);
-  //     setFailedToSaveMessage(`Failed to add super admin: ${err.message}`);
-  //     setFailedToSaveMsgOpen(true);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -608,40 +554,6 @@ export default function AddNewSuperAdmin() {
             <div className='text-2xl underline font-semibold mb-5'>
               Documents:
             </div>
-            {/* {localDocuments.map((doc, i) => (
-              <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <TextField id={`documents_${i}_name`} label="Document Type" value={doc.name} onChange={handleChange} fullWidth />
-                  <TextField id={`documents_${i}_number`} label="Document Number" value={doc.number} onChange={handleChange} fullWidth />
-
-                  <div className="flex flex-col gap-2">
-                    <Button variant="outlined" component="label" disabled={uploadingIndex === i} sx={selectDocumentBtnStyle} >
-                      {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : doc.url ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
-                      
-                      <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
-                    </Button>
-
-                    {doc.file && (
-                      <div>
-                        <div className="flex flex-col items-center gap-3">
-                          <div className="flex flex-row justify-between w-full">
-                            <Button variant="outlined" sx={previewDocumentBtnStyle} onClick={() => handlePreview(doc.file)}>Preview</Button>
-                            <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)}>Delete</Button> 
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-
-                    <div className="mt-2 flex justify-end">
-                      {localDocuments.length > 1 && (
-                        <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)}>Remove</button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))} */}
 
             {localDocuments.slice(0, 2).map((doc, i) => (
               <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
