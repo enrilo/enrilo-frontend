@@ -129,11 +129,6 @@ export default function ViewSuperAdmin() {
 
     const handleDeleteConfirmed = async () => {
         setPageLoading(true);
-        // const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-        // // Parse the nested user slice
-        // const userState = JSON.parse(persistedRoot.user);
-        // // Extract token
-        // const token = userState.currentUser?.data?.accessToken;
 
         const res = await fetch(`http://localhost:3000/api/super-admins/${params.id}`, {
             method: "GET",
@@ -347,17 +342,6 @@ export default function ViewSuperAdmin() {
                             </div>
                         )
                     }
-                    {/* <div className="mt-6 flex flex-row justify-evenly">
-                        <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
-                            <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                                Edit Profile
-                            </button>
-                        </Link>
-
-                        <button onClick={() => confirmDelete() } type="submit" className="bg-red-700 hover:bg-red-600 text-white font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                            Delete Profile
-                        </button>
-                    </div> */}
                 </div>
             </div>
 
