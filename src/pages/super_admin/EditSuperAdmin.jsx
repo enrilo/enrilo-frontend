@@ -450,6 +450,8 @@ export default function EditSuperAdmin() {
                 setFailedToSaveMessage(`Failed to update super admin because ${data.message.toLowerCase()}`);
             } else {
                 if(formData._id !== currentUserID) {
+                    console.log('Saved data of other user');
+                    
                     // UPDATE ACCESS TOKEN DATA CODE START (IF THE ID DATA FETCHED DOES NOT MATCH ID OF CURRENTLY LOGGED IN USER)
                     const updateAccessTokenInfo = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${superAdminID}`, {
                         method: "PUT",
@@ -462,15 +464,22 @@ export default function EditSuperAdmin() {
                         return;
                     }
                     // UPDATE ACCESS TOKEN DATA CODE END
-                }
-               
+                    setSaveSuccessfulMsgOpen(true);
+                    setSaveSuccessfulMessage("Super admin updated successfully! You will now be redirected to All Super Admin Page.");
+                    setNewProfileFile(null);
+                    setDeletedProfile(false);
+                    setTempClearedRows({});
+                    setTempOriginalRows({});
+                } else {
+                    console.log('Saved data of yourself');
 
-                setSaveSuccessfulMessage("Super admin updated successfully! You will now be redirected to All Super Admin Page.");
-                setSaveSuccessfulMsgOpen(true);
-                setNewProfileFile(null);
-                setDeletedProfile(false);
-                setTempClearedRows({});
-                setTempOriginalRows({});
+                    setSaveSuccessfulMessage("Your profile has been updated successfully! You will now be redirected to your profile page.");
+                    setSaveSuccessfulMsgOpen(true);
+                    setNewProfileFile(null);
+                    setDeletedProfile(false);
+                    setTempClearedRows({});
+                    setTempOriginalRows({});
+                }
             }
         } catch (err) {
             console.error(err);
@@ -745,7 +754,14 @@ export default function EditSuperAdmin() {
                         <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
                                 <p className="mb-4 text-xl">{saveSuccessfulMessage}</p>
-                                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setSaveSuccessfulMsgOpen(false); navigate("/all-super-admin");}} >
+                                <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { 
+                                    setSaveSuccessfulMsgOpen(false); 
+                                    if(formData._id === currentUserID) {
+                                        navigate("/my-profile");
+                                    } else {
+                                        navigate("/all-super-admin");
+                                    }
+                                }}>
                                     OK
                                 </button>
                             </div>
