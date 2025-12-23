@@ -1,29 +1,27 @@
-// export default function Footer() {
-//   return (
-//     <footer className="bg-[#1E293B] text-yellow-400 border-t text-center p-3 text-sm">
-//       © {new Date().getFullYear()} Enrilo. All rights reserved.
-//     </footer>
-//   );
-// }
-
 import { useLocation } from 'react-router-dom';
 
 export default function Footer() {
   const { pathname } = useLocation();
   const isHome = pathname === '/';
+  const isPricing = pathname === '/pricing';
+  const isFeatures = pathname === '/features';
+  const isContactUs = pathname === '/contact-us';
+  const isPrivacy = pathname === '/privacy-policy';
+  const isTerms = pathname === '/terms';
 
   return (
     <footer className="bg-[#1E293B] text-yellow-400 border-t text-center p-3 text-sm w-auto">
-      {isHome ? (
+      {isHome || isPricing || isFeatures || isContactUs || isPrivacy || isTerms ? (
         // 👇 Content for homepage
         <>
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-center gap-6 text-sm mb-2">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-center gap-6 text-sm mb-2.5">
             <div className="flex flex-wrap gap-6">
-              <a href="#" className="hover:text-white">Features</a>
-              <a href="#" className="hover:text-white">Pricing</a>
-              <a href="#" className="hover:text-white">Contact</a>
-              <a href="#" className="hover:text-white">Privacy</a>
-              <a href="#" className="hover:text-white">Terms</a>
+              <a href="/" className="hover:text-white">Home</a>
+              <a href="/features" className="hover:text-white">Features</a>
+              <a href="/pricing" className="hover:text-white">Pricing</a>
+              <a href="/contact-us" className="hover:text-white">Contact Us</a>
+              <a href="/privacy-policy" className="hover:text-white">Privacy Policy</a>
+              <a href="/terms" className="hover:text-white">Terms & Conditions</a>
             </div>
           </div>
           <div className='flex-row text-center text-sm'>

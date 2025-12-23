@@ -23,6 +23,11 @@ export default function Header() {
     "/my-profile": "Profile Page",
     "/company/gst": "GST Collection",
     "/settings": "Settings",
+    "/pricing": "Pricing Page",
+    "/features": "Our Features",
+    "/contact-us": "Contact Us",
+    "/privacy-policy": "Privacy Policy",
+    "/terms": "Terms & Conditions",
   };
 
   let currentTitle = "Enrilo Dashboard";
