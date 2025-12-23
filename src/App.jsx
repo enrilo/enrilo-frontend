@@ -118,11 +118,16 @@ import ViewSuperAdmin from "./pages/super_admin/ViewSuperAdmin.jsx";
 import EditSuperAdmin from "./pages/super_admin/EditSuperAdmin.jsx";
 import MyProfile from "./pages/super_admin/MyProfile.jsx";
 import CompanyProfile from "./pages/super_admin/CompanyProfile.jsx";
+import PricingPage from "./pages/enrilo_pages/PricingPage.jsx";
+import FeaturesPage from "./pages/enrilo_pages/FeaturesPage.jsx";
+import ContactUs from "./pages/enrilo_pages/ContactUs.jsx";
+import PrivacyPolicy from "./pages/enrilo_pages/PrivacyPolicy.jsx";
+import TermsAndConditions from "./pages/enrilo_pages/TermsAndConditions.jsx";
 
 function AppContent() {
   const location = useLocation();
 
-  const hideSidebarRoutes = ["/", "/login", "/super-admin-login"];
+  const hideSidebarRoutes = ["/", "/login", "/super-admin-login", "/privacy-policy", "/contact-us", "/terms", "/pricing", "/features"];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
 
   const hideHeaderRoutes = ["/login", "/super-admin-login"];
@@ -140,7 +145,11 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/super-admin-login" element={<SuperAdminLogin />} />
-
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/features" element={<FeaturesPage />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
           {/* 🔒 PRIVATE ROUTES */}
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
