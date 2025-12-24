@@ -26,13 +26,10 @@ export default function CompanyProfile() {
     const [pageLoading, setPageLoading] = useState(false);
     const [deletedProfile, setDeletedProfile] = useState(false);
     const [newProfileFile, setNewProfileFile] = useState(null);
-
     const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
     const userState = JSON.parse(persistedRoot.user);
     const token = userState.currentUser?.data?.accessToken;
-    const currentUserRole = userState.currentUser?.data?.role;
-    console.log(`currentUserRole:${currentUserRole}`);
-    
+    const currentUserRole = userState.currentUser?.data?.role;    
     const superAdminID = params.id;
     const loggedInUserID = userState.currentUser?.data?.id;
 
@@ -59,7 +56,6 @@ export default function CompanyProfile() {
     // USE EFFECT TO FETCH DATA
     useEffect(() => {
         const fetchSuperAdmin = async () => {
-            // const superAdminID = params.id;
             const companyData = await fetch(`http://localhost:3000/api/our-company/`, {
                 method: "GET",
                 headers: {

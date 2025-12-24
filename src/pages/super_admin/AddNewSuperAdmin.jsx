@@ -263,10 +263,6 @@ export default function AddNewSuperAdmin() {
     setPageLoading(true); // show the overlay
 
     try {
-      const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-      const userState = JSON.parse(persistedRoot.user);
-      const token = userState.currentUser?.data?.accessToken;
-
       // --- UPLOAD PROFILE IMAGE ---
       let profile_url = formData.photo_url;
       if (localProfileFile) {

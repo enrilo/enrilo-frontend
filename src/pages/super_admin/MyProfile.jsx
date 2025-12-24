@@ -65,7 +65,6 @@ export default function MyProfile() {
     // Extract token
     const token = userState.currentUser?.data?.accessToken;
     const loggedInUserID = userState.currentUser?.data?.id;
-    // const allowWriteAccess = userState.currentUser?.data?.allow_write_access;
 
     useEffect(() =>{
         const fetchSuperAdmin = async () => {
@@ -98,11 +97,6 @@ export default function MyProfile() {
 
         fetchSuperAdmin();
     }, [params.id]);
-
-    // const handleChange = (e) => {
-    //     const { id, value } = e.target;
-    //     setUpdatePwdForm((p) => ({ ...p, [id]: value }));
-    // };
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -422,7 +416,6 @@ export default function MyProfile() {
                                 <label className="text-gray-700">Show Password</label>
                             </div>
 
-                            {/* <button type="submit" disabled={!isPasswordValid || loading} className={`bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition ${(!isPasswordValid || loading) && "cursor-not-allowed text-white bg-slate-500 hover:bg-slate-600"} `}> */}
                             <button type="submit" disabled={!isPasswordValid || loading} className={`font-semibold px-8 py-2 rounded-md transition ${ !isPasswordValid || loading ? "bg-slate-500 hover:bg-slate-600 text-white cursor-not-allowed" : "bg-[#334155] hover:bg-[#1E293B] text-yellow-300 cursor-pointer" }`}>
                                 {loading ? "Updating..." : "Update Password"}
                             </button>
