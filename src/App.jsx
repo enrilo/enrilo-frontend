@@ -123,6 +123,8 @@ import FeaturesPage from "./pages/enrilo_pages/FeaturesPage.jsx";
 import ContactUs from "./pages/enrilo_pages/ContactUs.jsx";
 import PrivacyPolicy from "./pages/enrilo_pages/PrivacyPolicy.jsx";
 import TermsAndConditions from "./pages/enrilo_pages/TermsAndConditions.jsx";
+import ViewConsultancy from "./pages/consultancy/ViewConsultancy.jsx";
+import EditConsultancy from "./pages/consultancy/EditConsultancy.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -155,6 +157,8 @@ function AppContent() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
             <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
+            <Route path="/view-consultancy/:id" element={<ViewConsultancy />} />
+            <Route path="/edit-consultancy/:id" element={<EditConsultancy />} />
             <Route path="/add-new-superadmin" element={<AddNewSuperAdmin />} />
             <Route path="/all-super-admin" element={<AllSuperAdminPage />} />
             <Route path="/view-super-admin/:id" element={<ViewSuperAdmin />} />
