@@ -6,6 +6,7 @@ export const selectStyles = {
     borderRadius: "4px",
     borderColor: state.isFocused ? "#2563EB" : "#E0E0E0",
     boxShadow: "none",
+    cursor:"pointer",
     "&:hover": { borderColor: "#2563EB" },
   }),
   menuPortal: (base) => ({ ...base, zIndex: 9999 }),

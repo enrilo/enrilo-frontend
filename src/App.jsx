@@ -103,14 +103,14 @@
 
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Home from "./pages/Home.jsx";
-import AddNewConsultancy from "./pages/AddNewConsultancy.jsx";
+import AddNewConsultancy from "./pages/consultancy/AddNewConsultancy.jsx";
 import Header from "./pages/components/Header.jsx";
 import Footer from "./pages/components/Footer.jsx";
 import Sidebar from "./pages/components/Sidebar.jsx";
 import SuperAdminLogin from "./pages/super_admin/SuperAdminLogin.jsx";
 import Dashboard from "./pages/super_admin/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
-import AllConsultanciesPage from "./pages/AllConsultanciesPage.jsx";
+import AllConsultanciesPage from "./pages/consultancy/AllConsultanciesPage.jsx";
 import PrivateRoute from "./pages/components/PrivateRoute.jsx";
 import AddNewSuperAdmin from "./pages/super_admin/AddNewSuperAdmin.jsx";
 import AllSuperAdminPage from "./pages/super_admin/AllSuperAdminPage.jsx";
