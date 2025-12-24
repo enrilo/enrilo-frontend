@@ -17,7 +17,7 @@ export default function Footer() {
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-center gap-6 text-sm mb-2.5">
             <div className="flex flex-wrap gap-6">
               <a href="/" className="hover:text-white">Home</a>
-              <a href="/features" className="hover:text-white">Features</a>
+              {/* <a href="/features" className="hover:text-white">Features</a> */}
               <a href="/pricing" className="hover:text-white">Pricing</a>
               <a href="/contact-us" className="hover:text-white">Contact Us</a>
               <a href="/privacy-policy" className="hover:text-white">Privacy Policy</a>
