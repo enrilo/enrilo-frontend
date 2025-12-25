@@ -554,13 +554,13 @@ export default function EditSuperAdmin() {
                             <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth disabled={!isUserActive?.value} />
                             {formData._id !== currentUserID && (
                                 <>
-                                    <Select id="role" options={roleOptions} value={selectedRole} placeholder="Role" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                                    <Select id="role" options={roleOptions} value={selectedRole} placeholder="Role" isSearchable menuPortalTarget={document.body} required styles={selectStyles} isDisabled={!isUserActive?.value}
                                         onChange={(sel) => {
                                             setSelectedRole(sel);
                                             setFormData((p) => ({ ...p, role: sel?.value || "" }));
                                         }}
                                     />
-                                    <Select id="allow_write_access" options={allowWriteAccessOptions} value={selectedWriteAccess} placeholder="Do You Want To Allow Write Access?" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
+                                    <Select id="allow_write_access" options={allowWriteAccessOptions} value={selectedWriteAccess} placeholder="Do You Want To Allow Write Access?" isSearchable menuPortalTarget={document.body} required styles={selectStyles} isDisabled={!isUserActive?.value}
                                         onChange={(sel) => {
                                             setSelectedWriteAccess(sel);
                                             setFormData((p) => ({ ...p, allow_write_access: sel?.value || false }));
