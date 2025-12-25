@@ -6,7 +6,7 @@ export default function Header() {
 
   // Dynamic title map
   const titleMap = {
-    "/": "Home Page",
+    "/": "Enrilo",
     "/login": "Login",
     "/master-admin-login": "Login",
     "/dashboard": "Dashboard",
