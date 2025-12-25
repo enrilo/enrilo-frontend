@@ -68,13 +68,13 @@ export default function PricingPage() {
               {[
                 "2 Master Admin",
                 "10 Users",
-                "Unlimited student records",
-                "Follow-ups & reminders",
-                "Document storage",
-                "Visa & application tracking",
-                "Analytics & reporting",
-                "Email support",
-                "Role-based access control",
+                "Email Support",
+                "Role Based Access Control",
+                "Unlimited Student Records",
+                "Follow Ups & Reminders",
+                "Document Storage",
+                "Visa & Application Tracking",
+                "Analytics & Reporting",
               ].map((feature, i) => (
                 <li key={i} className="flex items-center gap-3">
                   <span className="text-blue-600">✓</span>
@@ -111,14 +111,15 @@ export default function PricingPage() {
               {[
                 "Custom Number of Master Admin",
                 "Custom Number of Users",
-                "Follow-ups & reminders",
-                "Document storage",
-                "Visa & application tracking",
-                "Analytics & reporting",
+                // "Follow-ups & reminders",
+                // "Document storage",
+                // "Visa & application tracking",
+                // "Analytics & reporting",
                 // "Custom workflows & fields",
-                "Role-based access control",
+                // "Role-based access control",
                 // "Dedicated account manager",
                 "Priority support",
+                "All Other Things From Regular Plan",
               ].map((feature, i) => (
                 <li key={i} className="flex items-center gap-3">
                   <span className="text-slate-900">✓</span>
