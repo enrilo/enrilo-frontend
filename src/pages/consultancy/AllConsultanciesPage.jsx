@@ -257,23 +257,42 @@ export default function AllConsultanciesPage() {
                   </tr>
                 ))}
               </tbody>
-
               <tfoot>
                 <tr>
-                  <CustomTablePagination rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]} colSpan={7} count={allConsultancies.length} rowsPerPage={rowsPerPage} page={page}
-                    slotProps={{
-                      select: { "aria-label": "rows per page" },
-                      actions: {
-                        showFirstButton: true,
-                        showLastButton: true,
-                        slots: {
-                          firstPageIcon: FirstPageRoundedIcon,
-                          lastPageIcon: LastPageRoundedIcon,
-                          nextPageIcon: ChevronRightRoundedIcon,
-                          backPageIcon: ChevronLeftRoundedIcon,
-                        },
-                      },
-                    }} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
+                  <td colSpan={7}>
+                    <div className="flex items-center justify-between mt-4 px-3 py-2 bg-gray-50 text-sm md:text-base">
+                      <div className="flex items-center gap-2">
+                        <span>Rows per page:</span>
+                        <select className="border rounded px-2 py-1" value={rowsPerPage} onChange={(e) => { const value = parseInt(e.target.value, 10); setRowsPerPage(value); setPage(0); }}>
+                          {[5, 10, 25, -1].map((num) => (
+                            <option key={num} value={num}>
+                              {num === -1 ? "All" : num}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div style={{ flex: 1 }} />
+
+                      <div className="flex items-center gap-2">
+                        <span>
+                          {rowsPerPage === -1 ? `1–${allConsultancies.length} of ${allConsultancies.length}` : `${Math.min(page * rowsPerPage + 1, allConsultancies.length)}–${Math.min( (page + 1) * rowsPerPage, allConsultancies.length )} of ${allConsultancies.length}`}
+                        </span>
+                        <button onClick={() => setPage(0)} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                          <FirstPageRoundedIcon fontSize="small" />
+                        </button>
+                        <button onClick={() => setPage((p) => Math.max(p - 1, 0))} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                          <ChevronLeftRoundedIcon fontSize="small" />
+                        </button>
+                        <button onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(allConsultancies.length / rowsPerPage) - 1))} disabled={page >= Math.ceil(allConsultancies.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                          <ChevronRightRoundedIcon fontSize="small" />
+                        </button>
+                        <button onClick={() => setPage(Math.ceil(allConsultancies.length / rowsPerPage) - 1)} disabled={page >= Math.ceil(allConsultancies.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                          <LastPageRoundedIcon fontSize="small" />
+                        </button>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               </tfoot>
             </table>
