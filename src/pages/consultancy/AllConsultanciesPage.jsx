@@ -190,113 +190,123 @@ export default function AllConsultanciesPage() {
               </Link>
             </div>
           )}
-          <div className="overflow-x-auto border border-gray-200 rounded-lg">
-            <table className="min-w-full text-sm md:text-[17px] text-left border-collapse">
-              <thead className="bg-gray-100 text-gray-700 uppercase">
-                <tr>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-8 md:w-12">#</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">
-                    Consultancy Name
-                  </th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-30 md:w-50">
-                    Website
-                  </th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-26 md:w-34">
-                    GST Number
-                  </th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-60">
-                    Head Office Address
-                  </th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">
-                    Branch Cities
-                  </th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-48">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+            {
+              paginatedData.length > 0 ? (
+                <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                  <table className="min-w-full text-sm md:text-[17px] text-left border-collapse">
+                    <thead className="bg-gray-100 text-gray-700 uppercase">
+                      <tr>
+                        <th className="px-3 py-2 md:px-4 md:py-3 text-center w-8 md:w-12">#</th>
+                        <th className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">
+                          Consultancy Name
+                        </th>
+                        <th className="px-3 py-2 md:px-4 md:py-3 text-center w-30 md:w-50">
+                          Website
+                        </th>
+                        <th className="px-3 py-2 md:px-4 md:py-3 text-center w-26 md:w-34">
+                          GST Number
+                        </th>
+                        <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-60">
+                          Head Office Address
+                        </th>
+                        <th className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">
+                          Branch Cities
+                        </th>
+                        <th className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-48">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
 
-              <tbody>
-                {paginatedData.map((consultancy, index) => (
-                  <tr key={consultancy.id} className="border-b hover:bg-gray-50 transition text-gray-800">
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center font-medium w-8 md:w-12">
-                      {page * rowsPerPage + index + 1}
-                    </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{consultancy.name}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-30 md:w-50">
-                      <a href={consultancy.website ? `https://${consultancy.website}` : ""} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
-                        {consultancy.website || "N/A"}
-                      </a>
-                    </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-26 md:w-34">{consultancy.gst || "N/A"}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-60">
-                      {/* {c.address} */}
-                      { consultancy.office_details ?.find(o => o.office_type === "Head Office") ?.office_address || "—" }
-                    </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">
-                      {/* {c.office_details.branches} */}
-                      {consultancy.office_details?.map(o => o.office_city).join(", ")}
-                    </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-48">
-                      <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
-                        <Link to={`/view-consultancy/${consultancy._id}`}>
-                          <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
-                        </Link>
-                        {allowWriteAccess && role === "admin" && (
-                          <>
-                            <Link to={`/edit-consultancy/${consultancy._id}`}>
-                              <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
-                            </Link>
-                            <button onClick={() => confirmDelete(consultancy._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">
-                              Delete
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan={7}>
-                    <div className="flex items-center justify-between mt-4 px-3 py-2 bg-gray-50 text-sm md:text-base">
-                      <div className="flex items-center gap-2">
-                        <span>Rows per page:</span>
-                        <select className="border rounded px-2 py-1" value={rowsPerPage} onChange={(e) => { const value = parseInt(e.target.value, 10); setRowsPerPage(value); setPage(0); }}>
-                          {[5, 10, 25, -1].map((num) => (
-                            <option key={num} value={num}>
-                              {num === -1 ? "All" : num}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                    <tbody>
+                      {paginatedData.map((consultancy, index) => (
+                        <tr key={consultancy.id} className="border-b hover:bg-gray-50 transition text-gray-800">
+                          <td className="px-3 py-2 md:px-4 md:py-3 text-center font-medium w-8 md:w-12">
+                            {page * rowsPerPage + index + 1}
+                          </td>
+                          <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{consultancy.name}</td>
+                          <td className="px-3 py-2 md:px-4 md:py-3 text-center w-30 md:w-50">
+                            <a href={consultancy.website ? `https://${consultancy.website}` : ""} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                              {consultancy.website || "N/A"}
+                            </a>
+                          </td>
+                          <td className="px-3 py-2 md:px-4 md:py-3 text-center w-26 md:w-34">{consultancy.gst || "N/A"}</td>
+                          <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-60">
+                            {/* {c.address} */}
+                            { consultancy.office_details ?.find(o => o.office_type === "Head Office") ?.office_address || "—" }
+                          </td>
+                          <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">
+                            {/* {c.office_details.branches} */}
+                            {consultancy.office_details?.map(o => o.office_city).join(", ")}
+                          </td>
+                          <td className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-48">
+                            <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
+                              <Link to={`/view-consultancy/${consultancy._id}`}>
+                                <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
+                              </Link>
+                              {allowWriteAccess && role === "admin" && (
+                                <>
+                                  <Link to={`/edit-consultancy/${consultancy._id}`}>
+                                    <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
+                                  </Link>
+                                  <button onClick={() => confirmDelete(consultancy._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">
+                                    Delete
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan={7}>
+                          <div className="flex items-center justify-between mt-4 px-3 py-2 bg-gray-50 text-sm md:text-base">
+                            <div className="flex items-center gap-2">
+                              <span>Rows per page:</span>
+                              <select className="border rounded px-2 py-1" value={rowsPerPage} onChange={(e) => { const value = parseInt(e.target.value, 10); setRowsPerPage(value); setPage(0); }}>
+                                {[5, 10, 25, -1].map((num) => (
+                                  <option key={num} value={num}>
+                                    {num === -1 ? "All" : num}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
 
-                      <div style={{ flex: 1 }} />
+                            <div style={{ flex: 1 }} />
 
-                      <div className="flex items-center gap-2">
-                        <span>
-                          {rowsPerPage === -1 ? `1–${allConsultancies.length} of ${allConsultancies.length}` : `${Math.min(page * rowsPerPage + 1, allConsultancies.length)}–${Math.min( (page + 1) * rowsPerPage, allConsultancies.length )} of ${allConsultancies.length}`}
-                        </span>
-                        <button onClick={() => setPage(0)} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
-                          <FirstPageRoundedIcon fontSize="small" />
-                        </button>
-                        <button onClick={() => setPage((p) => Math.max(p - 1, 0))} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
-                          <ChevronLeftRoundedIcon fontSize="small" />
-                        </button>
-                        <button onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(allConsultancies.length / rowsPerPage) - 1))} disabled={page >= Math.ceil(allConsultancies.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
-                          <ChevronRightRoundedIcon fontSize="small" />
-                        </button>
-                        <button onClick={() => setPage(Math.ceil(allConsultancies.length / rowsPerPage) - 1)} disabled={page >= Math.ceil(allConsultancies.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
-                          <LastPageRoundedIcon fontSize="small" />
-                        </button>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+                            <div className="flex items-center gap-2">
+                              <span>
+                                {rowsPerPage === -1 ? `1–${allConsultancies.length} of ${allConsultancies.length}` : `${Math.min(page * rowsPerPage + 1, allConsultancies.length)}–${Math.min( (page + 1) * rowsPerPage, allConsultancies.length )} of ${allConsultancies.length}`}
+                              </span>
+                              <button onClick={() => setPage(0)} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                                <FirstPageRoundedIcon fontSize="small" />
+                              </button>
+                              <button onClick={() => setPage((p) => Math.max(p - 1, 0))} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                                <ChevronLeftRoundedIcon fontSize="small" />
+                              </button>
+                              <button onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(allConsultancies.length / rowsPerPage) - 1))} disabled={page >= Math.ceil(allConsultancies.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                                <ChevronRightRoundedIcon fontSize="small" />
+                              </button>
+                              <button onClick={() => setPage(Math.ceil(allConsultancies.length / rowsPerPage) - 1)} disabled={page >= Math.ceil(allConsultancies.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                                <LastPageRoundedIcon fontSize="small" />
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              ) : (
+                <div className="min-w-full text-lg md:text-2xl text-center font-regular">
+                  There are currently no consultancies associated with Enrilo.
+                  <br /><br />
+                  Click on the above button to add a new consultancy.
+                </div>
+              )
+            }
         </div>
       </div>
 
