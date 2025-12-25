@@ -658,10 +658,10 @@ export default function EditSuperAdmin() {
                                 </div>
 
                                 <div className="flex flex-row justify-between">
-                                    <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => clearRow(i)} disabled={!isUserActive?.value}>Clear Row</button>
+                                    <button type="button" className={`text-red-600 ${isUserActive?.value ? "cursor-pointer hover:underline" : "cursor-not-allowed"}`} onClick={() => clearRow(i)} disabled={!isUserActive?.value}>Clear Row</button>
                                     <div className="flex">
                                         {formData.documents.length > 1 && (
-                                            <button type="button" className="text-red-600 hover:underline cursor-pointer" onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
+                                            <button type="button" className={`text-red-600 ${isUserActive?.value ? "cursor-pointer hover:underline" : "cursor-not-allowed"}`} onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
                                         )}
                                     </div>
                                 </div>
