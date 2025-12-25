@@ -10,6 +10,7 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { selectStyles } from "../styles/selectStyles.js";
 
 export default function AllSuperAdminPage() {
+  const [showDeleting, setShowDeleting] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [allSuperAdmin, setAllSuperAdmin] = useState([]);
@@ -85,11 +86,8 @@ export default function AllSuperAdminPage() {
   };
 
   const handleDeleteConfirmed = async () => {
-    const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
-    const userState = JSON.parse(persistedRoot.user);
-    const token = userState.currentUser?.data?.accessToken;
-
     try {
+      setShowDeleting(true);
       // Fetch super admin details for deleting files
       const res = await fetch(`http://localhost:3000/api/super-admins/${deleteId}`, {
         method: "GET",
@@ -126,6 +124,7 @@ export default function AllSuperAdminPage() {
       const deleteData = await deleteRes.json();
       if (!deleteData.success) return;
 
+      setShowDeleting(false);
       setShowConfirmDelete(false);
       setShowSuccess(true);
     } catch (error) {
@@ -240,36 +239,36 @@ export default function AllSuperAdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {paginatedData.map((c, index) => (
-                  <tr key={c._id} className="border-b hover:bg-gray-50 transition text-gray-800">
+                {paginatedData.map((superadmin, index) => (
+                  <tr key={superadmin._id} className="border-b hover:bg-gray-50 transition text-gray-800">
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center font-medium w-8 md:w-12">
                       {page * rowsPerPage + index + 1}
                     </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{c.full_name}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-50">{c.company_email}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">{c.country_code} {c.phone}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">{c.position}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20 capitalize">{c.role}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{superadmin.full_name}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-50">{superadmin.company_email}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">{superadmin.country_code} {superadmin.phone}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">{superadmin.position}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20 capitalize">{superadmin.role}</td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">
                       <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
-                        {c._id !== currentUserID && (
+                        {superadmin._id !== currentUserID && (
                           <>
-                            <Link to={`/view-super-admin/${c._id}`}>
+                            <Link to={`/view-super-admin/${superadmin._id}`}>
                               <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
                             </Link>
                             {allowWriteAccess && role === "admin" && (
                               <>
-                                <Link to={`/edit-super-admin/${c._id}`}>
+                                <Link to={`/edit-super-admin/${superadmin._id}`}>
                                   <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
                                 </Link>
-                                <button onClick={() => confirmDelete(c._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">
+                                <button onClick={() => confirmDelete(superadmin._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">
                                   Delete
                                 </button>
                               </>
                             )}
                           </>
                         )}
-                        {c.company_email === currentUserEmail && (
+                        {superadmin.company_email === currentUserEmail && (
                           <Link to={`/my-profile`}>
                             <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View Your Profile</button>
                           </Link>
@@ -352,29 +351,49 @@ export default function AllSuperAdminPage() {
               </div>
             </div>
           )}
-        </div>
-      </div>
 
-      {/* LOADING MODAL */}
-      {pageLoading && (
-        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
-          <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-            <div className="text-xl font-semibold flex justify-center items-center gap-3">
-              <div className="w-20 h-20">
-                <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-                  <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
-                    e
-                  </text>
-                </svg>
-              </div>
-              <div className="flex flex-col">
-                <p className="text-xl font-semibold mb-2">Loading...</p>
-                <p className="text-[#334155]">Please wait while we load the details of all superadmin.</p>
+          {showDeleting && (
+            <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                <div className="text-xl font-semibold flex justify-center items-center gap-3">
+                  <div className="w-20 h-20">
+                    <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                      <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
+                        e
+                      </text>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-xl font-semibold mb-2">Deleting...</p>
+                    <p className="text-[#334155]">Please hold on! The super admin is being deleted.</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/* LOADING MODAL */}
+          {pageLoading && (
+            <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                <div className="text-xl font-semibold flex justify-center items-center gap-3">
+                  <div className="w-20 h-20">
+                    <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                      <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
+                        e
+                      </text>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-xl font-semibold mb-2">Loading...</p>
+                    <p className="text-[#334155]">Please wait while we load the details of all super admin.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </main>
   );
 }
