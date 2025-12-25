@@ -12,6 +12,7 @@ export default function AllConsultanciesPage() {
   const [pageLoading, setPageLoading] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showDeleting, setShowDeleting] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [allConsultancies, setAllConsultancies] = useState([]);
@@ -137,6 +138,7 @@ export default function AllConsultanciesPage() {
   const handleDeleteConfirmed = async () => {  
     try {
       // Fetch super admin details for deleting files
+      setShowDeleting(true);
       const res = await fetch(`http://localhost:3000/api/consultancies/${deleteId}`, {
         method: "GET",
         headers: {
@@ -147,10 +149,10 @@ export default function AllConsultanciesPage() {
       });
       const data = await res.json();
       if (!data.success) return;
-
-      if (data.data.consultancies.photo_url.includes("firebase")) {
+      
+      if (data.data.consultancy.photo_url.includes("firebase")) {
         const storage = getStorage();
-        const desertRef = ref(storage, data.data.consultancies.photo_url);
+        const desertRef = ref(storage, data.data.consultancy.photo_url);
         deleteObject(desertRef).catch(console.log);
       }
 
@@ -164,11 +166,14 @@ export default function AllConsultanciesPage() {
       });
       const deleteData = await deleteRes.json();
       if (!deleteData.success) return;
-
+      
+      setShowDeleting(false);
       setShowConfirmDelete(false);
       setShowSuccess(true);
     } catch (error) {
+      setShowDeleting(false);
       console.log(error.message);
+      setShowSuccess(false);
     }
   };
 
@@ -275,6 +280,7 @@ export default function AllConsultanciesPage() {
           </div>
         </div>
       </div>
+
       {/* DELETE CONFIRM MODAL */}
       {showConfirmDelete && (
         <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
@@ -292,6 +298,39 @@ export default function AllConsultanciesPage() {
         </div>
       )}
 
+      {showDeleting && (
+        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+          <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+            <div className="text-xl font-semibold flex justify-center items-center gap-3">
+              <div className="w-20 h-20">
+                <svg className="w-full h-full animate-spin text-yellow-400" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                  <text x="50" y="68" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" fontSize="100" fontWeight="700" fill="currentColor">
+                    e
+                  </text>
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <p className="text-xl font-semibold mb-2">Deleting...</p>
+                <p className="text-[#334155]">Please hold on! The consultancy is being deleted.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSuccess && (
+        <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+          <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+            <p className="text-center font-medium text-xl mb-5">Congratulations, the consultancy details have been deleted successfully!</p>
+            <div className="flex justify-center gap-4">
+              <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setShowSuccess(false); window.location.reload(true); }}>
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* LOADING MODAL */}
       {pageLoading && (
         <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
