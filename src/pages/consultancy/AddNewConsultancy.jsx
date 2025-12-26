@@ -35,7 +35,7 @@ export default function AddNewConsultancy() {
   const [confirmMessage, setConfirmMessage] = useState("");
   const [localProfileFile, setLocalProfileFile] = useState(null);
   const [formData, setFormData] = useState({
-    photo_url: "",
+    photo_url: "https://img.icons8.com/ios7/1200/company.jpg",
     name:"",
     gst_number: "",
     linkedin_url: "",
