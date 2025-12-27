@@ -160,7 +160,7 @@ export default function ViewAllPayments() {
                     </td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{payment.consultancy_name}</td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-50">{payment.duration_in_months}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">{payment.payment_status}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">{payment.payment_status === "full" ? "Paid In Full" : (payment.payment_status == "partial" ? "Payment Pending" : "Partial Payment")}</td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">{payment.grand_total}</td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20 capitalize">{payment.payment_received}</td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20 capitalize">{payment.pending_payment}</td>
