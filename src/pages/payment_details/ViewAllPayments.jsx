@@ -30,6 +30,7 @@ export default function ViewAllPayments() {
 
   const [formData, setFormData] = useState([]);
   const [currentUserID, setCurrentUserID] = useState("");
+  const [deleteId, setDeleteId] = useState("");
   const [pageLoading, setPageLoading] = useState(false);
   const [allowWriteAccess, setAllowWriteAccess] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -91,6 +92,37 @@ export default function ViewAllPayments() {
   const handleChangeRowsPerPage = (event) => { setRowsPerPage(parseInt(event.target.value, 10)); setPage(0); };
 
   const CustomTablePagination = styled(TablePagination)` & .MuiTablePagination-toolbar { display: flex; justify-content: space-between; align-items: center; font-size: 14px; background-color: #f9fafb; flex-wrap: wrap; } & .MuiTablePagination-selectLabel, & .MuiTablePagination-input, & .MuiTablePagination-displayedRows { font-size: 14px; }`;
+
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowConfirmDelete(true);
+  };
+
+  const handleDeleteConfirmed = async () => {  
+    try {
+      // Fetch consultancy details for deleting files
+      setShowDeleting(true);
+      
+      const deleteRes = await fetch(`http://localhost:3000/api/payment-detail/${deleteId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+      const deleteData = await deleteRes.json();
+      if (!deleteData.success) return;
+      
+      setShowDeleting(false);
+      setShowConfirmDelete(false);
+      setShowSuccess(true);
+    } catch (error) {
+      setShowDeleting(false);
+      console.log(error.message);
+      setShowSuccess(false);
+    }
+  };
   
   return (
     <main className="flex-1 overflow-y-auto p-6">
@@ -134,12 +166,12 @@ export default function ViewAllPayments() {
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20 capitalize">{payment.pending_payment}</td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">
                       <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
-                        <Link to={`/view-super-admin/${payment._id}`}>
+                        <Link to={`/view-a-payment/${payment._id}`}>
                           <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
                         </Link>
                         {allowWriteAccess && role === "admin" && (
                           <>
-                            <Link to={`/edit-super-admin/${payment._id}`}>
+                            <Link to={`/edit-a-payment/${payment._id}`}>
                               <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
                             </Link>
                             <button onClick={() => confirmDelete(payment._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">
@@ -156,7 +188,7 @@ export default function ViewAllPayments() {
               {/* Pagination Footer */}
               <tfoot>
                 <tr>
-                  <td colSpan={7}>
+                  <td colSpan={8}>
                     <div className="flex items-center justify-between mt-4 px-3 py-2 bg-gray-50 text-sm md:text-base">
                       <div className="flex items-center gap-2">
                         <span>Rows per page:</span>
@@ -216,7 +248,7 @@ export default function ViewAllPayments() {
           {showSuccess && (
             <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
               <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                <p className="text-center font-medium text-xl mb-5">Payment Detail has been deleted!</p>
+                <p className="text-center font-medium text-xl mb-5">Payment detail has been deleted!</p>
                 <div className="flex justify-center gap-4">
                   <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setShowSuccess(false); window.location.reload(true); }}>
                     OK
