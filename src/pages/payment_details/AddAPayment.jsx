@@ -207,8 +207,8 @@ export default function AddAPayment() {
               <label className="w-[200px] text-left font-xl text-gray-700">Select Consultancy Name:</label>
               <div className="w-[210px]">
                 <Select isSearchable required isDisabled={!allowWriteAccess} options={consultancyOptions} placeholder="Select Consultancy" styles={selectStyles} menuPortalTarget={document.body} value={selectedConsultancy}
-                  onChange={(selectedOption) => {
-                    setSelectedConsultancy(selectedOption);
+                  onChange={(selectedOption) => {                    
+                    setSelectedConsultancy(selectedOption);                    
                     setFormData((prev) => ({
                       ...prev,
                       consultancy_id: selectedOption?.value || "",
