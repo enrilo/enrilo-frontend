@@ -259,7 +259,7 @@ export default function ViewConsultancy() {
               {
                 allowWriteAccess && role === 'admin' && (
                   <div className="mt-6 flex flex-row justify-evenly">
-                    <Link to={`/edit-super-admin/${formData._id}`} className='flex flex-row justify-between'>
+                    <Link to={`/edit-consultancy/${formData._id}`} className='flex flex-row justify-between'>
                         <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                           Edit Consultancy
                         </button>
