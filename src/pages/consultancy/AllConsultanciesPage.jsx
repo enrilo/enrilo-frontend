@@ -96,7 +96,6 @@ export default function AllConsultanciesPage() {
 
         const data = await res.json();
         if (!data.success) {
-        console.log(`Could not fetch data`);
           setAllConsultancies([]);
           setPageLoading(false);
           return;
