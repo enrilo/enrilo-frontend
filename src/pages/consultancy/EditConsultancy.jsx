@@ -725,7 +725,6 @@ export default function EditConsultancy() {
       });
 
       const data = await res.json();
-      console.log(`Data:${JSON.stringify(data)}`);
 
       if (!data.success) {
         setFailedToSaveMessage(`Failed to update consultancy: ${data.message.toLowerCase()}`);
