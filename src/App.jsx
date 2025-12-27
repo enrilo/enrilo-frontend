@@ -125,6 +125,10 @@ import PrivacyPolicy from "./pages/enrilo_pages/PrivacyPolicy.jsx";
 import TermsAndConditions from "./pages/enrilo_pages/TermsAndConditions.jsx";
 import ViewConsultancy from "./pages/consultancy/ViewConsultancy.jsx";
 import EditConsultancy from "./pages/consultancy/EditConsultancy.jsx";
+import AddAPayment from "./pages/payment_details/AddAPayment.jsx";
+import ViewAllPayments from "./pages/payment_details/ViewAllPayments.jsx";
+import ViewAPayment from "./pages/payment_details/ViewAPayment.jsx";
+import EditPayment from "./pages/payment_details/EditPayment.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -163,6 +167,10 @@ function AppContent() {
             <Route path="/all-super-admin" element={<AllSuperAdminPage />} />
             <Route path="/view-super-admin/:id" element={<ViewSuperAdmin />} />
             <Route path="/edit-super-admin/:id" element={<EditSuperAdmin />} />
+            <Route path="/add-new-payment" element={<AddAPayment />} />
+            <Route path="/all-payments" element={<ViewAllPayments />} />
+            <Route path="/view-a-payment/:id" element={<ViewAPayment />} />
+            <Route path="/edit-a-payment/:id" element={<EditPayment />} />
             <Route path="/my-profile" element={<MyProfile />} />
             <Route path="/our-company" element={<CompanyProfile />} />
 
