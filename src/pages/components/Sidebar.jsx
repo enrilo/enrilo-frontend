@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { persistor } from "../../redux/store";
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Users, User, BriefcaseBusiness, UserPlus, IdCard, IndianRupeeIcon, LayoutDashboard, Building, Settings as SettingsIcon, LogOut, Menu, X, BriefcaseMedical, GraduationCap } from "lucide-react";
+import { CreditCard, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Users, User, BriefcaseBusiness, UserPlus, IdCard, IndianRupeeIcon, LayoutDashboard, Building, Settings as SettingsIcon, LogOut, Menu, X, BriefcaseMedical, GraduationCap } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import enriloFullLogoSrc from "../../assets/images/transparent-background/enrilo-with-tagline-300x300.png";
@@ -54,9 +54,13 @@ export default function Sidebar() {
           icon: <GraduationCap size={18} />,
           path: "/all-consultancies",
         }, {
+          name: "Add New Payment Details",
+          icon: <CreditCard size={18} />,
+          path: "/add-new-payment",
+        }, {
           name: "All Payment Details",
           icon: <IndianRupeeIcon size={18} />,
-          path: "/consultancy/payments",
+          path: "/all-payments",
         },
       ],
     }, {
@@ -160,8 +164,6 @@ export default function Sidebar() {
       alert("⚠️ Server error during logout");
     }
   };
-
-
 
   return (
     <>
