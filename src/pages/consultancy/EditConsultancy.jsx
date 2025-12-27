@@ -474,6 +474,7 @@ export default function EditConsultancy() {
   const [formData, setFormData] = useState({
     photo_url: "https://img.icons8.com/ios7/1200/company.jpg",
     name: "",
+    company_website:"",
     gst_number: "",
     linkedin_url: "",
     facebook_url: "",
@@ -544,6 +545,7 @@ export default function EditConsultancy() {
       setFormData({
         photo_url: fetchedAdmin.photo_url || "https://img.icons8.com/ios7/1200/company.jpg",
         name: fetchedAdmin.name || "",
+        company_website: fetchedAdmin.company_website || "",
         gst_number: fetchedAdmin.gst_number || "",
         linkedin_url: fetchedAdmin.linkedin_url || "",
         facebook_url: fetchedAdmin.facebook_url || "",
@@ -706,6 +708,7 @@ export default function EditConsultancy() {
       const payload = {
         photo_url: profile_url,
         name: formData.name,
+        company_website:formData.company_website,
         gst_number: formData.gst_number,
         linkedin_url: formData.linkedin_url,
         facebook_url: formData.facebook_url,
@@ -801,6 +804,7 @@ export default function EditConsultancy() {
           {/* Form */}
           <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
             <TextField label="Consultancy Name" value={formData.name} variant="outlined" required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} onChange={(e) => setFormData((p) => ({...p, name: e.target.value}))} />
+            <TextField label="Consultancy Website" value={formData.company_website} variant="outlined" disabled={!allowWriteAccess} onChange={(e) => setFormData((p) => ({...p, company_website: e.target.value}))} />
             <TextField label="GST Number" value={formData.gst_number} variant="outlined" onChange={(e) => setFormData((p) => ({...p, gst_number: e.target.value}))} />
             <TextField label="LinkedIn" value={formData.linkedin_url} variant="outlined" onChange={(e) => setFormData((p) => ({...p, linkedin_url: e.target.value}))} />
             <TextField label="Facebook" value={formData.facebook_url} variant="outlined" onChange={(e) => setFormData((p) => ({...p, facebook_url: e.target.value}))} />

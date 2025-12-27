@@ -440,6 +440,7 @@ export default function AddNewConsultancy() {
   const [formData, setFormData] = useState({
     photo_url: "https://img.icons8.com/ios7/1200/company.jpg",
     name: "",
+    company_website:"",
     gst_number: "",
     linkedin_url: "",
     facebook_url: "",
@@ -697,6 +698,7 @@ export default function AddNewConsultancy() {
           {/* Form */}
           <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
             <TextField label="Consultancy Name" variant="outlined" required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} onChange={(e) => setFormData((p) => ({...p, name: e.target.value}))} />
+            <TextField label="Company Webiste" variant="outlined" onChange={(e) => setFormData((p) => ({...p, company_website: e.target.value}))} />
             <TextField label="GST Number" variant="outlined" onChange={(e) => setFormData((p) => ({...p, gst_number: e.target.value}))} />
             <TextField label="Website" variant="outlined" onChange={(e) => setFormData((p) => ({...p, website: e.target.value}))} />
             <TextField label="LinkedIn" variant="outlined" onChange={(e) => setFormData((p) => ({...p, linkedin_url: e.target.value}))} />
