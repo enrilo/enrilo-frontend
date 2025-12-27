@@ -19,6 +19,7 @@ export default function ViewConsultancy() {
   const [formData, setFormData] = useState({
     photo_url: "",
     name:"",
+    company_website:"",
     gst_number: "",
     linkedin_url: "",
     facebook_url: "",
@@ -162,6 +163,9 @@ export default function ViewConsultancy() {
                   </div>
                   <div className='text-xl'>
                       <span className="font-semibold">GST Number:</span> <br /> {formData.gst_number || "N/A"}
+                  </div>
+                  <div className='text-xl'>
+                      <span className="font-semibold">Company's Website:</span> <br /> {formData.company_website || "N/A"}
                   </div>
                   <div className='text-xl'>
                       <span className="font-semibold">LinkedIn URL:</span> <br /> {formData.linkedin_url || "N/A"}

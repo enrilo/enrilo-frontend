@@ -226,8 +226,8 @@ export default function AllConsultanciesPage() {
                           </td>
                           <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{consultancy.name}</td>
                           <td className="px-3 py-2 md:px-4 md:py-3 text-center w-30 md:w-50">
-                            <a href={consultancy.website ? `https://${consultancy.website}` : ""} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
-                              {consultancy.website || "N/A"}
+                            <a href={consultancy.company_website ? `https://${consultancy.company_website}` : ""} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                              {consultancy.company_website || "N/A"}
                             </a>
                           </td>
                           <td className="px-3 py-2 md:px-4 md:py-3 text-center w-26 md:w-34">{consultancy.gst || "N/A"}</td>
