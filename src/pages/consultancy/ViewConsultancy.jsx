@@ -72,7 +72,7 @@ export default function ViewConsultancy() {
         
         setFormData(consultancyData.data.consultancy);
 
-        // FETCHING THE LOGGED IN SUPERADMIN DATA FOR FETCHING WRITE ACCESS PERMISSIONS
+        // FETCHING THE LOGGED IN CONSULTANCY DATA FOR FETCHING WRITE ACCESS PERMISSIONS
         const accessTokenResData = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${loggedInUserID}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -103,7 +103,7 @@ export default function ViewConsultancy() {
 
   const handleDeleteConfirmed = async () => {  
     try {
-      // Fetch super admin details for deleting files
+      // Fetch consultancy details for deleting files
       setShowDeleting(true);
       const res = await fetch(`http://localhost:3000/api/consultancies/${deleteId}`, {
         method: "GET",
@@ -342,7 +342,7 @@ export default function ViewConsultancy() {
               </div>
               <div className="flex flex-col">
                 <p className="text-xl font-semibold mb-2">Loading...</p>
-                <p className="text-[#334155]">Please wait while we load the details of all superadmin.</p>
+                <p className="text-[#334155]">Please wait while we load the details of the consultancy.</p>
               </div>
             </div>
           </div>

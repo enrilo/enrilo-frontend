@@ -820,7 +820,7 @@ export default function AddNewConsultancy() {
                           </text>
                       </svg>
                     </div>
-                    {/* Updating Your Super Admin Details... */}
+                    {/* Updating Your Consultancy Details... */}
                     <div className="flex flex-col">
                       <p className="text-xl font-semibold mb-2">Loading...</p>
                       <p className="text-[#334155]">Please wait while we save your details.</p>
