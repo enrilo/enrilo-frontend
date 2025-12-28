@@ -269,7 +269,7 @@ export default function ViewAPayment() {
         </div>
 
         {/* Actions */}
-        {allowWriteAccess && role === "admin" && (
+        {allowWriteAccess && (
           <div className="mt-8 flex flex-wrap justify-center gap-6">
             <Link to={`/edit-a-payment/${formData._id}`}>
               <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-6 py-2 rounded-md transition cursor-pointer">
