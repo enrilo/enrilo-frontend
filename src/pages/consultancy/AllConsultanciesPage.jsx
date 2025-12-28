@@ -199,10 +199,10 @@ export default function AllConsultanciesPage() {
                           Consultancy Name
                         </th>
                         <th className="px-3 py-2 md:px-4 md:py-3 text-center w-30 md:w-50">
-                          Website
+                          Consultancy Personal Website
                         </th>
                         <th className="px-3 py-2 md:px-4 md:py-3 text-center w-26 md:w-34">
-                          GST Number
+                          Enrilo Website
                         </th>
                         <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-60">
                           Head Office Address
@@ -224,11 +224,29 @@ export default function AllConsultanciesPage() {
                           </td>
                           <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{consultancy.name}</td>
                           <td className="px-3 py-2 md:px-4 md:py-3 text-center w-30 md:w-50">
-                            <a href={consultancy.company_website ? `https://${consultancy.company_website}` : ""} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                            {/* <a href={consultancy.company_website ? `https://${consultancy.company_website}` : ""} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
                               {consultancy.company_website || "N/A"}
-                            </a>
+                            </a> */}
+                            {consultancy.company_website ? (
+                                <a href={consultancy.company_website.startsWith("http") ? consultancy.company_website : `https://${consultancy.company_website}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                  {consultancy.company_website}
+                                </a>
+                              ) : (
+                                "N/A"
+                            )}
                           </td>
-                          <td className="px-3 py-2 md:px-4 md:py-3 text-center w-26 md:w-34">{consultancy.gst || "N/A"}</td>
+                          <td className="px-3 py-2 md:px-4 md:py-3 text-center w-30 md:w-50">
+                            {/* <a href={consultancy.subdomain ? `https://${consultancy.subdomain}.enrilo.com` : ""} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                              {`${consultancy.subdomain}.enrilo.com` || "N/A"}
+                            </a> */}
+                            {consultancy.subdomain ? (
+                              <a href={`https://${consultancy.subdomain}.enrilo.com`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                {`${consultancy.subdomain}.enrilo.com`}
+                              </a>
+                            ) : (
+                              "N/A"
+                            )}
+                          </td>
                           <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-60">
                             {/* {c.address} */}
                             { consultancy.office_details ?.find(o => o.office_type === "Head Office") ?.office_address || "—" }
