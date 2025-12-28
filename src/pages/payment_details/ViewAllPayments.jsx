@@ -144,11 +144,11 @@ export default function ViewAllPayments() {
                 <tr>
                   <th className="px-3 py-2 md:px-4 md:py-3 text-center w-8 md:w-12">#</th>
                   <th className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">Consultancy Name</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-50">Plan Duration</th>
+                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Plan Duration</th>
                   <th className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">Payment Status</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">Total Payment</th>
+                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Total Payment</th>
                   <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Payment Received</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">Pending Payment</th>
+                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Pending Payment</th>
                   <th className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">Actions</th>
                 </tr>
               </thead>
@@ -159,12 +159,12 @@ export default function ViewAllPayments() {
                       {page * rowsPerPage + index + 1}
                     </td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{payment.consultancy_name}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-50">{payment.duration_in_months}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.duration_in_months}</td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">{payment.payment_status === "full" ? "Paid In Full" : (payment.payment_status == "partial" ? "Payment Pending" : "Partial Payment")}</td>
                     <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">{payment.grand_total}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20 capitalize">{payment.payment_received}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20 capitalize">{payment.pending_payment}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.payment_received}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.pending_payment}</td>
+                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
                       <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
                         <Link to={`/view-a-payment/${payment._id}`}>
                           <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
