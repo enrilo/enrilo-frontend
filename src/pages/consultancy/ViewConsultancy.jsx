@@ -159,56 +159,50 @@ export default function ViewConsultancy() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                   <div className='text-xl'>
-                      <span className="font-semibold">Consultancy Name:</span> <br /> {formData.name}
+                    <span className="font-semibold">Consultancy Name:</span> <br /> {formData.name}
                   </div>
                   <div className='text-xl'>
-                      <span className="font-semibold">GST Number:</span> <br /> {formData.gst_number || "N/A"}
+                    {/* <span className="font-semibold">Enrilo Website:</span> <br /> {`${formData.subdomain}.enrilo.com` || "N/A"} */}
+                    <span className="font-semibold">Enrilo Website:</span> <br />
+                    {formData.subdomain ? (
+                      <a href={`https://${formData.subdomain}.enrilo.com`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        {`${formData.subdomain}.enrilo.com`}
+                      </a>
+                    ) : (
+                      "N/A"
+                    )}
                   </div>
                   <div className='text-xl'>
-                      <span className="font-semibold">Company's Website:</span> <br /> {formData.company_website || "N/A"}
+                    {/* <span className="font-semibold">Company's Website:</span> <br /> {formData.company_website || "N/A"} */}
+                    <span className="font-semibold">Company's Website:</span> <br />
+                    {formData.company_website ? (
+                        <a href={formData.company_website.startsWith("http") ? formData.company_website : `https://${formData.company_website}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                          {formData.company_website}
+                        </a>
+                      ) : (
+                        "N/A"
+                    )}
                   </div>
                   <div className='text-xl'>
-                      <span className="font-semibold">LinkedIn URL:</span> <br /> {formData.linkedin_url || "N/A"}
+                    <span className="font-semibold">LinkedIn URL:</span> <br /> {formData.linkedin_url || "N/A"}
                   </div>
                   <div className='text-xl'>
-                      <span className="font-semibold">Facebook URL:</span> <br /> {formData.facebook_url || "N/A"}
+                    <span className="font-semibold">Facebook URL:</span> <br /> {formData.facebook_url || "N/A"}
                   </div>
                   <div className='text-xl'>
-                      <span className="font-semibold">Instagram:</span> <br /> <span className="capitalize">{formData.instagram_url || "N/A"}</span>
+                    <span className="font-semibold">Instagram:</span> <br /> <span className="capitalize">{formData.instagram_url || "N/A"}</span>
+                  </div>
+                  <div className='text-xl'>
+                    <span className="font-semibold">GST Number:</span> <br /> {formData.gst_number || "N/A"}
                   </div>
                   <div className='text-xl'>
                       <span className="font-semibold">Office Type:</span> <br /> <span className="capitalize">{officeDetails.length > 1 ? 'Multiple Branches/Offices':'Single Office'}</span>
                   </div>
-                  {/* {formData.email && (
-                      <div className='text-xl'>
-                          <span className="font-semibold">Personal Email ID:</span> <br /> {formData.email}
-                      </div>
-                  )}
-                  {(formData.street_1 || formData.street_2 || formData.city || formData.state || formData.country || formData.zipcode) && (
-                      <div className='text-xl'>
-                          <span className="font-semibold">Home Address:</span> <br /> {[ formData.street_1, formData.street_2, formData.city, formData.state, formData.country ].filter(Boolean).join(', ')} - {formData.zipcode}
-                      </div>
-                  )} */}
               </div>
-              
-              {/* Office Address INFO */}
-              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {formData.office_details.map((office, index) => (
-                  <div key={office._id || index} className="p-5 border rounded-lg shadow-sm">
-                    <div className="text-lg font-semibold mb-2">
-                      {office.office_type}
-                    </div>
-
-                    <p><strong>City:</strong> {office.office_city}</p>
-                    <p><strong>Address:</strong> {office.office_address}</p>
-                    <p><strong>Phone:</strong> {office.country_code} {office.phone_number}</p>
-                  </div>
-                ))}
-              </div> */}
              {officeDetails.length > 0 && (
                 <>
                   <div className="text-2xl font-semibold underline mb-4">
-                    Office Details
+                    Office Details:
                   </div>
 
                   <div className="overflow-x-auto">
@@ -240,19 +234,16 @@ export default function ViewConsultancy() {
                       </tbody>
                     </table>
                   </div>
-
                   {/* Pagination Controls */}
                   <div className="flex justify-end items-center gap-2 mt-4">
                     <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1} className="px-3 py-1 border rounded disabled:opacity-50">
                       Prev
                     </button>
-
                     {[...Array(totalPages)].map((_, i) => (
                       <button key={i} onClick={() => setCurrentPage(i + 1)} className={`px-3 py-1 border rounded ${currentPage === i + 1 ? "bg-[#1E293B] text-white" : ""}`}>
                         {i + 1}
                       </button>
                     ))}
-
                     <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages} className="px-3 py-1 border rounded disabled:opacity-50" >
                       Next
                     </button>
