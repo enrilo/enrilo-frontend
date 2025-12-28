@@ -179,7 +179,7 @@ export default function AllConsultanciesPage() {
     <main className="flex-1 overflow-y-auto p-6">
       <div className="p-4 sm:p-6">
         <div className="bg-white rounded-2xl shadow p-4 sm:p-6 max-w-7xl mx-auto">
-          {allowWriteAccess && role === "admin" && (
+          {allowWriteAccess && (
             <div className="flex justify-end mb-5">
               <Link to={`/add-new-consultancy`} className="flex flex-row justify-center">
                 <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
@@ -260,7 +260,7 @@ export default function AllConsultanciesPage() {
                               <Link to={`/view-consultancy/${consultancy._id}`}>
                                 <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
                               </Link>
-                              {allowWriteAccess && role === "admin" && (
+                              {allowWriteAccess && (
                                 <>
                                   <Link to={`/edit-consultancy/${consultancy._id}`}>
                                     <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>

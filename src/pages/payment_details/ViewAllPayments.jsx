@@ -593,7 +593,7 @@ export default function ViewAllPayments() {
         <div className="bg-white rounded-2xl shadow p-4 sm:p-6 max-w-7xl mx-auto">
           {/* 🔹 TABLE */}
           <div className="overflow-x-auto rounded-lg">
-            {allowWriteAccess && role === "admin" && (
+            {allowWriteAccess && (
               <div className="flex justify-end mb-5">
                 <Link to={`/add-new-payment`} className="flex flex-row justify-center">
                   <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition">
@@ -602,96 +602,107 @@ export default function ViewAllPayments() {
                 </Link>
               </div>
             )}
-            <table className="min-w-full text-sm md:text-[17px] text-left border-collapse rounded-lg">
-              <thead className="bg-gray-100 text-gray-700 uppercase rounded-lg">
-                <tr>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-8 md:w-12">#</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">Consultancy Name</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Plan Duration</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">Payment Status</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Total Payment</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Payment Received</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Pending Payment</th>
-                  <th className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedData.map((payment, index) => (
-                  <tr key={payment._id} className="border-b hover:bg-gray-50 transition text-gray-800">
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center font-medium w-8 md:w-12">
-                      {page * rowsPerPage + index + 1}
-                    </td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{payment.consultancy_name}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.duration_in_months}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">{payment.payment_status === "full" ? "Paid In Full" : (payment.payment_status == "partial" ? "Payment Pending" : "Partial Payment")}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">{payment.grand_total}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.payment_received}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.pending_payment}</td>
-                    <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
-                      <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
-                        <button type="button" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition" onClick={() => { setGenerateReceiptOpen(true); setGenerateRecieptID(payment._id); }}>
-                          Generate Receipt
-                        </button>
-                        <br />
-                        <Link to={`/view-a-payment/${payment._id}`}>
-                          <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
-                        </Link>
-                        {allowWriteAccess && role === "admin" && (
-                          <>
-                            <Link to={`/edit-a-payment/${payment._id}`}>
-                              <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
-                            </Link>
-                            <button onClick={() => confirmDelete(payment._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">
-                              Delete
+
+            {
+              paginatedData.length > 0 ?  (
+                <table className="min-w-full text-sm md:text-[17px] text-left border-collapse rounded-lg">
+                  <thead className="bg-gray-100 text-gray-700 uppercase rounded-lg">
+                    <tr>
+                      <th className="px-3 py-2 md:px-4 md:py-3 text-center w-8 md:w-12">#</th>
+                      <th className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">Consultancy Name</th>
+                      <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Plan Duration</th>
+                      <th className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">Payment Status</th>
+                      <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Total Payment</th>
+                      <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Payment Received</th>
+                      <th className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">Pending Payment</th>
+                      <th className="px-3 py-2 md:px-4 md:py-3 text-center w-36 md:w-70">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedData.map((payment, index) => (
+                      <tr key={payment._id} className="border-b hover:bg-gray-50 transition text-gray-800">
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center font-medium w-8 md:w-12">
+                          {page * rowsPerPage + index + 1}
+                        </td>
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-40 md:w-56">{payment.consultancy_name}</td>
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.duration_in_months}</td>
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-32 md:w-40">{payment.payment_status === "full" ? "Paid In Full" : (payment.payment_status == "partial" ? "Payment Pending" : "Partial Payment")}</td>
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">{payment.grand_total}</td>
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.payment_received}</td>
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.pending_payment}</td>
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
+                          <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
+                            <button type="button" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition" onClick={() => { setGenerateReceiptOpen(true); setGenerateRecieptID(payment._id); }}>
+                              Generate Receipt
                             </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                            <br />
+                            <Link to={`/view-a-payment/${payment._id}`}>
+                              <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
+                            </Link>
+                            {allowWriteAccess && (
+                              <>
+                                <Link to={`/edit-a-payment/${payment._id}`}>
+                                  <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
+                                </Link>
+                                <button onClick={() => confirmDelete(payment._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">
+                                  Delete
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
 
-              {/* Pagination Footer */}
-              <tfoot>
-                <tr>
-                  <td colSpan={8}>
-                    <div className="flex items-center justify-between mt-4 px-3 py-2 bg-gray-50 text-sm md:text-base">
-                      <div className="flex items-center gap-2">
-                        <span>Rows per page:</span>
-                        <select className="border rounded px-2 py-1" value={rowsPerPage} onChange={(e) => { const value = parseInt(e.target.value, 10); setRowsPerPage(value); setPage(0); }}>
-                          {[5, 10, 25, -1].map((num) => (
-                            <option key={num} value={num}>
-                              {num === -1 ? "All" : num}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                  {/* Pagination Footer */}
+                  <tfoot>
+                    <tr>
+                      <td colSpan={8}>
+                        <div className="flex items-center justify-between mt-4 px-3 py-2 bg-gray-50 text-sm md:text-base">
+                          <div className="flex items-center gap-2">
+                            <span>Rows per page:</span>
+                            <select className="border rounded px-2 py-1" value={rowsPerPage} onChange={(e) => { const value = parseInt(e.target.value, 10); setRowsPerPage(value); setPage(0); }}>
+                              {[5, 10, 25, -1].map((num) => (
+                                <option key={num} value={num}>
+                                  {num === -1 ? "All" : num}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
 
-                      <div style={{ flex: 1 }} />
+                          <div style={{ flex: 1 }} />
 
-                      <div className="flex items-center gap-2">
-                        <span>
-                          {rowsPerPage === -1 ? `1–${formData.length} of ${formData.length}` : `${Math.min(page * rowsPerPage + 1, formData.length)}–${Math.min( (page + 1) * rowsPerPage, formData.length )} of ${formData.length}`}
-                        </span>
-                        <button onClick={() => setPage(0)} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
-                          <FirstPageRoundedIcon fontSize="small" />
-                        </button>
-                        <button onClick={() => setPage((p) => Math.max(p - 1, 0))} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
-                          <ChevronLeftRoundedIcon fontSize="small" />
-                        </button>
-                        <button onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(formData.length / rowsPerPage) - 1))} disabled={page >= Math.ceil(formData.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
-                          <ChevronRightRoundedIcon fontSize="small" />
-                        </button>
-                        <button onClick={() => setPage(Math.ceil(formData.length / rowsPerPage) - 1)} disabled={page >= Math.ceil(formData.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
-                          <LastPageRoundedIcon fontSize="small" />
-                        </button>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                          <div className="flex items-center gap-2">
+                            <span>
+                              {rowsPerPage === -1 ? `1–${formData.length} of ${formData.length}` : `${Math.min(page * rowsPerPage + 1, formData.length)}–${Math.min( (page + 1) * rowsPerPage, formData.length )} of ${formData.length}`}
+                            </span>
+                            <button onClick={() => setPage(0)} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                              <FirstPageRoundedIcon fontSize="small" />
+                            </button>
+                            <button onClick={() => setPage((p) => Math.max(p - 1, 0))} disabled={page === 0 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                              <ChevronLeftRoundedIcon fontSize="small" />
+                            </button>
+                            <button onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(formData.length / rowsPerPage) - 1))} disabled={page >= Math.ceil(formData.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                              <ChevronRightRoundedIcon fontSize="small" />
+                            </button>
+                            <button onClick={() => setPage(Math.ceil(formData.length / rowsPerPage) - 1)} disabled={page >= Math.ceil(formData.length / rowsPerPage) - 1 || rowsPerPage === -1} className="px-2 py-1 border rounded disabled:opacity-40">
+                              <LastPageRoundedIcon fontSize="small" />
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              ) : (
+                <div className="min-w-full text-lg md:text-2xl text-center font-regular">
+                  No payments have been made to Enrilo yet.
+                  <br /><br />
+                  Click on the above button to add a new payment detail.
+                </div>
+              )
+            }
           </div>
 
 
