@@ -443,7 +443,7 @@
 // }
 
 import { useState, useCallback, useEffect } from 'react';
-import TextField from '@mui/material/TextField';
+import { TextField, InputAdornment} from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from "react-select";
 import { selectStyles, asteriskColorStyle } from "../styles/selectStyles.js";
@@ -453,8 +453,9 @@ import { storage } from "../../firebase.js";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditConsultancy() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const params = useParams();
+  const [checkingSubdomain, setCheckingSubdomain] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [isSingleBranch, setIsSingleBranch] = useState(true);
   const [branchType, setBranchType] = useState("single");
@@ -469,7 +470,9 @@ export default function EditConsultancy() {
   const [confirmAction, setConfirmAction] = useState(null);
   const [profilePreviewUrl, setProfilePreviewUrl] = useState("");
   const [confirmMessage, setConfirmMessage] = useState("");
+  const [originalSubdomain, setOriginalSubdomain] = useState("");
   const [localProfileFile, setLocalProfileFile] = useState(null);
+  const [isSubdomainAvailable, setIsSubdomainAvailable] = useState(null);
 
   const [formData, setFormData] = useState({
     photo_url: "https://img.icons8.com/ios7/1200/company.jpg",
@@ -480,6 +483,7 @@ export default function EditConsultancy() {
     facebook_url: "",
     instagram_url: "",
     is_single_branch: true,
+    subdomain: "",
     office_details: [{
       office_city: "",
       office_address: "",
@@ -520,8 +524,8 @@ export default function EditConsultancy() {
       const consultancyData = await fetch(`http://localhost:3000/api/consultancies/${params.id}`, {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         credentials: "include",
       });
@@ -551,6 +555,7 @@ export default function EditConsultancy() {
         facebook_url: fetchedAdmin.facebook_url || "",
         instagram_url: fetchedAdmin.instagram_url || "",
         is_single_branch: fetchedAdmin.is_single_branch,
+        subdomain: fetchedAdmin.subdomain || "",
         office_details: sanitizedOffices.length ? sanitizedOffices : [{
           office_city: "",
           office_address: "",
@@ -559,6 +564,7 @@ export default function EditConsultancy() {
           phone_number: "",
         }],
       });
+      setOriginalSubdomain(fetchedAdmin.subdomain || "");
 
       setProfilePreviewUrl(fetchedAdmin.photo_url);
       setIsSingleBranch(fetchedAdmin.is_single_branch);
@@ -568,6 +574,55 @@ export default function EditConsultancy() {
     fetchSuperAdminAccessToken();
     fetchConsultancy();
   }, [loggedInUserID, params.id, token]);
+
+  useEffect(() => {
+    // empty → reset
+    if (!formData.subdomain?.trim()) {
+      setIsSubdomainAvailable(null);
+      return;
+    }
+
+    // unchanged subdomain → valid
+    if (formData.subdomain === originalSubdomain) {
+      setIsSubdomainAvailable(null);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        setCheckingSubdomain(true);
+
+        const res = await fetch(
+          `http://localhost:3000/api/consultancies/check-subdomain/${formData.subdomain}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+          }
+        );
+        const data = await res.json();
+        setIsSubdomainAvailable(data.message);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error(err);
+          setIsSubdomainAvailable(false);
+        }
+      } finally {
+        setCheckingSubdomain(false);
+      }
+    }, 600);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [formData.subdomain, originalSubdomain]);
+
+
 
   const handleProfileUpload = async (e) => {
     const file = e.target.files[0];
@@ -709,6 +764,7 @@ export default function EditConsultancy() {
         photo_url: profile_url,
         name: formData.name,
         company_website:formData.company_website,
+        subdomain:formData.subdomain,
         gst_number: formData.gst_number,
         linkedin_url: formData.linkedin_url,
         facebook_url: formData.facebook_url,
@@ -768,7 +824,6 @@ export default function EditConsultancy() {
       );
     });
   };
-
   
   return (
     <main className="flex-1 overflow-y-auto p-6">
@@ -803,6 +858,66 @@ export default function EditConsultancy() {
           {/* Form */}
           <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
             <TextField label="Consultancy Name" value={formData.name} variant="outlined" required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} onChange={(e) => setFormData((p) => ({...p, name: e.target.value}))} />
+            <div className='flex flex-col'>
+              {/* <TextField label="Subdomain" value={formData.subdomain} variant="outlined" 
+                onChange={(e) =>
+                  setFormData((p) => ({
+                    ...p,
+                    subdomain: e.target.value,
+                  }))
+                }
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        https://
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        .enrilo.com
+                      </InputAdornment>
+                    ),
+                  },
+              }}
+              /> */}
+              <TextField
+                label="Subdomain"
+                value={formData.subdomain}
+                variant="outlined"
+                disabled={!allowWriteAccess}
+                onChange={(e) =>
+                  setFormData((p) => ({
+                    ...p,
+                    subdomain: e.target.value.toLowerCase().trim(),
+                  }))
+                }
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">https://</InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">.enrilo.com</InputAdornment>
+                    ),
+                  },
+                }}
+              />
+
+              {isSubdomainAvailable !== null && !checkingSubdomain && (
+                <ul className="mt-1">
+                  <li className={isSubdomainAvailable === "Subdomain is available 🚀" ? "text-green-600" : "text-red-600"}>
+                    {isSubdomainAvailable === "Subdomain is available 🚀" ? "Subdomain is available" : "Subdomain is not available"}
+                  </li>
+                </ul>
+              )}
+
+              {checkingSubdomain && (
+                <p className="mt-1 text-sm text-gray-500">
+                  Checking availability...
+                </p>
+              )}
+            </div>
             <TextField label="Consultancy Website" value={formData.company_website} variant="outlined" disabled={!allowWriteAccess} onChange={(e) => setFormData((p) => ({...p, company_website: e.target.value}))} />
             <TextField label="GST Number" value={formData.gst_number} variant="outlined" onChange={(e) => setFormData((p) => ({...p, gst_number: e.target.value}))} />
             <TextField label="LinkedIn" value={formData.linkedin_url} variant="outlined" onChange={(e) => setFormData((p) => ({...p, linkedin_url: e.target.value}))} />
