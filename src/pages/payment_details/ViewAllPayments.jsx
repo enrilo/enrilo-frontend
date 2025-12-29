@@ -442,6 +442,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "@mui/system";
+import { useReactToPrint } from "react-to-print";
 import TablePagination from "@mui/material/TablePagination";
 import FirstPageRoundedIcon from "@mui/icons-material/FirstPageRounded";
 import LastPageRoundedIcon from "@mui/icons-material/LastPageRounded";
@@ -462,7 +463,6 @@ export default function ViewAllPayments() {
   const [showDeleting, setShowDeleting] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const receiptRef = useRef(); // 👈 Ref for generating PDF
 
   const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
@@ -709,82 +709,145 @@ export default function ViewAllPayments() {
           {/* GENERATE RECEIPT MODAL */}
           {generateReceiptOpen && (
             <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
-              <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="flex flex-row justify-end mb-2">
-                  <button className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer" onClick={() => setGenerateReceiptOpen(false)} >
+              <div className="bg-white rounded-2xl shadow-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto printable">
+                {/* Header Actions */}
+                <div className="flex justify-between mb-4 no-print">
+                  <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 px-8 py-2 rounded-md transition cursor-pointer" onClick={() => window.print()}>
+                    Print
+                  </button>
+                  <button className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer" onClick={() => setGenerateReceiptOpen(false)}>
                     Close
                   </button>
                 </div>
-                <div ref={receiptRef} className="flex flex-col justify-between items-center mb-2 overflow-y-auto w-full">
-                  {/* Bill Header */}
-                  <div className="text-center">
-                    <h1 className="text-3xl font-bold">{singlePaymentData.consultancy_name}</h1>
-                    <p className="text-lg font-semibold">Consultancy Payment Details</p>
-                    <div className="flex justify-center gap-8 text-gray-700 text-lg font-semibold mb-4">
+
+                <div ref={receiptRef} className="w-full" style={{ backgroundColor: "#fff" }}>
+                  {/* Company Header */}
+                  <div className="text-center border-b pb-4 mb-6">
+                    <h1 className="text-3xl font-bold tracking-wide">
+                      {singlePaymentData.consultancy_name}
+                    </h1>
+                    <p className="text-lg font-semibold mt-1">TAX INVOICE / PAYMENT RECEIPT</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      All amounts are in Indian Rupees (₹ INR)
+                    </p>
+                  </div>
+
+                  {/* Invoice Meta */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6">
+                    <div>
                       <p>
-                        From:{" "}
-                        {singlePaymentData.from_date ? new Date(singlePaymentData.from_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" }) : ""}
+                        <span className="font-semibold">Receipt No:</span>{" "}
+                        {singlePaymentData.receipt_number || "—"}
                       </p>
                       <p>
-                        To:{" "}
-                        {singlePaymentData.to_date ? new Date(singlePaymentData.to_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" }) : ""}
+                        <span className="font-semibold">Invoice Date:</span>{" "}
+                        {new Date(singlePaymentData.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
+                      </p>
+                    </div>
+                    <div className="md:text-right">
+                      <p>
+                        <span className="font-semibold">Billing Period:</span>
+                      </p>
+                      <p>
+                        {singlePaymentData.from_date &&
+                          new Date(singlePaymentData.from_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })
+                        }{" "}
+                        - {" "}
+                        {singlePaymentData.to_date &&
+                          new Date(singlePaymentData.to_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })
+                        }
                       </p>
                     </div>
                   </div>
                   {/* Payment Status */}
-                  <div className="mb-5 text-center">
+                  <div className="mb-6 text-center">
                     <p className="font-semibold text-lg">
                       Payment Status:{" "}
-                      <span className={`font-bold ${ singlePaymentData.payment_status === "full" ? "text-green-600" : (singlePaymentData.payment_status === "pending" ?"text-red-600":"text-orange-400") }`} >
-                        {singlePaymentData.payment_status === "full" ? "Paid In Full" : (singlePaymentData.payment_status === "pending" ? "Payment Pending" : "Partial Payment Complete")}
+                      <span
+                        className={`font-bold ${ singlePaymentData.payment_status === "full" ? "text-green-600" : singlePaymentData.payment_status === "pending" ? "text-red-600" : "text-orange-500" }`}>
+                        {singlePaymentData.payment_status === "full" ? "PAID" : singlePaymentData.payment_status === "pending" ? "PAYMENT PENDING" : "PARTIALLY PAID"}
                       </span>
                     </p>
                   </div>
-                  {/* Bill Table */}
-                  <table className="w-full text-left border-collapse text-lg mb-5">
+                  {/* Amount Table */}
+                  <table className="w-full text-sm border border-gray-300 mb-6">
                     <tbody>
-                      <tr className="border-b border-gray-300">
-                        <td className="py-3 font-semibold">Rate</td>
-                        <td className="py-3 text-right">{singlePaymentData.rate}</td>
+                      <tr className="border-b">
+                        <td className="py-3 px-4 font-semibold">Rate</td>
+                        <td className="py-3 px-4 text-right">₹ {singlePaymentData.rate}.00</td>
                       </tr>
-                      <tr className="border-b border-gray-300">
-                        <td className="py-3 font-semibold">Duration (Months)</td>
-                        <td className="py-3 text-right">{singlePaymentData.duration_in_months}</td>
-                      </tr>
-                      <tr className="border-b border-gray-300">
-                        <td className="py-3 font-semibold">Subtotal</td>
-                        <td className="py-3 text-right">{singlePaymentData.subtotal}</td>
-                      </tr>
-                      <tr className="border-b border-gray-300">
-                        <td className="py-3 font-semibold">Discount</td>
-                        <td className="py-3 text-right">{singlePaymentData.discount_amount}</td>
-                      </tr>
-                      <tr className="border-b border-gray-300">
-                        <td className="py-3 font-semibold">Net Total</td>
-                        <td className="py-3 text-right">{singlePaymentData.net_total}</td>
-                      </tr>
-                      <tr className="border-b border-gray-300">
-                        <td className="py-3 font-semibold">GST @0%</td>
-                        <td className="py-3 text-right">{singlePaymentData.gst_amount}</td>
-                      </tr>
-                      <tr className="border-b border-gray-300">
-                        <td className="py-3 font-semibold">Grand Total</td>
-                        <td className="py-3 text-right">{singlePaymentData.grand_total}</td>
-                      </tr>
-                      <tr className="border-b border-gray-300">
-                        <td className="py-3 font-semibold">Payment Received</td>
-                        <td className="py-3 text-right">{singlePaymentData.payment_received}</td>
-                      </tr>
-                      <tr>
-                        <td className="py-3 font-semibold">Payment Pending</td>
-                        <td className='py-3 text-right'>
-                          {singlePaymentData.pending_payment}
+                      <tr className="border-b">
+                        <td className="py-3 px-4 font-semibold">Duration</td>
+                        <td className="py-3 px-4 text-right">
+                          {singlePaymentData.duration_in_months} Months
                         </td>
                       </tr>
+                      <tr className="border-b">
+                        <td className="py-3 px-4 font-semibold">Subtotal</td>
+                        <td className="py-3 px-4 text-right">
+                          ₹ {singlePaymentData.subtotal}
+                        </td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-3 px-4 font-semibold">Discount</td>
+                        <td className="py-3 px-4 text-right text-red-600">
+                          ₹ {singlePaymentData.discount_amount}
+                        </td>
+                      </tr>
+                      <tr className="border-b bg-gray-50">
+                        <td className="py-3 px-4 font-semibold">Net Total</td>
+                        <td className="py-3 px-4 text-right font-semibold">
+                          ₹ {singlePaymentData.net_total}
+                        </td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-3 px-4 font-semibold">GST (0%)</td>
+                        <td className="py-3 px-4 text-right">
+                          ₹ {singlePaymentData.gst_amount}
+                        </td>
+                      </tr>
+                      <tr className="border-b bg-gray-100 text-lg">
+                        <td className="py-3 px-4 font-bold">Grand Total</td>
+                        <td className="py-3 px-4 text-right font-bold">
+                          ₹ {singlePaymentData.grand_total}
+                        </td>
+                      </tr>
+                      {singlePaymentData.payment_status !== "full" && (
+                        <>
+                          <tr className="border-b">
+                            <td className="py-3 px-4 font-semibold">Payment Received</td>
+                            <td className="py-3 px-4 text-right text-green-600">
+                              ₹ {singlePaymentData.payment_received}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="py-3 px-4 font-semibold">Balance Payable</td>
+                            <td className="py-3 px-4 text-right text-red-600 font-semibold">
+                              ₹ {singlePaymentData.pending_payment}
+                            </td>
+                          </tr>
+                        </>
+                      )}
                     </tbody>
                   </table>
-                  <div className="text-center align-middle font-semibold">
-                    <span>Note:{" "}</span>All Amounts Specified Are In Indian Rupees (INR)
+
+                  {/* Declaration */}
+                  <div className="text-sm text-gray-700 mb-8">
+                    <p>
+                      <span className="font-semibold">Declaration:</span> This is a
+                      computer-generated receipt and does not require a physical signature.
+                    </p>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex justify-between items-end mt-10">
+                    <div className="text-sm">
+                      <p className="font-semibold">Thank you for your business.</p>
+                    </div>
+                    <div className="text-sm text-right">
+                      <p className="font-semibold">For {singlePaymentData.consultancy_name}</p>
+                      <p className="mt-6">Authorised Signatory</p>
+                    </div>
                   </div>
                 </div>
               </div>

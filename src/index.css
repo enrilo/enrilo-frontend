@@ -15,3 +15,25 @@ body {
 .autoscroll-container::-webkit-scrollbar {
   display: none !important; /* Chrome, Safari, Edge */
 }
+
+@media print {
+  body * {
+    visibility: hidden; /* hide everything */
+  }
+  
+  .printable, .printable * {
+    visibility: visible; /* show only the receipt */
+  }
+  
+  .printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* hide buttons inside the modal when printing */
+  .printable .no-print {
+    display: none;
+  }
+}
