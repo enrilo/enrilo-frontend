@@ -442,12 +442,12 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "@mui/system";
-import { useReactToPrint } from "react-to-print";
 import TablePagination from "@mui/material/TablePagination";
 import FirstPageRoundedIcon from "@mui/icons-material/FirstPageRounded";
 import LastPageRoundedIcon from "@mui/icons-material/LastPageRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import enriloLogo from "../../assets/images/regular-background/enrilo-without-tagline-1920x1080.png";
 
 export default function ViewAllPayments() {
   const [formData, setFormData] = useState([]);
@@ -463,13 +463,12 @@ export default function ViewAllPayments() {
   const [showDeleting, setShowDeleting] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const receiptRef = useRef(); // 👈 Ref for generating PDF
-
   const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
   const userState = JSON.parse(persistedRoot.user);
   const token = userState.currentUser?.data?.accessToken;
   const loggedInUserID = userState.currentUser?.data?.id;
   const role = userState.currentUser?.data?.role;
+  const receiptRef = useRef();
 
   useEffect(() => {
     const fetchAllPayments = async () => {
@@ -719,6 +718,11 @@ export default function ViewAllPayments() {
                     Close
                   </button>
                 </div>
+                <div className="flex justify-between mb-4 no-print">
+                  <p>
+                    <span className="font-semibold underline">NOTE:</span> TO SAVE THIS RECEIPT, CLICK ON "<span className="underline">PRINT</span>" AND THEN SELECT OPTION TO "<span className="underline">SAVE AS PDF</span>"
+                  </p>
+                </div>
 
                 <div ref={receiptRef} className="w-full" style={{ backgroundColor: "#fff" }}>
                   {/* Company Header */}
@@ -733,7 +737,8 @@ export default function ViewAllPayments() {
                   </div>
 
                   {/* Invoice Meta */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6">
+                  {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6 justify-between"> */}
+                  <div className="grid grid-cols-2 gap-4 text-sm mb-6 justify-between">
                     <div>
                       <p>
                         <span className="font-semibold">Receipt No:</span>{" "}
@@ -744,7 +749,8 @@ export default function ViewAllPayments() {
                         {new Date(singlePaymentData.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
                       </p>
                     </div>
-                    <div className="md:text-right">
+                    {/* <div className="md:text-right"> */}
+                    <div className="text-right">
                       <p>
                         <span className="font-semibold">Billing Period:</span>
                       </p>
@@ -790,7 +796,7 @@ export default function ViewAllPayments() {
                       </tr>
                       <tr className="border-b">
                         <td className="py-3 px-4 font-semibold">Discount</td>
-                        <td className="py-3 px-4 text-right text-red-600">
+                        <td className="py-3 px-4 text-right">
                           ₹ {singlePaymentData.discount_amount}
                         </td>
                       </tr>
@@ -842,6 +848,7 @@ export default function ViewAllPayments() {
                   {/* Footer */}
                   <div className="flex justify-between items-end mt-10">
                     <div className="text-sm">
+                      <img src={enriloLogo} alt="Enrilo" className="w-[180px] mb-2"/>
                       <p className="font-semibold">Thank you for your business.</p>
                     </div>
                     <div className="text-sm text-right">
