@@ -804,7 +804,7 @@ export default function AddNewConsultancy() {
                   </TextField>
                   <div className="w-full flex gap-3">
                     <div className="min-w-[140px]">
-                      <Select isDisabled={!allowWriteAccess} options={countryCodeOptions} value={countryCodeOptions.find(c => c.value === office.country_code) || null} placeholder="Country Code" isSearchable menuPortalTarget={document.body} styles={selectStyles} onChange={(sel) => handleOfficeChange(index, "country_code", sel?.value || "")} />
+                      <Select isDisabled={!allowWriteAccess} options={countryCodeOptions} value={countryCodeOptions.find(c => c.value === office.country_code) || null} placeholder="Country Code" isSearchable menuPortalTarget={document.body} menuPosition="fixed" styles={selectStyles} onChange={(sel) => handleOfficeChange(index, "country_code", sel?.value || "")} />
                     </div>
                   </div>
                   <TextField label="Phone Number" value={office.phone_number} onChange={(e) => handleOfficeChange(index, "phone_number", e.target.value)} variant="outlined" />
