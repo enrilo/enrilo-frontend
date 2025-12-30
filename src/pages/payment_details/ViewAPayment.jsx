@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from "react";
+import { useParams } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
+import enriloLogo from "../../assets/images/regular-background/enrilo-without-tagline-1920x1080.png";
 
 export default function ViewAPayment() {
-  const { loading } = useSelector((state) => state.user);
   const params = useParams();
+  const receiptRef = useRef();
+  const { loading } = useSelector((state) => state.user);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [generateReceiptOpen, setGenerateReceiptOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [allowWriteAccess, setAllowWriteAccess] = useState(false);
@@ -264,15 +267,20 @@ export default function ViewAPayment() {
             </tr> */}
           </tbody>
         </table>
-        <div className="text-center align-middle font-semibold">
+        <div className="text-center align-middle font-semibold mb-8">
           <span>Note:{" "}</span>All Amounts Specified Are In Indian Rupees (INR)
+        </div>
+        <div className="text-center align-middle font-semibold mb-5">
+          <button type="button" className='bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-6 py-2 rounded-md transition cursor-pointer' onClick={() => setGenerateReceiptOpen(true)}>
+            View Receipt
+          </button>
         </div>
 
         {/* Actions */}
         {allowWriteAccess && (
-          <div className="mt-8 flex flex-wrap justify-center gap-6">
+          <div className="flex flex-wrap justify-center gap-6">
             <Link to={`/edit-a-payment/${formData._id}`}>
-              <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-6 py-2 rounded-md transition cursor-pointer">
+              <button className="bg-slate-500 hover:bg-slate-600 text-white font-semibold px-6 py-2 rounded-md transition cursor-pointer">
                 Edit Payment Detail
               </button>
             </Link>
@@ -283,6 +291,162 @@ export default function ViewAPayment() {
           </div>
         )}
       </div>
+
+      {/* GENERATE RECEIPT MODAL */}
+      {generateReceiptOpen && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
+          <div className="bg-white rounded-2xl shadow-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto printable">
+            {/* Header Actions */}
+            <div className="flex justify-between mb-4 no-print">
+              <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 px-8 py-2 rounded-md transition cursor-pointer" onClick={() => window.print()}>
+                Generate Receipt
+              </button>
+              <button className="bg-slate-500 hover:bg-slate-600 text-white px-8 py-2 rounded-md transition cursor-pointer" onClick={() => setGenerateReceiptOpen(false)}>
+                Close
+              </button>
+            </div>
+            <div className="flex justify-between mb-4 no-print">
+              <p>
+                <span className="font-semibold underline">NOTE:</span> TO SAVE THIS RECEIPT, CLICK ON "<span className="underline">PRINT</span>" AND THEN SELECT OPTION TO "<span className="underline">SAVE AS PDF</span>"
+              </p>
+            </div>
+
+            <div ref={receiptRef} className="w-full" style={{ backgroundColor: "#fff" }}>
+              {/* Company Header */}
+              <div className="text-center border-b pb-4 mb-6">
+                <h1 className="text-3xl font-bold tracking-wide">
+                  {formData.consultancy_name}
+                </h1>
+                <p className="text-lg font-semibold mt-1">TAX INVOICE / PAYMENT RECEIPT</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  All amounts are in Indian Rupees (₹ INR)
+                </p>
+              </div>
+
+              {/* Invoice Meta */}
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6 justify-between"> */}
+              <div className="grid grid-cols-2 gap-4 text-sm mb-6 justify-between">
+                <div>
+                  <p>
+                    <span className="font-semibold">Receipt No:</span>{" "}
+                    {formData.receipt_number || "—"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Invoice Date:</span>{" "}
+                    {new Date(formData.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
+                  </p>
+                </div>
+                {/* <div className="md:text-right"> */}
+                <div className="text-right">
+                  <p>
+                    <span className="font-semibold">Billing Period:</span>
+                  </p>
+                  <p>
+                    {formData.from_date &&
+                      new Date(formData.from_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })
+                    }{" "}
+                    - {" "}
+                    {formData.to_date &&
+                      new Date(formData.to_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })
+                    }
+                  </p>
+                </div>
+              </div>
+              {/* Payment Status */}
+              <div className="mb-6 text-center">
+                <p className="font-semibold text-lg">
+                  Payment Status:{" "}
+                  <span
+                    className={`font-bold ${ formData.payment_status === "full" ? "text-green-600" : formData.payment_status === "pending" ? "text-red-600" : "text-orange-500" }`}>
+                    {formData.payment_status === "full" ? "PAID" : formData.payment_status === "pending" ? "PAYMENT PENDING" : "PARTIALLY PAID"}
+                  </span>
+                </p>
+              </div>
+              {/* Amount Table */}
+              <table className="w-full text-sm border border-gray-300 mb-6">
+                <tbody>
+                  <tr className="border-b">
+                    <td className="py-3 px-4 font-semibold">Rate</td>
+                    <td className="py-3 px-4 text-right">₹ {formData.rate}.00</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-3 px-4 font-semibold">Duration</td>
+                    <td className="py-3 px-4 text-right">
+                      {formData.duration_in_months} Months
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-3 px-4 font-semibold">Subtotal</td>
+                    <td className="py-3 px-4 text-right">
+                      ₹ {formData.subtotal}
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-3 px-4 font-semibold">Discount</td>
+                    <td className="py-3 px-4 text-right">
+                      ₹ {formData.discount_amount}
+                    </td>
+                  </tr>
+                  <tr className="border-b bg-gray-50">
+                    <td className="py-3 px-4 font-semibold">Net Total</td>
+                    <td className="py-3 px-4 text-right font-semibold">
+                      ₹ {formData.net_total}
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-3 px-4 font-semibold">GST (0%)</td>
+                    <td className="py-3 px-4 text-right">
+                      ₹ {formData.gst_amount}
+                    </td>
+                  </tr>
+                  <tr className="border-b bg-gray-100 text-lg">
+                    <td className="py-3 px-4 font-bold">Grand Total</td>
+                    <td className="py-3 px-4 text-right font-bold">
+                      ₹ {formData.grand_total}
+                    </td>
+                  </tr>
+                  {formData.payment_status !== "full" && (
+                    <>
+                      <tr className="border-b">
+                        <td className="py-3 px-4 font-semibold">Payment Received</td>
+                        <td className="py-3 px-4 text-right text-green-600">
+                          ₹ {formData.payment_received}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-semibold">Balance Payable</td>
+                        <td className="py-3 px-4 text-right text-red-600 font-semibold">
+                          ₹ {formData.pending_payment}
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+
+              {/* Declaration */}
+              <div className="text-sm text-gray-700 mb-8">
+                <p>
+                  <span className="font-semibold">Declaration:</span> This is a
+                  computer-generated receipt and does not require a physical signature.
+                </p>
+              </div>
+
+              {/* Footer */}
+              <div className="flex justify-between items-end mt-10">
+                <div className="text-sm">
+                  <img src={enriloLogo} alt="Enrilo" className="w-[180px] mb-2"/>
+                  <p className="font-semibold">Thank you for your business.</p>
+                </div>
+                <div className="text-sm text-right">
+                  <p className="font-semibold">For {formData.consultancy_name}</p>
+                  <p className="mt-6">Authorised Signatory</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
 
       {/* DELETE CONFIRM MODAL */}
