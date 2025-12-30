@@ -303,14 +303,7 @@ export default function AddAPayment() {
 
             <div className="flex flex-row items-center justify-center gap-4">
               <label className="w-[200px] text-left font-xl text-gray-700">Payment Received:</label>
-              <TextField
-                id="payment_received"
-                value={formData.payment_received}
-                variant="outlined"
-                disabled={formData.payment_status !== "partial" || !allowWriteAccess}
-                className={`w-[210px] ${formData.payment_status !== "partial" || !allowWriteAccess ? 'cursor-not-allowed' : 'cursor-auto'}`}
-                onChange={handleChange}
-              />
+              <TextField id="payment_received" value={formData.payment_received} variant="outlined" disabled={formData.payment_status !== "partial" || !allowWriteAccess} className={`w-[210px] ${formData.payment_status !== "partial" || !allowWriteAccess ? 'cursor-not-allowed' : 'cursor-auto'}`} onChange={handleChange} />
             </div>
 
             <div className="flex flex-row items-center justify-center gap-4">
@@ -394,7 +387,6 @@ export default function AddAPayment() {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </main>

@@ -21,20 +21,16 @@ export default function MyProfile() {
     const [saveSuccessfulMessage, setSaveSuccessfulMessage] = useState("");
     const [saveSuccessfulMsgOpen, setSaveSuccessfulMsgOpen] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState("");
-
     const [updatePwdForm, setUpdatePwdForm] = useState({
         oldPassword:'',
         newPassword:''
     });
-
     const newPassword = updatePwdForm.newPassword;
-
     const isAtLeast8Characters = newPassword.length >= 8;
     const hasCapitalLetter = /[A-Z]/.test(newPassword);
     const hasNumber = /[0-9]/.test(newPassword);
     const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
     const passwordsMatch = newPassword !== "" && newPassword === confirmPassword;
-
     const isPasswordValid = isAtLeast8Characters && hasCapitalLetter && hasNumber && hasSpecialCharacter && passwordsMatch;
 
     const [formData, setFormData] = useState({
@@ -100,14 +96,12 @@ export default function MyProfile() {
 
     const handleChange = (e) => {
         const { id, value } = e.target;
-
         if (id === "confirmPassword") {
             setConfirmPassword(value);
         } else {
             setUpdatePwdForm((prev) => ({ ...prev, [id]: value }));
         }
     };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -168,8 +162,7 @@ export default function MyProfile() {
                             <img src={formData.photo_url || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"} alt="Profile" className="w-auto h-64 object-cover rounded-lg mb-2" />
                         </div>
                     </div>
-
-                    {/* PERSONAL INFO */}
+                    
                     <div className='text-2xl font-semibold underline mb-2'>
                         Personal Details:
                     </div>
@@ -203,8 +196,7 @@ export default function MyProfile() {
                             <span className="font-semibold">Write Access:</span> <br /> <span className="capitalize">{formData.allow_write_access == false ? 'Write Access Not Allowed':'Write Access Allowed'}</span>
                         </div>
                     </div>
-
-                    {/* EMERGENCY CONTACT INFO */}
+                    
                     <div className='text-2xl font-semibold underline mb-2'>
                         Emergency Contact:
                     </div>
@@ -263,21 +255,21 @@ export default function MyProfile() {
                                 return (
                                     <div key={index} className="text-xl flex items-center justify-between p-2 border rounded">
                                         <div>
-                                        {doc.name && (
-                                            <div>
-                                                <span className="font-semibold">Name:</span> {doc.name}
-                                            </div>
-                                        )}
-                                        {doc.number && (
-                                            <div>
-                                                <span className="font-semibold">Number:</span> {doc.number}
-                                            </div>
-                                        )}
+                                            {doc.name && (
+                                                <div>
+                                                    <span className="font-semibold">Name:</span> {doc.name}
+                                                </div>
+                                            )}
+                                            {doc.number && (
+                                                <div>
+                                                    <span className="font-semibold">Number:</span> {doc.number}
+                                                </div>
+                                            )}
                                         </div>
                                         {doc.url && (
-                                        <Button variant="outlined" onClick={() => { setPreviewName(doc.name); setPreviewUrl(doc.url); setPreviewOpen(true); }} >
-                                            VIEW
-                                        </Button>
+                                            <Button variant="outlined" onClick={() => { setPreviewName(doc.name); setPreviewUrl(doc.url); setPreviewOpen(true); }} >
+                                                VIEW
+                                            </Button>
                                         )}
                                     </div>
                                 );
@@ -317,7 +309,6 @@ export default function MyProfile() {
                                     </text>
                                 </svg>
                             </div>
-                            {/* Loading All Super Admin Details... */}
                             <div className="flex flex-col">
                                 <p className="text-xl font-semibold mb-2">Loading...</p>
                                 <p className="text-[#334155]">Please wait while we load the details of all superadmin.</p>

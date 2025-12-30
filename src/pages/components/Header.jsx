@@ -13,13 +13,9 @@ export default function Header() {
     "/add-new-consultancy": "Add New Consultancy",
     "/all-consultancies": "All Consultancies",
     "/all-payments": "All Payments",
-    // "/view-a-payment": "Payment Details",
     "/add-new-payment": "Add New Payment",
-    // "/edit-a-payment": "Edit Payment",
     "/add-new-superadmin": "Add New Super Admin",
     "/all-super-admin": "All Super Admin",
-    // "/edit-super-admin": "Update Super Admin",
-    // "/view-super-admin": "View Super Admin",
     "/masteradmin/add": "Add New Master Admin",
     "/masteradmin/all": "All Master Admin",
     "/our-company": "Our Company",
@@ -51,7 +47,6 @@ export default function Header() {
   } else if (/^\/consultancy\/\d+\/payments$/.test(path)) {
     currentTitle = "Consultancy Payments";
   }
-  // Add more patterns if needed
   else {
     currentTitle = "Enrilo";
   }

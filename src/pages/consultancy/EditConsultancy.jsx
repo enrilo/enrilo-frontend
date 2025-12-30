@@ -859,33 +859,7 @@ export default function EditConsultancy() {
           <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
             <TextField label="Consultancy Name" value={formData.name} variant="outlined" required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} onChange={(e) => setFormData((p) => ({...p, name: e.target.value}))} />
             <div className='flex flex-col'>
-              {/* <TextField label="Subdomain" value={formData.subdomain} variant="outlined" 
-                onChange={(e) =>
-                  setFormData((p) => ({
-                    ...p,
-                    subdomain: e.target.value,
-                  }))
-                }
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        https://
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        .enrilo.com
-                      </InputAdornment>
-                    ),
-                  },
-              }}
-              /> */}
-              <TextField
-                label="Subdomain"
-                value={formData.subdomain}
-                variant="outlined"
-                disabled={!allowWriteAccess}
+              <TextField label="Subdomain" value={formData.subdomain} variant="outlined" disabled={!allowWriteAccess}
                 onChange={(e) =>
                   setFormData((p) => ({
                     ...p,
@@ -1037,7 +1011,7 @@ export default function EditConsultancy() {
                         </text>
                     </svg>
                   </div>
-                  {/* Updating Your Consultancy Details... */}
+                  
                   <div className="flex flex-col">
                     <p className="text-xl font-semibold mb-2">Loading...</p>
                     <p className="text-[#334155]">Please wait while we save your details.</p>

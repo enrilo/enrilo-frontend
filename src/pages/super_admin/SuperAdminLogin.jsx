@@ -2,11 +2,7 @@ import { TextField } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  signInStart,
-  signInSuccess,
-  signInFailure,
-} from "../../redux/user/userSlice";
+import { signInStart, signInSuccess, signInFailure } from "../../redux/user/userSlice";
 
 export default function SuperAdminLogin() {
   const [formData, setFormData] = useState({});
@@ -15,10 +11,7 @@ export default function SuperAdminLogin() {
   const [messageOpen, setMessageOpen] = useState(false);
 
   // ✅ SAFE Redux access
-  const { loading, error, currentUser } = useSelector(
-    (state) => state.user
-  );
-
+  const { loading, error, currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

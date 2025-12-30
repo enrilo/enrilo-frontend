@@ -26,7 +26,7 @@ export default function AllSuperAdminPage() {
   const [filters, setFilters] = useState({ full_name: "", role: "", company_email: "", phone: "", position: "" });
   const [debouncedFilters, setDebouncedFilters] = useState(filters); // For debounce
   const roleOptions = [ { value: "", label: "All Roles" }, { value: "admin", label: "Admin Role" }, { value: "user", label: "User Role" } ];
-  const DEBOUNCE_DELAY = 500; // milliseconds (delay for loading after entering in searchbar)
+  const DEBOUNCE_DELAY = 500;
   const navigate = useNavigate();
   const location = useLocation();
   const persistedRoot = JSON.parse(localStorage.getItem("persist:root"));
@@ -88,7 +88,6 @@ export default function AllSuperAdminPage() {
   const handleDeleteConfirmed = async () => {
     try {
       setShowDeleting(true);
-      // Fetch super admin details for deleting files
       const res = await fetch(`http://localhost:3000/api/super-admins/${deleteId}`, {
         method: "GET",
         headers: {
@@ -184,12 +183,11 @@ export default function AllSuperAdminPage() {
     <main className="flex-1 overflow-y-auto p-6">
       <div className="p-4 sm:p-6">
         <div className="bg-white rounded-2xl shadow p-4 sm:p-6 max-w-7xl mx-auto">
-          {/* 🔹 FILTER INPUTS */}
           <div className='flex flex-row justify-center mb-5'>
-                <button onClick={() => setShowFilters(!showFilters)} className='bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition'>
-                    {showFilters ? "Hide Filters" : "Show Filters"}
-                </button>
-            </div>
+            <button onClick={() => setShowFilters(!showFilters)} className='bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition'>
+            {showFilters ? "Hide Filters" : "Show Filters"}
+            </button>
+          </div>
           {
             showFilters && (
               <div className="flex flex-wrap gap-4 mb-10 items-center justify-center">
@@ -278,8 +276,7 @@ export default function AllSuperAdminPage() {
                   </tr>
                 ))}
               </tbody>
-
-              {/* Pagination Footer */}
+              
               <tfoot>
                 <tr>
                   <td colSpan={7}>
@@ -338,20 +335,6 @@ export default function AllSuperAdminPage() {
             </div>
           )}
 
-          {/* SUCCESS MODAL */}
-          {showSuccess && (
-            <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
-              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
-                <p className="text-center font-medium text-xl mb-5">Super Admin has been deleted!</p>
-                <div className="flex justify-center gap-4">
-                  <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setShowSuccess(false); window.location.reload(true); }}>
-                    OK
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
           {showDeleting && (
             <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
               <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
@@ -367,6 +350,20 @@ export default function AllSuperAdminPage() {
                     <p className="text-xl font-semibold mb-2">Deleting...</p>
                     <p className="text-[#334155]">Please hold on! The super admin is being deleted.</p>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SUCCESS MODAL */}
+          {showSuccess && (
+            <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
+              <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">
+                <p className="text-center font-medium text-xl mb-5">Super Admin has been deleted!</p>
+                <div className="flex justify-center gap-4">
+                  <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 border-2 px-4 py-2 rounded-md w-24 transition cursor-pointer" onClick={() => { setShowSuccess(false); window.location.reload(true); }}>
+                    OK
+                  </button>
                 </div>
               </div>
             </div>

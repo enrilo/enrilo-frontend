@@ -109,33 +109,6 @@ export default function Sidebar() {
 
   const toggleSubMenu = (menuName) => setActiveMenu(activeMenu === menuName ? null : menuName);
 
-  // const handleLogout = async () => {
-  //   try {
-  //     const res = await fetch(
-  //       "http://localhost:3000/api/super-admins/logout",
-  //       {
-  //         method: "POST",
-  //         credentials: "include",
-  //       }
-  //     );
-
-  //     const data = await res.json();
-
-  //     if (data.success) {
-  //       dispatch(signoutUserSuccess()); 
-  //       await persistor.purge();
-  //       localStorage.clear();
-  //       alert("You have been logged out successfully.");
-  //       navigate("/super-admin-login");
-  //     } else {
-  //       alert("Logout failed. Try Again.");
-  //     }
-  //   } catch (err) {
-  //     console.error("Logout error:", err);
-  //     alert("⚠️ Server error during logout");
-  //   }
-  // };
-
   const handleLogout = async () => {
     try {
       const res = await fetch(
@@ -171,7 +144,6 @@ export default function Sidebar() {
       <button className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-md bg-[#1E293B] text-white shadow" onClick={() => setMobileOpen(true)}>
         <Menu size={24} />
       </button>
-
       {/* Sidebar */}
       <aside className={`fixed md:static top-0 left-0 h-screen bg-[#1E293B] text-white flex flex-col justify-between transition-all duration-300 z-40 pt-2 overflow-hidden ${ isOpen ? "w-64" : "w-20" } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
         <div className="flex-1 flex flex-col overflow-y-auto pb-4 pl-4 pr-4">

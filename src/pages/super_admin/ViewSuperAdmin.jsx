@@ -120,7 +120,6 @@ export default function ViewSuperAdmin() {
 
             fetchASuperAdmin();
         }
-        
     }, [params.id]);
 
     const confirmDelete = () => {
@@ -191,7 +190,7 @@ export default function ViewSuperAdmin() {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setPageLoading(false); // ✅ Hide loader after delete
+            setPageLoading(false);
         }
     };
 
@@ -209,8 +208,7 @@ export default function ViewSuperAdmin() {
                             <img src={formData.photo_url || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"} alt="Profile" className="w-auto h-64 object-cover rounded-lg mb-2" />
                         </div>
                     </div>
-
-                    {/* PERSONAL INFO */}
+                    
                     <div className='text-2xl font-semibold underline mb-2'>
                         Personal Details:
                     </div>
@@ -244,8 +242,7 @@ export default function ViewSuperAdmin() {
                             </div>
                         )}
                     </div>
-
-                    {/* EMERGENCY CONTACT INFO */}
+                    
                     <div className='text-2xl font-semibold underline mb-2'>
                         Emergency Contact:
                     </div>
@@ -361,6 +358,7 @@ export default function ViewSuperAdmin() {
                 </div>
                 
             )}
+
             {previewOpen && (
                 <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
                     <div className="bg-white rounded-2xl shadow-lg p-4 max-w-3xl w-full">
@@ -404,7 +402,6 @@ export default function ViewSuperAdmin() {
                                     </text>
                                 </svg>
                             </div>
-                            {/* Loading Your Super Admin Details... */}
                             <div className="flex flex-col">
                                 <p className="text-xl font-semibold mb-2">Loading...</p>
                                 <p className="text-[#334155]">Please wait while we load your details.</p>

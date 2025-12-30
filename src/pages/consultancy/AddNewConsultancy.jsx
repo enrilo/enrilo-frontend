@@ -488,7 +488,6 @@ export default function AddNewConsultancy() {
   }, []);
 
   useEffect(() => {
-    // hide message if empty
     if (!formData.subdomain || formData.subdomain.trim() === "") {
       setIsSubdomainAvailable(null);
       return;
@@ -777,7 +776,6 @@ export default function AddNewConsultancy() {
             <TextField label="LinkedIn" variant="outlined" onChange={(e) => setFormData((p) => ({...p, linkedin_url: e.target.value}))} />
             <TextField label="Facebook" variant="outlined" onChange={(e) => setFormData((p) => ({...p, facebook_url: e.target.value}))} />
             <TextField label="Instagram" variant="outlined" onChange={(e) => setFormData((p) => ({...p, instagram_url: e.target.value}))} />
-            {/* <TextField label="Subdomain" variant="outlined" onChange={(e) => setFormData((p) => ({...p, sundomain: e.target.value}))} />.enrilo.com */}
 
             {/* Office Selection */}
             <div className="col-span-3 mt-6">
@@ -894,7 +892,6 @@ export default function AddNewConsultancy() {
                           </text>
                       </svg>
                     </div>
-                    {/* Updating Your Consultancy Details... */}
                     <div className="flex flex-col">
                       <p className="text-xl font-semibold mb-2">Loading...</p>
                       <p className="text-[#334155]">Please wait while we save your details.</p>
