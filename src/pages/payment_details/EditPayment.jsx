@@ -864,7 +864,7 @@ export default function EditPayment() {
             <div className="flex justify-center mt-6">
               <button type="submit" disabled={loading || !allowWriteAccess}
                 className={`bg-[#1E293B] text-yellow-300 font-semibold px-8 py-2 rounded-md transition ${allowWriteAccess ? "cursor-pointer hover:bg-[#334155]" : "cursor-not-allowed"}`} >
-                {loading ? "Saving..." : "Save Details"}
+                {loading ? "Updating..." : "Update Payment"}
               </button>
             </div>
           </form>
