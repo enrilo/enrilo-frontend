@@ -504,7 +504,6 @@ export default function EditSuperAdmin() {
                     <div className='text-2xl underline font-semibold mb-5'>
                         Personal Details:
                     </div>
-                    {/* Profile Upload */}
                     <div className={`flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 hover:bg-gray-50 transition ${!isUserActive?.value ? "cursor-not-allowed" : "cursor-pointer"}`}>
                         {!formData.photo_url || formData.photo_url === 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg' ? (
                             <>
@@ -530,12 +529,10 @@ export default function EditSuperAdmin() {
                             </div>
                         )}
                     </div>
-
-                    {/* FORM */}
+                    
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                             <TextField id="full_name" label="Admin Full Name" value={formData.full_name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} disabled={!isUserActive?.value} />
-                            {/* Phone */}
                             <div className="w-full flex gap-3">
                                 <div className="min-w-[140px]">
                                     <Select id="country_code" options={countryCodeOptions} value={selectedCountryCode} isDisabled={!isUserActive?.value} placeholder="Country Code" isSearchable menuPortalTarget={document.body} required styles={selectStyles}
@@ -547,8 +544,7 @@ export default function EditSuperAdmin() {
                                 </div>
                                 <TextField id="phone" label="Phone" type="number" value={formData.phone} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} slotProps={slotPropsStyle} disabled={!isUserActive?.value} />
                             </div>
-
-                            {/* Rest of the fields */}
+                            
                             <TextField id="company_email" value={formData.company_email} onChange={handleChange} label="Company Email" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" }}} disabled={!isUserActive?.value} />
                             <TextField id="email" value={formData.email} onChange={handleChange} label="Personal Email" variant="outlined" fullWidth disabled={!isUserActive?.value} />
                             <TextField id="position" value={formData.position} onChange={handleChange} label="Position" variant="outlined" required fullWidth disabled={!isUserActive?.value} />
@@ -574,7 +570,6 @@ export default function EditSuperAdmin() {
                         <div className='text-2xl underline font-semibold mb-5'>
                             Home Address:
                         </div>
-                        {/* Address */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                             <TextField id="street_1" value={formData.street_1} onChange={handleChange} disabled={!isUserActive?.value} label="Street 1" variant="outlined" fullWidth />
                             <TextField id="street_2" value={formData.street_2} onChange={handleChange} disabled={!isUserActive?.value} label="Street 2" variant="outlined" fullWidth />
@@ -599,7 +594,6 @@ export default function EditSuperAdmin() {
                         <div className='text-2xl underline font-semibold mb-5'>
                             Emergency Contact Details:
                         </div>
-                        {/* Emergency Contact */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                             <TextField id="emergency_name" label="Emergency Contact Name" variant="outlined" value={formData.emergency_contact.name} onChange={handleChange} disabled={!isUserActive?.value} sx={asteriskColorStyle} required fullWidth />
                             <div className="w-full flex flex-row gap-3">
@@ -631,41 +625,41 @@ export default function EditSuperAdmin() {
                             const displayUrl = doc?.url || "";
 
                             return (
-                            <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
-                                    <Select isSearchable id={`documents_${i}_name`} placeholder="Select Document Type" menuPortalTarget={document.body} styles={selectStyles} disabled={!isUserActive?.value}
-                                        options={idOptions.filter((opt) => i === 0 ? opt.value !== formData.documents[1]?.name : opt.value !== formData.documents[0]?.name )}
-                                        value={ displayName ? { value: displayName, label: idOptions.find((o) => o.value === displayName)?.label || displayName } : null }
-                                        onChange={(sel) => handleChange({ target: {id: `documents_${i}_name`, value: sel?.value || "", } })}
-                                    />
-                                    <TextField id={`documents_${i}_number`} label="Document Number" value={displayNumber} onChange={handleChange} disabled={!isUserActive?.value} fullWidth />
+                                <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+                                        <Select isSearchable id={`documents_${i}_name`} placeholder="Select Document Type" menuPortalTarget={document.body} styles={selectStyles} disabled={!isUserActive?.value}
+                                            options={idOptions.filter((opt) => i === 0 ? opt.value !== formData.documents[1]?.name : opt.value !== formData.documents[0]?.name )}
+                                            value={ displayName ? { value: displayName, label: idOptions.find((o) => o.value === displayName)?.label || displayName } : null }
+                                            onChange={(sel) => handleChange({ target: {id: `documents_${i}_name`, value: sel?.value || "", } })}
+                                        />
+                                        <TextField id={`documents_${i}_number`} label="Document Number" value={displayNumber} onChange={handleChange} disabled={!isUserActive?.value} fullWidth />
 
-                                    <div className="flex flex-col gap-2">
-                                        <Button variant="outlined" component="label" disabled={uploadingIndex === i || !isUserActive?.value} sx={selectDocumentBtnStyle}>
-                                            {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : displayUrl ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
-                                            <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
-                                        </Button>
+                                        <div className="flex flex-col gap-2">
+                                            <Button variant="outlined" component="label" disabled={uploadingIndex === i || !isUserActive?.value} sx={selectDocumentBtnStyle}>
+                                                {uploadingIndex === i ? `Uploading ${uploadingProgress}%` : displayUrl ? "Update Document (image or pdf only)" : "Select Document (image or pdf only)"}
+                                                <input hidden type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" onChange={(e) => handleFileChange(e, i)} />
+                                            </Button>
 
-                                        {displayUrl && (
-                                            <div className="flex flex-col items-center gap-3">
-                                                <div className="flex flex-row justify-between w-full">
-                                                    <Button variant="outlined" onClick={() => { setPreviewUrl(displayUrl); setPreviewOpen(true); }} sx={previewDocumentBtnStyle} disabled={!isUserActive?.value}>PREVIEW</Button>
-                                                    <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)} disabled={!isUserActive?.value}>Delete</Button> 
+                                            {displayUrl && (
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <div className="flex flex-row justify-between w-full">
+                                                        <Button variant="outlined" onClick={() => { setPreviewUrl(displayUrl); setPreviewOpen(true); }} sx={previewDocumentBtnStyle} disabled={!isUserActive?.value}>PREVIEW</Button>
+                                                        <Button color="error" variant="outlined" onClick={() => handleDeleteFileConfirm(i)} disabled={!isUserActive?.value}>Delete</Button> 
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="flex flex-row justify-between">
-                                    <button type="button" className={`text-red-600 ${isUserActive?.value ? "cursor-pointer hover:underline" : "cursor-not-allowed"}`} onClick={() => clearRow(i)} disabled={!isUserActive?.value}>Clear Row</button>
-                                    <div className="flex">
-                                        {formData.documents.length > 1 && (
-                                            <button type="button" className={`text-red-600 ${isUserActive?.value ? "cursor-pointer hover:underline" : "cursor-not-allowed"}`} onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
-                                        )}
+                                    <div className="flex flex-row justify-between">
+                                        <button type="button" className={`text-red-600 ${isUserActive?.value ? "cursor-pointer hover:underline" : "cursor-not-allowed"}`} onClick={() => clearRow(i)} disabled={!isUserActive?.value}>Clear Row</button>
+                                        <div className="flex">
+                                            {formData.documents.length > 1 && (
+                                                <button type="button" className={`text-red-600 ${isUserActive?.value ? "cursor-pointer hover:underline" : "cursor-not-allowed"}`} onClick={() => removeDocument(i)} disabled={!isUserActive?.value}>Remove Row</button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             );
                         })}
                         {
@@ -683,8 +677,7 @@ export default function EditSuperAdmin() {
                                 )
                             )
                         }
-
-                        {/* Submit */}
+                        
                         <div className="col-span-3 mt-6 flex justify-center">
                             <button type="submit" disabled={loading} className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
                                 {loading ? "Updating..." : (formData._id !== currentUserID ? 'Update Super Admin' : 'Update My Profile')}

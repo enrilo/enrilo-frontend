@@ -17,24 +17,10 @@ export default function PricingPage() {
         {/* Billing Toggle */}
         <div className="mt-10 flex justify-center">
           <div className="bg-slate-200 rounded-full p-1 flex">
-            <button
-              onClick={() => setBilling("monthly")}
-              className={`px-6 py-2 rounded-full text-sm font-semibold transition cursor-pointer ${
-                billing === "monthly"
-                  ? "bg-white text-slate-900 shadow"
-                  : "text-slate-600"
-              }`}
-            >
+            <button onClick={() => setBilling("monthly")} className={`px-6 py-2 rounded-full text-sm font-semibold transition cursor-pointer ${ billing === "monthly" ? "bg-white text-slate-900 shadow" : "text-slate-600" }`} >
               Monthly Billing
             </button>
-            <button
-              onClick={() => setBilling("annual")}
-              className={`px-6 py-2 rounded-full text-sm font-semibold transition cursor-pointer ${
-                billing === "annual"
-                  ? "bg-white text-slate-900 shadow"
-                  : "text-slate-600"
-              }`}
-            >
+            <button onClick={() => setBilling("annual")} className={`px-6 py-2 rounded-full text-sm font-semibold transition cursor-pointer ${ billing === "annual" ? "bg-white text-slate-900 shadow" : "text-slate-600" }`}>
               Annual Billing
             </button>
           </div>

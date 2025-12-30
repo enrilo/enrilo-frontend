@@ -80,7 +80,6 @@ export default function Home() {
             </p>
 
             <div className="mt-10 grid sm:grid-cols-2 gap-6 text-left">
-              {/* {[ "Simple UI your team can learn quickly", "Works for small and large consultancies", "No unnecessary or confusing features", "Designed for India-based workflows, scalable globally", ].map((item) => ( */}
               {[ "Simple UI your team can learn quickly", "Works for small and large consultancies", "No unnecessary or confusing features"].map((item) => (
                 <div key={item} className="p-5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-[#94A3B8]">
                   <p className="text-[#334155]">{item}</p>

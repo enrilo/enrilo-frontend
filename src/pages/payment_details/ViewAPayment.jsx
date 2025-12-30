@@ -97,97 +97,6 @@ export default function ViewAPayment() {
 
   return (
     <main className="flex-1 overflow-y-auto p-6">
-      {/* <div className="p-4 sm:p-6">
-        <div className="bg-white rounded-2xl shadow p-6 gap-5 max-w-6xl mx-auto items-center">
-          <div className="flex flex-col items-center space-y-4 max-w-6xl mx-auto text-lg mb-10">
-            <div className="flex flex-row items-center justify-between gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Consultancy Name:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.consultancy_name}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Rate:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.rate}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Duration (Months):</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.duration_in_months}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">From Date:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.from_date && new Date(formData.from_date).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">To Date:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.from_date && new Date(formData.to_date).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Subtotal:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.subtotal}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Is Discount Available?</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.isDiscountAvailable ? 'Discount is available.' : 'Discount is not available'}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Discount Amount:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.discount_amount}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Net Total:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.net_total}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">GST @0%:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.gst_amount}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Grand Total:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.grand_total}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Payment Status:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.payment_status}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Payment Received:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.payment_received}</label>
-            </div>
-
-            <div className="flex flex-row items-center justify-center gap-4">
-              <label className="w-[200px] text-left text-gray-700 font-semibold">Pending Payment:</label>
-              <label className="w-[210px] text-left text-gray-700">{formData.pending_payment}</label>
-            </div>
-          </div>
-
-          {
-            allowWriteAccess && role === 'admin' && (
-              <div className="mt-6 flex flex-row justify-evenly">
-                <Link to={`/edit-consultancy/${formData._id}`} className='flex flex-row justify-between'>
-                    <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                      Edit Payment Detail
-                    </button>
-                </Link>
-
-                <button onClick={() => confirmDelete(formData._id) } type="submit" className="bg-red-700 hover:bg-red-600 text-white font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                  Delete Payment Detail
-                </button>
-              </div>
-            )
-          }
-        </div>
-      </div> */}
       <div className="p-6 max-w-3xl mx-auto font-sans text-gray-800">
         {/* Bill Header */}
         <div className="text-center">
@@ -255,16 +164,6 @@ export default function ViewAPayment() {
                 {formData.pending_payment}
               </td>
             </tr>
-            {/* <tr>
-              <td class="text-right align-middle font-semibold" colspan="2">
-                <p className="font-semibold text-lg">
-                  Payment Status:{" "}
-                  <span className={`font-bold ${ formData.payment_status === "full" ? "text-green-600" : (formData.payment_status === "pending" ?"text-red-600":"text-orange-400") }`} >
-                    {formData.payment_status === "full" ? "Paid In Full" : (formData.payment_status === "pending" ? "Payment Pending" : "Partial Payment Complete")}
-                  </span>
-                </p>
-              </td>
-            </tr> */}
           </tbody>
         </table>
         <div className="text-center align-middle font-semibold mb-8">
@@ -324,7 +223,6 @@ export default function ViewAPayment() {
               </div>
 
               {/* Invoice Meta */}
-              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6 justify-between"> */}
               <div className="grid grid-cols-2 gap-4 text-sm mb-6 justify-between">
                 <div>
                   <p>
@@ -336,7 +234,6 @@ export default function ViewAPayment() {
                     {new Date(formData.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
                   </p>
                 </div>
-                {/* <div className="md:text-right"> */}
                 <div className="text-right">
                   <p>
                     <span className="font-semibold">Billing Period:</span>
@@ -447,7 +344,6 @@ export default function ViewAPayment() {
           </div>
         </div>
       )}
-
 
       {/* DELETE CONFIRM MODAL */}
       {showConfirmDelete && (

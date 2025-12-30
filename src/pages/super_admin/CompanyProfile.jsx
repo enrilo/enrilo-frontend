@@ -168,12 +168,9 @@ export default function CompanyProfile() {
             }));
         } else if (id.includes("allow_write_access")) {
             setFormData((p) => ({ ...p, allow_write_access: value }));
-            //setting access token form data
             setAccessTokenFormData((q) => ({ ...q, allow_write_access: value }));
         } else {
-            //setting entire form data
             setFormData((p) => ({ ...p, [id]: value }));
-            //setting access token form data
             setAccessTokenFormData((p) => ({ ...p, [id]: value }));
         };
     };
@@ -242,7 +239,6 @@ export default function CompanyProfile() {
 
             const res = await fetch(`http://localhost:3000/api/our-company/${companyID}`, {
                 method: "PUT",
-                // headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedFormData),
                 credentials: "include",
@@ -272,7 +268,6 @@ export default function CompanyProfile() {
         <main className="flex-1 overflow-y-auto p-6">
             <div className="p-4 sm:p-6">
                 <div className="bg-white rounded-2xl shadow p-4 sm:p-6 max-w-7xl mx-auto">
-                    {/* Profile Upload */}
                     <div className={`flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 hover:bg-gray-50 transition ${(!allowWriteAccess || currentUserRole == 'user') ? "cursor-not-allowed" : "cursor-pointer"}`}>
                         {!formData.logo_url || formData.logo_url === 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg' ? (
                             <>
@@ -301,13 +296,10 @@ export default function CompanyProfile() {
                             </div>
                         )}
                     </div>
-
-                    {/* FORM */}
+                    
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                             <TextField id="name" label="Company Name" value={formData.name} onChange={handleChange} variant="outlined" fullWidth required sx={asteriskColorStyle} disabled={!allowWriteAccess || currentUserRole == 'user'} />
-                            
-                            {/* Rest of the fields */}
                             <TextField id="address" value={formData.address} onChange={handleChange} label="Address" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" }}} disabled={!allowWriteAccess || currentUserRole == 'user'} />
                             <TextField id="website" value={formData.website} onChange={handleChange} label="Website" variant="outlined" fullWidth required sx={{"& .MuiFormLabel-asterisk": { color: "red" }}} disabled={!allowWriteAccess || currentUserRole == 'user'} />
                             <TextField id="gst_number" value={formData.gst_number} onChange={handleChange} label="GST Number" variant="outlined" fullWidth disabled={!allowWriteAccess || currentUserRole == 'user'} />
@@ -329,7 +321,6 @@ export default function CompanyProfile() {
                     </form>
 
                     {/* Modals (Preview, Confirm, Message, Failed, Success) */}
-                    
                     {confirmOpen && (
                         <div className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50">
                             <div className="bg-white text-[#334155] rounded-lg p-6 w-80 shadow-xl text-center">

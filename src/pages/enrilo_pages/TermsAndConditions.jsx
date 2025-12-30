@@ -2,7 +2,6 @@ export default function TermsAndConditions() {
   return (
     <main className="flex-1 overflow-y-auto px-6 py-16">
       <div className="max-w-4xl mx-auto space-y-12">
-        {/* <Section title="Effective Date" content="This Privacy Policy is effective as of 21 December, 2025." /> */}
         <Section title="Effective Date" content={
             <>
               <ul className="list-disc pl-6 mt-2 space-y-1">

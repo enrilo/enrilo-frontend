@@ -554,7 +554,6 @@ export default function AddNewSuperAdmin() {
             {localDocuments.slice(0, 2).map((doc, i) => (
               <div key={i} className="col-span-3 border rounded-md p-4 mb-5">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-
                   {/* Document Type Dropdown */}
                   <Select id={`documents_${i}_name`} placeholder="Select Document Type" isSearchable menuPortalTarget={document.body} styles={selectStyles} isDisabled={!allowWriteAccess}
                     options={idOptions.filter((opt) =>
@@ -701,7 +700,6 @@ export default function AddNewSuperAdmin() {
                           </text>
                       </svg>
                     </div>
-                    {/* Updating Your Super Admin Details... */}
                     <div className="flex flex-col">
                       <p className="text-xl font-semibold mb-2">Loading...</p>
                       <p className="text-[#334155]">Please wait while we save your details.</p>

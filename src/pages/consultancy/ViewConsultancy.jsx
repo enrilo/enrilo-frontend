@@ -69,23 +69,20 @@ export default function ViewConsultancy() {
             setPageLoading(false);
             return;
         }
-        
         setFormData(consultancyData.data.consultancy);
 
         // FETCHING THE LOGGED IN CONSULTANCY DATA FOR FETCHING WRITE ACCESS PERMISSIONS
         const accessTokenResData = await fetch(`http://localhost:3000/api/access-tokens/access-token-by-super-admin-id/${loggedInUserID}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
         });
         const accessTokenData = await accessTokenResData.json();
         
         if(accessTokenData.success === false){
-            setPageLoading(false);
-            return;
+          setPageLoading(false);
+          return;
         }
-        
         setAllowWriteAccess(accessTokenData.data.accessToken.allow_write_access);
-
         setPageLoading(false);
       } catch (error) {
         console.log(`error.message: ${error.message}`);
@@ -103,7 +100,6 @@ export default function ViewConsultancy() {
 
   const handleDeleteConfirmed = async () => {  
     try {
-      // Fetch consultancy details for deleting files
       setShowDeleting(true);
       const res = await fetch(`http://localhost:3000/api/consultancies/${deleteId}`, {
         method: "GET",
@@ -147,125 +143,122 @@ export default function ViewConsultancy() {
     <main className="flex-1 overflow-y-auto p-6">
       <div className="p-4 sm:p-6">
           <div className="bg-white rounded-2xl shadow p-6 gap-5 max-w-6xl mx-auto items-center">
-              <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 hover:bg-gray-50 transition">
-                  <div className="flex flex-col items-center">
-                      <img src={formData.photo_url || "https://img.icons8.com/ios7/1200/company.jpg"} alt="Profile" className="w-auto h-64 object-cover rounded-lg mb-2" />
-                  </div>
-              </div>
+            <div className="flex flex-col items-center border-dashed border-2 border-gray-300 rounded-lg p-8 mb-8 hover:bg-gray-50 transition">
+                <div className="flex flex-col items-center">
+                  <img src={formData.photo_url || "https://img.icons8.com/ios7/1200/company.jpg"} alt="Profile" className="w-auto h-64 object-cover rounded-lg mb-2" />
+                </div>
+            </div>
 
-              {/* PERSONAL INFO */}
-              <div className='text-2xl font-semibold underline mb-2'>
-                  Personal Details:
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-                  <div className='text-xl'>
-                    <span className="font-semibold">Consultancy Name:</span> <br /> {formData.name}
-                  </div>
-                  <div className='text-xl'>
-                    {/* <span className="font-semibold">Enrilo Website:</span> <br /> {`${formData.subdomain}.enrilo.com` || "N/A"} */}
-                    <span className="font-semibold">Enrilo Website:</span> <br />
-                    {formData.subdomain ? (
-                      <a href={`https://${formData.subdomain}.enrilo.com`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                        {`${formData.subdomain}.enrilo.com`}
+            {/* PERSONAL INFO */}
+            <div className='text-2xl font-semibold underline mb-2'>
+                Personal Details:
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                <div className='text-xl'>
+                  <span className="font-semibold">Consultancy Name:</span> <br /> {formData.name}
+                </div>
+                <div className='text-xl'>
+                  <span className="font-semibold">Enrilo Website:</span> <br />
+                  {formData.subdomain ? (
+                    <a href={`https://${formData.subdomain}.enrilo.com`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {`${formData.subdomain}.enrilo.com`}
+                    </a>
+                  ) : (
+                    "N/A"
+                  )}
+                </div>
+                <div className='text-xl'>
+                  <span className="font-semibold">Company's Website:</span> <br />
+                  {formData.company_website ? (
+                      <a href={formData.company_website.startsWith("http") ? formData.company_website : `https://${formData.company_website}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        {formData.company_website}
                       </a>
                     ) : (
                       "N/A"
-                    )}
-                  </div>
-                  <div className='text-xl'>
-                    {/* <span className="font-semibold">Company's Website:</span> <br /> {formData.company_website || "N/A"} */}
-                    <span className="font-semibold">Company's Website:</span> <br />
-                    {formData.company_website ? (
-                        <a href={formData.company_website.startsWith("http") ? formData.company_website : `https://${formData.company_website}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                          {formData.company_website}
-                        </a>
-                      ) : (
-                        "N/A"
-                    )}
-                  </div>
-                  <div className='text-xl'>
-                    <span className="font-semibold">LinkedIn URL:</span> <br /> {formData.linkedin_url || "N/A"}
-                  </div>
-                  <div className='text-xl'>
-                    <span className="font-semibold">Facebook URL:</span> <br /> {formData.facebook_url || "N/A"}
-                  </div>
-                  <div className='text-xl'>
-                    <span className="font-semibold">Instagram:</span> <br /> <span className="capitalize">{formData.instagram_url || "N/A"}</span>
-                  </div>
-                  <div className='text-xl'>
-                    <span className="font-semibold">GST Number:</span> <br /> {formData.gst_number || "N/A"}
-                  </div>
-                  <div className='text-xl'>
-                      <span className="font-semibold">Office Type:</span> <br /> <span className="capitalize">{officeDetails.length > 1 ? 'Multiple Branches/Offices':'Single Office'}</span>
-                  </div>
-              </div>
-             {officeDetails.length > 0 && (
-                <>
-                  <div className="text-2xl font-semibold underline mb-4">
-                    Office Details:
-                  </div>
+                  )}
+                </div>
+                <div className='text-xl'>
+                  <span className="font-semibold">LinkedIn URL:</span> <br /> {formData.linkedin_url || "N/A"}
+                </div>
+                <div className='text-xl'>
+                  <span className="font-semibold">Facebook URL:</span> <br /> {formData.facebook_url || "N/A"}
+                </div>
+                <div className='text-xl'>
+                  <span className="font-semibold">Instagram:</span> <br /> <span className="capitalize">{formData.instagram_url || "N/A"}</span>
+                </div>
+                <div className='text-xl'>
+                  <span className="font-semibold">GST Number:</span> <br /> {formData.gst_number || "N/A"}
+                </div>
+                <div className='text-xl'>
+                    <span className="font-semibold">Office Type:</span> <br /> <span className="capitalize">{officeDetails.length > 1 ? 'Multiple Branches/Offices':'Single Office'}</span>
+                </div>
+            </div>
+            {officeDetails.length > 0 && (
+              <>
+                <div className="text-2xl font-semibold underline mb-4">
+                  Office Details:
+                </div>
 
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full border border-gray-300">
-                      <thead className="bg-gray-100">
-                        <tr>
-                          <th className="border px-4 py-2 text-left">#</th>
-                          <th className="border px-4 py-2 text-left">Office City</th>
-                          <th className="border px-4 py-2 text-left">Address</th>
-                          <th className="border px-4 py-2 text-left">Office Type</th>
-                          <th className="border px-4 py-2 text-left">Phone Number</th>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border border-gray-300">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="border px-4 py-2 text-left">#</th>
+                        <th className="border px-4 py-2 text-left">Office City</th>
+                        <th className="border px-4 py-2 text-left">Address</th>
+                        <th className="border px-4 py-2 text-left">Office Type</th>
+                        <th className="border px-4 py-2 text-left">Phone Number</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {paginatedData.map((office, index) => (
+                        <tr key={office._id || index} className="hover:bg-gray-50">
+                          <td className="border px-4 py-2 text-left">
+                            {(currentPage - 1) * rowsPerPage + index + 1}
+                          </td>
+                          <td className="border px-4 py-2 text-left">{office.office_city}</td>
+                          <td className="border px-4 py-2 text-left">{office.office_address}</td>
+                          <td className="border px-4 py-2 text-left">{office.office_type}</td>
+                          <td className="border px-4 py-2 text-left">
+                            {office.country_code} {office.phone_number}
+                          </td>
                         </tr>
-                      </thead>
-
-                      <tbody>
-                        {paginatedData.map((office, index) => (
-                          <tr key={office._id || index} className="hover:bg-gray-50">
-                            <td className="border px-4 py-2 text-left">
-                              {(currentPage - 1) * rowsPerPage + index + 1}
-                            </td>
-                            <td className="border px-4 py-2 text-left">{office.office_city}</td>
-                            <td className="border px-4 py-2 text-left">{office.office_address}</td>
-                            <td className="border px-4 py-2 text-left">{office.office_type}</td>
-                            <td className="border px-4 py-2 text-left">
-                              {office.country_code} {office.phone_number}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  {/* Pagination Controls */}
-                  <div className="flex justify-end items-center gap-2 mt-4">
-                    <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1} className="px-3 py-1 border rounded disabled:opacity-50">
-                      Prev
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="flex justify-end items-center gap-2 mt-4">
+                  <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1} className="px-3 py-1 border rounded disabled:opacity-50">
+                    Prev
+                  </button>
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button key={i} onClick={() => setCurrentPage(i + 1)} className={`px-3 py-1 border rounded ${currentPage === i + 1 ? "bg-[#1E293B] text-white" : ""}`}>
+                      {i + 1}
                     </button>
-                    {[...Array(totalPages)].map((_, i) => (
-                      <button key={i} onClick={() => setCurrentPage(i + 1)} className={`px-3 py-1 border rounded ${currentPage === i + 1 ? "bg-[#1E293B] text-white" : ""}`}>
-                        {i + 1}
+                  ))}
+                  <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages} className="px-3 py-1 border rounded disabled:opacity-50" >
+                    Next
+                  </button>
+                </div>
+              </>
+            )}
+
+            {
+              allowWriteAccess && role === 'admin' && (
+                <div className="mt-6 flex flex-row justify-evenly">
+                  <Link to={`/edit-consultancy/${formData._id}`} className='flex flex-row justify-between'>
+                      <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
+                        Edit Consultancy
                       </button>
-                    ))}
-                    <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages} className="px-3 py-1 border rounded disabled:opacity-50" >
-                      Next
-                    </button>
-                  </div>
-                </>
-              )}
+                  </Link>
 
-              {
-                allowWriteAccess && role === 'admin' && (
-                  <div className="mt-6 flex flex-row justify-evenly">
-                    <Link to={`/edit-consultancy/${formData._id}`} className='flex flex-row justify-between'>
-                        <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                          Edit Consultancy
-                        </button>
-                    </Link>
-
-                    <button onClick={() => confirmDelete(formData._id) } type="submit" className="bg-red-700 hover:bg-red-600 text-white font-semibold px-8 py-2 rounded-md transition cursor-pointer">
-                      Delete Consultancy
-                    </button>
-                  </div>
-                )
-              }
+                  <button onClick={() => confirmDelete(formData._id) } type="submit" className="bg-red-700 hover:bg-red-600 text-white font-semibold px-8 py-2 rounded-md transition cursor-pointer">
+                    Delete Consultancy
+                  </button>
+                </div>
+              )
+            }
           </div>
       </div>
 

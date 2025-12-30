@@ -630,26 +630,6 @@ export default function ViewAllPayments() {
                         <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">{payment.grand_total}</td>
                         <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.payment_received}</td>
                         <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.pending_payment}</td>
-                        {/* <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
-                          <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
-                            <button type="button" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition" onClick={() => { setGenerateReceiptOpen(true); setGenerateRecieptID(payment._id); }}>
-                              View Receipt
-                            </button>
-                            <Link to={`/view-a-payment/${payment._id}`}>
-                              <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
-                            </Link>
-                            {allowWriteAccess && (
-                              <>
-                                <Link to={`/edit-a-payment/${payment._id}`}>
-                                  <button className="bg-[#1E293B] hover:bg-[#334155] text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">Edit</button>
-                                </Link>
-                                <button onClick={() => confirmDelete(payment._id)} className="bg-red-700 hover:bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">
-                                  Delete
-                                </button>
-                              </>
-                            )}
-                          </div>
-                        </td> */}
                         <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
                           <div className="flex flex-col items-center gap-2">
                             <button type="button" className={`${baseBtn} bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold`} onClick={() => { setGenerateReceiptOpen(true); setGenerateRecieptID(payment._id); }}>
@@ -727,7 +707,6 @@ export default function ViewAllPayments() {
             }
           </div>
 
-
           {/* GENERATE RECEIPT MODAL */}
           {generateReceiptOpen && (
             <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md z-50">
@@ -760,7 +739,6 @@ export default function ViewAllPayments() {
                   </div>
 
                   {/* Invoice Meta */}
-                  {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6 justify-between"> */}
                   <div className="grid grid-cols-2 gap-4 text-sm mb-6 justify-between">
                     <div>
                       <p>
@@ -772,7 +750,6 @@ export default function ViewAllPayments() {
                         {new Date(singlePaymentData.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
                       </p>
                     </div>
-                    {/* <div className="md:text-right"> */}
                     <div className="text-right">
                       <p>
                         <span className="font-semibold">Billing Period:</span>
