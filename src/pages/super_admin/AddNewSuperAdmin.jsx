@@ -614,7 +614,7 @@ export default function AddNewSuperAdmin() {
 
             <div className="col-span-3 mt-6 flex justify-center">
               <button type="submit" disabled={loading || !allowWriteAccess} className={`bg-[#1E293B] text-yellow-300 font-semibold px-8 py-2 rounded-md transition ${ allowWriteAccess ? "cursor-pointer hover:bg-[#334155]" : "cursor-not-allowed" }`}>
-                {loading ? "Saving..." : "Save Details"}
+                {loading ? "Adding..." : "Add Super Admin"}
               </button>
             </div>
           </form>

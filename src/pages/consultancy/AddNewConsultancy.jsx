@@ -827,7 +827,7 @@ export default function AddNewConsultancy() {
 
             <div className="col-span-3 mt-8 flex justify-center">
               <button type="submit" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold px-8 py-2 rounded-md transition cursor-pointer" >
-                Save Details
+                Add Consultancy
               </button>
             </div>
           </form>
