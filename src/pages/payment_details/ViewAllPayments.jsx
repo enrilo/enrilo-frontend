@@ -469,6 +469,7 @@ export default function ViewAllPayments() {
   const loggedInUserID = userState.currentUser?.data?.id;
   const role = userState.currentUser?.data?.role;
   const receiptRef = useRef();
+  const baseBtn = "px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer";
 
   useEffect(() => {
     const fetchAllPayments = async () => {
@@ -629,12 +630,11 @@ export default function ViewAllPayments() {
                         <td className="px-3 py-2 md:px-4 md:py-3 text-center w-44 md:w-40">{payment.grand_total}</td>
                         <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.payment_received}</td>
                         <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">{payment.pending_payment}</td>
-                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
+                        {/* <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
                           <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
                             <button type="button" className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition" onClick={() => { setGenerateReceiptOpen(true); setGenerateRecieptID(payment._id); }}>
-                              Generate Receipt
+                              View Receipt
                             </button>
-                            <br />
                             <Link to={`/view-a-payment/${payment._id}`}>
                               <button className="bg-slate-500 hover:bg-slate-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-sm sm:text-[17px] font-semibold transition cursor-pointer">View</button>
                             </Link>
@@ -648,6 +648,29 @@ export default function ViewAllPayments() {
                                 </button>
                               </>
                             )}
+                          </div>
+                        </td> */}
+                        <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
+                          <div className="flex flex-col items-center gap-2">
+                            <button type="button" className={`${baseBtn} bg-[#1E293B] hover:bg-[#334155] text-yellow-300`} onClick={() => { setGenerateReceiptOpen(true); setGenerateRecieptID(payment._id); }}>
+                              View Receipt
+                            </button>
+                            
+                            <div className="flex justify-center gap-1 sm:gap-4 flex-wrap">
+                              <Link to={`/view-a-payment/${payment._id}`} className={`${baseBtn} bg-slate-500 hover:bg-slate-600 text-white text-center`}>
+                                View
+                              </Link>
+                              {allowWriteAccess && (
+                                <>
+                                  <Link to={`/edit-a-payment/${payment._id}`} className={`${baseBtn} bg-[#1E293B] hover:bg-[#334155] text-white text-center`}>
+                                    Edit
+                                  </Link>
+                                  <button onClick={() => confirmDelete(payment._id)} className={`${baseBtn} bg-red-700 hover:bg-red-600 text-white`} >
+                                    Delete
+                                  </button>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -712,9 +735,9 @@ export default function ViewAllPayments() {
                 {/* Header Actions */}
                 <div className="flex justify-between mb-4 no-print">
                   <button className="bg-[#1E293B] hover:bg-[#334155] text-yellow-300 px-8 py-2 rounded-md transition cursor-pointer" onClick={() => window.print()}>
-                    Print
+                    Generate Receipt
                   </button>
-                  <button className="bg-[#1E293B] text-white px-8 py-2 rounded-md hover:bg-[#334155] transition cursor-pointer" onClick={() => setGenerateReceiptOpen(false)}>
+                  <button className="bg-slate-500 hover:bg-slate-600 text-white px-8 py-2 rounded-md transition cursor-pointer" onClick={() => setGenerateReceiptOpen(false)}>
                     Close
                   </button>
                 </div>
