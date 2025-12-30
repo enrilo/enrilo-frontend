@@ -652,7 +652,7 @@ export default function ViewAllPayments() {
                         </td> */}
                         <td className="px-3 py-2 md:px-4 md:py-3 text-center w-22 md:w-20">
                           <div className="flex flex-col items-center gap-2">
-                            <button type="button" className={`${baseBtn} bg-[#1E293B] hover:bg-[#334155] text-yellow-300`} onClick={() => { setGenerateReceiptOpen(true); setGenerateRecieptID(payment._id); }}>
+                            <button type="button" className={`${baseBtn} bg-[#1E293B] hover:bg-[#334155] text-yellow-300 font-semibold`} onClick={() => { setGenerateReceiptOpen(true); setGenerateRecieptID(payment._id); }}>
                               View Receipt
                             </button>
                             
