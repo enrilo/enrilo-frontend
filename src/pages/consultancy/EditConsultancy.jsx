@@ -535,7 +535,6 @@ export default function EditConsultancy() {
 
       const fetchedAdmin = consultancyJsonData.data.consultancy;
 
-      // SANITIZE fetched office_details to remove _id or extra fields
       const sanitizedOffices = (fetchedAdmin.office_details || []).map(
         ({ office_city, office_address, office_type, country_code, phone_number }) => ({
           office_city: office_city || "",
@@ -576,13 +575,11 @@ export default function EditConsultancy() {
   }, [loggedInUserID, params.id, token]);
 
   useEffect(() => {
-    // empty → reset
     if (!formData.subdomain?.trim()) {
       setIsSubdomainAvailable(null);
       return;
     }
 
-    // unchanged subdomain → valid
     if (formData.subdomain === originalSubdomain) {
       setIsSubdomainAvailable(null);
       return;
@@ -621,8 +618,6 @@ export default function EditConsultancy() {
       controller.abort();
     };
   }, [formData.subdomain, originalSubdomain]);
-
-
 
   const handleProfileUpload = async (e) => {
     const file = e.target.files[0];
@@ -678,13 +673,39 @@ export default function EditConsultancy() {
     };
   }, [localProfileFile, formData.photo_url]);
 
+  // const handleOfficeChange = useCallback((index, field, value) => {
+  //   setFormData((prev) => {
+  //     const updated = [...prev.office_details];
+  //     updated[index] = { ...updated[index], [field]: value };
+  //     return { ...prev, office_details: updated };
+  //   });
+  // }, []);
+
   const handleOfficeChange = useCallback((index, field, value) => {
     setFormData((prev) => {
-      const updated = [...prev.office_details];
-      updated[index] = { ...updated[index], [field]: value };
-      return { ...prev, office_details: updated };
+      const updatedOffices = prev.office_details.map((office, i) =>
+        i === index ? { ...office, [field]: value } : office
+      );
+      return { ...prev, office_details: updatedOffices };
     });
   }, []);
+
+
+  // const handleAddOffice = useCallback(() => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     office_details: [
+  //       ...prev.office_details,
+  //       {
+  //         office_city: "",
+  //         office_address: "",
+  //         office_type: "Branch",
+  //         country_code: "",
+  //         phone_number: "",
+  //       },
+  //     ],
+  //   }));
+  // }, []);
 
   const handleAddOffice = useCallback(() => {
     setFormData((prev) => ({
@@ -694,13 +715,14 @@ export default function EditConsultancy() {
         {
           office_city: "",
           office_address: "",
-          office_type: "Branch",
+          office_type: "Branch", // important!
           country_code: "",
           phone_number: "",
         },
       ],
     }));
   }, []);
+
 
   const handleRemoveOffice = useCallback((index) => {
     setFormData((prev) => {
@@ -724,7 +746,10 @@ export default function EditConsultancy() {
         office_type: "Head Office",
         country_code: "",
         phone_number: "",
-      }] : prev.office_details,
+      }] : prev.office_details.map((office, idx) => ({
+        ...office,
+        office_type: idx === 0 ? "Head Office" : office.office_type || "Branch"
+      })),
     }));
   }, []);
 
@@ -732,7 +757,6 @@ export default function EditConsultancy() {
     e.preventDefault();
     setPageLoading(true);
 
-    // Validate office details
     for (const office of formData.office_details) {
       if (!office.office_city || !office.office_address || !office.office_type || !office.country_code) {
         setFailedToSaveMessage("Please fill all required office details");
@@ -749,7 +773,6 @@ export default function EditConsultancy() {
         profile_url = url;
       }
 
-      // SANITIZE office_details before sending
       const cleanedOfficeDetails = formData.office_details.map(
         ({ office_city, office_address, office_type, country_code, phone_number }) => ({
           office_city,
@@ -779,7 +802,6 @@ export default function EditConsultancy() {
         body: JSON.stringify(payload),
         credentials: "include",
       });
-
       const data = await res.json();
 
       if (!data.success) {
@@ -916,16 +938,25 @@ export default function EditConsultancy() {
                 <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center mb-3">
                   <TextField label="Office City" value={office.office_city} onChange={(e) => handleOfficeChange(index, "office_city", e.target.value)} variant="outlined" disabled={!allowWriteAccess} required sx={{...asteriskColorStyle}} />
                   <TextField label="Office Address" value={office.office_address} onChange={(e) => handleOfficeChange(index, "office_address", e.target.value)} variant="outlined" disabled={!allowWriteAccess} required sx={{...asteriskColorStyle}} />
-                  <TextField label="Office Type" select value={office.office_type} onChange={(e) => handleOfficeChange(index, "office_type", e.target.value)} variant="outlined" disabled={!allowWriteAccess} required sx={{...asteriskColorStyle}} >
-                    <MenuItem value="Head Office">Head Office</MenuItem>
-                    <MenuItem value="Branch">Branch</MenuItem>
-                    <MenuItem value="Franchise">Franchise</MenuItem>
+                  <TextField label="Office Type" select value={office.office_type || (index === 0 ? "Head Office" : "Branch")} onChange={(e) => handleOfficeChange(index, "office_type", e.target.value)} variant="outlined" disabled={!allowWriteAccess} required sx={{ ...asteriskColorStyle }}>
+                    {index === 0 ? (
+                      <MenuItem value="Head Office">Head Office</MenuItem>
+                    ) : (
+                      ["Branch", "Franchise"].map((type) => (
+                        <MenuItem key={type} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))
+                    )}
                   </TextField>
+
+
                   <div className="w-full flex gap-3">
                     <div className="min-w-[140px]">
                       <Select isDisabled={!allowWriteAccess} options={countryCodeOptions} value={countryCodeOptions.find(c => c.value === office.country_code) || null} placeholder="Country Code" isSearchable menuPortalTarget={document.body} styles={selectStyles} onChange={(sel) => handleOfficeChange(index, "country_code", sel?.value || "")} required sx={{...asteriskColorStyle}} />
                     </div>
                   </div>
+
                   <TextField label="Phone Number" value={office.phone_number} onChange={(e) => handleOfficeChange(index, "phone_number", e.target.value)} variant="outlined" required sx={{...asteriskColorStyle}} />
                   {branchType === "multiple" && (
                     <button type="button" onClick={() => handleRemoveOffice(index)} className="text-red-600 hover:text-red-800 text-sm font-semibold cursor-pointer" >
