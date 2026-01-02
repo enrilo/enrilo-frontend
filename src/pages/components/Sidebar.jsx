@@ -44,6 +44,7 @@ export default function Sidebar() {
     }, {
       name: "Consultancy Details",
       icon: <BriefcaseBusiness size={18} />,
+      matchPrefixes: ["/view-consultancy", "/edit-consultancy", "/edit-a-payment", "/view-a-payment"],
       subMenu: [
         {
           name: "Add Consultancy",
