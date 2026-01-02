@@ -793,19 +793,19 @@ export default function AddNewConsultancy() {
 
               {formData.office_details.map((office, index) => (
                 <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center mb-3">
-                  <TextField label="Office City" value={office.office_city} onChange={(e) => handleOfficeChange(index, "office_city", e.target.value)} variant="outlined" required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} />
-                  <TextField label="Office Address" value={office.office_address} onChange={(e) => handleOfficeChange(index, "office_address", e.target.value)} variant="outlined" required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} />
-                  <TextField label="Office Type" select value={office.office_type} onChange={(e) => handleOfficeChange(index, "office_type", e.target.value)} variant="outlined" required disabled={!allowWriteAccess} sx={{...asteriskColorStyle}} >
+                  <TextField label="Office City" value={office.office_city} onChange={(e) => handleOfficeChange(index, "office_city", e.target.value)} variant="outlined" disabled={!allowWriteAccess} required sx={{...asteriskColorStyle}} />
+                  <TextField label="Office Address" value={office.office_address} onChange={(e) => handleOfficeChange(index, "office_address", e.target.value)} variant="outlined" disabled={!allowWriteAccess} required sx={{...asteriskColorStyle}} />
+                  <TextField label="Office Type" select value={office.office_type} onChange={(e) => handleOfficeChange(index, "office_type", e.target.value)} variant="outlined" disabled={!allowWriteAccess} required sx={{...asteriskColorStyle}} >
                     <MenuItem value="Head Office">Head Office</MenuItem>
                     <MenuItem value="Branch">Branch</MenuItem>
                     <MenuItem value="Franchise">Franchise</MenuItem>
                   </TextField>
                   <div className="w-full flex gap-3">
                     <div className="min-w-[140px]">
-                      <Select isDisabled={!allowWriteAccess} options={countryCodeOptions} value={countryCodeOptions.find(c => c.value === office.country_code) || null} placeholder="Country Code" isSearchable menuPortalTarget={document.body} menuPosition="fixed" styles={selectStyles} onChange={(sel) => handleOfficeChange(index, "country_code", sel?.value || "")} />
+                      <Select isDisabled={!allowWriteAccess} options={countryCodeOptions} value={countryCodeOptions.find(c => c.value === office.country_code) || null} placeholder="Country Code" isSearchable menuPortalTarget={document.body} menuPosition="fixed" styles={selectStyles} onChange={(sel) => handleOfficeChange(index, "country_code", sel?.value || "")} required sx={{...asteriskColorStyle}} />
                     </div>
                   </div>
-                  <TextField label="Phone Number" value={office.phone_number} onChange={(e) => handleOfficeChange(index, "phone_number", e.target.value)} variant="outlined" />
+                  <TextField label="Phone Number" value={office.phone_number} onChange={(e) => handleOfficeChange(index, "phone_number", e.target.value)} variant="outlined" required sx={{...asteriskColorStyle}} />
                   {branchType === "multiple" && (
                     <button type="button" onClick={() => handleRemoveOffice(index)} className="text-red-600 hover:text-red-800 text-sm font-semibold cursor-pointer" >
                       ❌ Remove
