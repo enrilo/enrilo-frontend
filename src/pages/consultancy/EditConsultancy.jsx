@@ -94,7 +94,7 @@ export default function EditConsultancy() {
 
       const sanitizedOffices = (fetchedAdmin.office_details || []).map(
         ({ office_name, office_city, office_address, office_type, country_code, phone_number }) => ({
-          office_name: "",
+          office_name: office_name || "",
           office_city: office_city || "",
           office_address: office_address || "",
           office_type: office_type || "Head Office",

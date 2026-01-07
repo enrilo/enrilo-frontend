@@ -204,6 +204,7 @@ export default function ViewConsultancy() {
                     <thead className="bg-gray-100">
                       <tr>
                         <th className="border px-4 py-2 text-left">#</th>
+                        <th className="border px-4 py-2 text-left">Office Name</th>
                         <th className="border px-4 py-2 text-left">Office City</th>
                         <th className="border px-4 py-2 text-left">Address</th>
                         <th className="border px-4 py-2 text-left">Office Type</th>
@@ -217,6 +218,7 @@ export default function ViewConsultancy() {
                           <td className="border px-4 py-2 text-left">
                             {(currentPage - 1) * rowsPerPage + index + 1}
                           </td>
+                          <td className="border px-4 py-2 text-left">{office.office_name}</td>
                           <td className="border px-4 py-2 text-left">{office.office_city}</td>
                           <td className="border px-4 py-2 text-left">{office.office_address}</td>
                           <td className="border px-4 py-2 text-left">{office.office_type}</td>

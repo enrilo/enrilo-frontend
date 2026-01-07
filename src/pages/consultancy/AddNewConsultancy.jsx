@@ -166,7 +166,7 @@ export default function AddNewConsultancy() {
     };
   }, [localProfileFile, formData.photo_url]);
 
-  const handleOfficeChange = useCallback((index, field, value) => {
+  const handleOfficeChange = useCallback((index, field, value) => {    
     setFormData((prev) => {
       const updated = [...prev.office_details];
       updated[index] = { ...updated[index], [field]: value };
@@ -180,8 +180,8 @@ export default function AddNewConsultancy() {
       office_details: [
         ...prev.office_details,
         {
-          office_name: "",
           office_city: "",
+          office_name: "",
           office_address: "",
           office_type: "Branch",
           country_code: "",
@@ -204,8 +204,8 @@ export default function AddNewConsultancy() {
       ...prev,
       is_single_branch: type === "single",
       office_details: type === "single" ? [{
-          office_name: "",
           office_city: "",
+          office_name: "",
           office_address: "",
           office_type: "Head Office",
           country_code: "",
@@ -222,7 +222,7 @@ export default function AddNewConsultancy() {
     setPageLoading(true);
 
     for (const office of formData.office_details) {
-      if (!office.office_name,!office.office_city || !office.office_address || !office.office_type || !office.country_code) {
+      if (!office.office_name || !office.office_city || !office.office_address || !office.office_type || !office.country_code) {
         setFailedToSaveMessage("Please fill all required office details");
         setFailedToSaveMsgOpen(true);
         setPageLoading(false);
@@ -241,6 +241,26 @@ export default function AddNewConsultancy() {
         ...formData,
         photo_url: profile_url,
       };
+      // const payload = {
+      //   photo_url: profile_url,
+      //   name: formData.name,
+      //   company_website: formData.company_website,
+      //   gst_number: formData.gst_number,
+      //   linkedin_url: formData.linkedin_url,
+      //   facebook_url: formData.facebook_url,
+      //   instagram_url: formData.instagram_url,
+      //   is_single_branch: formData.is_single_branch,
+      //   subdomain: formData.subdomain,
+
+      //   office_details: formData.office_details.map((office) => ({
+      //     office_city: office.office_city,
+      //     office_name: office.office_name,
+      //     office_address: office.office_address,
+      //     office_type: office.office_type === "Head Office" ? "Head Office" : (office.office_type === "Branch" ? "Branch" : "Franchise"),
+      //     country_code: office.country_code,
+      //     phone_number: Number(office.phone_number),
+      //   })),
+      // };
 
       const res = await fetch("http://localhost:3000/api/consultancies/", {
         method: "POST",
