@@ -129,6 +129,10 @@ import AddAPayment from "./pages/payment_details/AddAPayment.jsx";
 import ViewAllPayments from "./pages/payment_details/ViewAllPayments.jsx";
 import ViewAPayment from "./pages/payment_details/ViewAPayment.jsx";
 import EditPayment from "./pages/payment_details/EditPayment.jsx";
+import AddMasterAdmin from "./pages/master_admin/AddMasterAdmin.jsx";
+import AllMasterAdmin from "./pages/master_admin/AllMasterAdmin.jsx";
+import ViewMasterAdmin from "./pages/master_admin/ViewMasterAdmin.jsx";
+import EditMasterAdmin from "./pages/master_admin/EditMasterAdmin.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -159,21 +163,29 @@ function AppContent() {
           {/* 🔒 PRIVATE ROUTES */}
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            {/* Consultancies  */}
             <Route path="/add-new-consultancy" element={<AddNewConsultancy />} />
             <Route path="/all-consultancies" element={<AllConsultanciesPage />} />
             <Route path="/view-consultancy/:id" element={<ViewConsultancy />} />
             <Route path="/edit-consultancy/:id" element={<EditConsultancy />} />
+            {/* Super Admin  */}
             <Route path="/add-new-superadmin" element={<AddNewSuperAdmin />} />
             <Route path="/all-super-admin" element={<AllSuperAdminPage />} />
             <Route path="/view-super-admin/:id" element={<ViewSuperAdmin />} />
             <Route path="/edit-super-admin/:id" element={<EditSuperAdmin />} />
+            {/* Payment Details  */}
             <Route path="/add-new-payment" element={<AddAPayment />} />
             <Route path="/all-payments" element={<ViewAllPayments />} />
             <Route path="/view-a-payment/:id" element={<ViewAPayment />} />
             <Route path="/edit-a-payment/:id" element={<EditPayment />} />
+            {/* Master Admin  */}
+            <Route path="/add-master-admin" element={<AddMasterAdmin />} />
+            <Route path="/all-master-admin" element={<AllMasterAdmin />} />
+            <Route path="/view-master-admin/:id" element={<ViewMasterAdmin />} />
+            <Route path="/edit-master-admin/:id" element={<EditMasterAdmin />} />
+            
             <Route path="/my-profile" element={<MyProfile />} />
             <Route path="/our-company" element={<CompanyProfile />} />
-
             {/* 🚨 CATCH-ALL PROTECTED ROUTE */}
             <Route path="*" element={<Navigate to="/super-admin-login" replace />} />
           </Route>

@@ -10,16 +10,22 @@ export default function Header() {
     "/login": "Login",
     "/master-admin-login": "Login",
     "/dashboard": "Dashboard",
+    "/add-new-superadmin": "Add New Super Admin",
+    "/all-super-admin": "All Super Admin",
+
     "/add-new-consultancy": "Add New Consultancy",
     "/all-consultancies": "All Consultancies",
     "/all-payments": "All Payments",
     "/add-new-payment": "Add New Payment",
-    "/add-new-superadmin": "Add New Super Admin",
-    "/all-super-admin": "All Super Admin",
-    "/masteradmin/add": "Add New Master Admin",
-    "/masteradmin/all": "All Master Admin",
+
+    "/add-master-admin": "Add Master Admin",
+    "/all-master-admin": "All Master Admin",
+    // "/update-master-admin": "Update Master Admin",
+    // "/view-master-admin": "View Master Admin",
+
     "/our-company": "Our Company",
     "/my-profile": "Profile Page",
+    
     "/company/gst": "GST Collection",
     "/settings": "Settings",
     "/pricing": "Pricing Page",
@@ -35,7 +41,7 @@ export default function Header() {
   if (titleMap[path]) {
     currentTitle = titleMap[path];
   } else if (/^\/edit-super-admin\/[A-Za-z0-9_-]+$/.test(path)) {
-    currentTitle = "Update Super Admin";
+    currentTitle = "Edit Super Admin";
   } else if (/^\/view-super-admin\/[A-Za-z0-9_-]+$/.test(path)) {
     currentTitle = "View Super Admin";
   } else if (/^\/edit-consultancy\/[A-Za-z0-9_-]+$/.test(path)) {
@@ -46,8 +52,11 @@ export default function Header() {
     currentTitle = "Edit Payment Details";
   } else if (/^\/consultancy\/\d+\/payments$/.test(path)) {
     currentTitle = "Consultancy Payments";
-  }
-  else {
+  } else if (/^\/update-master-admin\/[A-Za-z0-9_-]+$/.test(path)) {
+    currentTitle = "Edit Master Admin";
+  } else if (/^\/view-master-admin\/[A-Za-z0-9_-]+$/.test(path)) {
+    currentTitle = "View Master Admin";
+  } else {
     currentTitle = "Enrilo";
   }
 
