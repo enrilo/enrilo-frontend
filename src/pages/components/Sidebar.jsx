@@ -67,15 +67,16 @@ export default function Sidebar() {
     }, {
       name: "Master Admin Details",
       icon: <Users size={18} />,
+      matchPrefixes: ["/view-master-admin", "/edit-master-admin"],
       subMenu: [
         {
           name: "Add Master Admin",
           icon: <UserPlus size={18} />,
-          path: "/masteradmin/add",
+          path: "/add-master-admin",
         }, {
           name: "All Master Admin",
           icon: <Users size={18} />,
-          path: "/masteradmin/all",
+          path: "/all-master-admin",
         },
       ],
     },
