@@ -133,11 +133,12 @@ import AddMasterAdmin from "./pages/master_admin/AddMasterAdmin.jsx";
 import AllMasterAdmin from "./pages/master_admin/AllMasterAdmin.jsx";
 import ViewMasterAdmin from "./pages/master_admin/ViewMasterAdmin.jsx";
 import EditMasterAdmin from "./pages/master_admin/EditMasterAdmin.jsx";
+import TermsOfService from "./pages/enrilo_pages/TermsOfService.jsx";
 
 function AppContent() {
   const location = useLocation();
 
-  const hideSidebarRoutes = ["/", "/login", "/super-admin-login", "/privacy-policy", "/contact-us", "/terms", "/pricing", "/features"];
+  const hideSidebarRoutes = ["/", "/login", "/super-admin-login", "/privacy-policy", "/contact-us", "/terms-and-conditions", "/pricing", "/features", "/terms-of-service"];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
 
   const hideHeaderRoutes = ["/login", "/super-admin-login"];
@@ -159,7 +160,8 @@ function AppContent() {
           <Route path="/features" element={<FeaturesPage />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
           {/* 🔒 PRIVATE ROUTES */}
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
