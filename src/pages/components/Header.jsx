@@ -32,7 +32,7 @@ export default function Header() {
     "/features": "Our Features",
     "/contact-us": "Contact Us",
     "/privacy-policy": "Privacy Policy",
-    "/terms": "Terms & Conditions",
+    "/terms-and-conditions": "Terms & Conditions",
   };
 
   let currentTitle = "Enrilo Dashboard";
