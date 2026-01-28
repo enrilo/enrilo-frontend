@@ -618,6 +618,7 @@ export default function AddMasterAdmin() {
                     consultancy_id: selectedOption?.value || "",
                     consultancy_name: selectedOption?.label || "",
                   }));
+                  setSelectedBranch([]);
                   setIdOfSelectedConsultancy(selectedOption?.value);
                   console.log(`selectedConsultancy:${JSON.stringify(selectedOption)}`);
                 }}
