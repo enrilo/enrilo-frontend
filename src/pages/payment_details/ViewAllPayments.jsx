@@ -747,7 +747,7 @@ export default function ViewAllPayments() {
                       </p>
                       <p>
                         <span className="font-semibold">Invoice Date:</span>{" "}
-                        {new Date(singlePaymentData.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
+                        {new Date(singlePaymentData.billing_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
                       </p>
                     </div>
                     <div className="text-right">

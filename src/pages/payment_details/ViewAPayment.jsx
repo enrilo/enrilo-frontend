@@ -101,7 +101,11 @@ export default function ViewAPayment() {
         {/* Bill Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold">{formData.consultancy_name}</h1>
-          <p className="text-lg font-semibold">Consultancy Payment Details</p>
+          <p className="text-lg font-semibold mb-5">Consultancy Payment Details</p>
+          <p className="text-lg font-semibold">
+            Billing Date:{" "}
+            {new Date(formData.billing_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
+          </p>
           <div className="flex justify-center gap-8 text-gray-700 text-lg font-semibold mb-8">
             <p>
               From:{" "}
@@ -231,7 +235,7 @@ export default function ViewAPayment() {
                   </p>
                   <p>
                     <span className="font-semibold">Invoice Date:</span>{" "}
-                    {new Date(formData.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
+                    {new Date(formData.billing_date).toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" })}
                   </p>
                 </div>
                 <div className="text-right">
