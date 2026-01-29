@@ -26,6 +26,7 @@ export default function AddAPayment() {
     pending_payment: 0,
     from_date: null,
     to_date: null,
+    billing_date: null,
   });
   const [allConsultancies, setAllConsultancies] = useState([]);
   const [pageLoading, setPageLoading] = useState(false);
@@ -216,6 +217,13 @@ export default function AddAPayment() {
                     }));
                   }}
                 />
+              </div>
+            </div>
+
+            <div className="flex flex-row items-center justify-center gap-4">
+              <label className="w-[200px] text-left font-xl text-gray-700">Billing Date:</label>
+              <div className="w-[210px]">
+                <DatePicker value={formData.billing_date} onChange={(newValue) => setFormData((prev) => ({ ...prev, billing_date: newValue })) } />
               </div>
             </div>
 
